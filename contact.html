@@ -4,37 +4,67 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Contact — GASH IT Solutions</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="description" content="Contact GASH IT Solutions for support and inquiries." />
+  <style>
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:#006400;color:#052e16;line-height:1.6}
+    .wrap{width:min(1000px,92%);margin-inline:auto;padding:2rem;background:#90ee90;border-radius:12px}
+    header,footer{text-align:center;margin-bottom:1rem}
+    nav a{color:#064e3b;text-decoration:none;margin:0 1rem;font-weight:bold}
+    nav a:hover{text-decoration:underline}
+    .card{background:rgba(255,255,255,.7);border-radius:12px;padding:1.5rem;margin-top:1rem}
+    label{display:block;margin:.6rem 0 .25rem;font-weight:600}
+    input,textarea{width:100%;padding:.7rem;border-radius:8px;border:1px solid #065f46;background:#fff;color:#052e16}
+    .actions{margin-top:1rem;display:flex;gap:.6rem;flex-wrap:wrap}
+    .btn{background:#065f46;color:#fff;border:none;border-radius:8px;padding:.7rem 1rem;font-weight:700;cursor:pointer}
+    .btn.secondary{background:#047857}
+    small{color:#064e3b}
+    .notice{background:#d1fae5;border-left:4px solid #065f46;padding:.7rem 1rem;border-radius:8px;margin-top:1rem}
+  </style>
 </head>
 <body>
-  <header class="header">
-    <div class="container wrap">
-      <div class="brand"><span class="dot"></span><span>GASH IT Solutions</span></div>
-      <nav class="nav">
+  <div class="wrap">
+    <header>
+      <h1>GASH IT Solutions</h1>
+      <nav aria-label="Primary">
         <a href="index.html">Home</a>
-        <a href="services.html">Services</a>
         <a href="about.html">About</a>
+        <a href="services.html">Services</a>
         <a href="contact.html" aria-current="page">Contact</a>
       </nav>
-    </div>
-  </header>
+    </header>
 
-  <main class="container section">
-    <h2>Contact</h2>
-    <form class="card">
-      <label>Name<input type="text" name="name" required></label>
-      <label>Email<input type="email" name="email" required></label>
-      <label>Message<textarea name="message" rows="5" required></textarea></label>
-      <button class="btn" type="submit" onclick="alert('Demo only!')">Send</button>
-    </form>
-  </main>
+    <main>
+      <div class="card">
+        <h2>Contact</h2>
+        <p>Have a question or need help? Send a message and I’ll respond as soon as possible.</p>
 
-  <footer class="footer">
-    <div class="container wrap">
-      <small>© <span class="js-year"></span> GASH IT Solutions</small>
-      <small>Created by Ginelle Harvey</small>
-    </div>
-  </footer>
-  <script src="script.js"></script>
+        <!-- Demo-only form (no backend). Replace 'alert' when you hook up a form service. -->
+        <form onsubmit="alert('Thanks! Your message has been recorded (demo).'); return false;" aria-label="Contact form">
+          <label for="name">Name</label>
+          <input id="name" name="name" autocomplete="name" required />
+
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="email" required />
+
+          <label for="msg">Message</label>
+          <textarea id="msg" name="message" rows="6" required></textarea>
+
+          <div class="actions">
+            <button class="btn" type="submit">Send</button>
+            <button class="btn secondary" type="reset">Clear</button>
+          </div>
+        </form>
+
+        <div class="notice">
+          Production option: connect this form to a service like <em>Formspree</em> or <em>Netlify Forms</em>, or a custom server endpoint.
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <small>Created by Ginelle Harvey • © <span id="y"></span> GASH IT Solutions</small>
+    </footer>
+  </div>
+  <script>document.getElementById('y').textContent=new Date().getFullYear();</script>
 </body>
 </html>
