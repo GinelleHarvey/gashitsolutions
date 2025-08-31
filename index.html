@@ -3,37 +3,103 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>GASH IT Solutions — Hello World</title>
-  <meta name="description" content="GASH IT Solutions — smart IT & AI-driven services." />
+  <title>GASH IT Solutions — Smart IT Services</title>
+  <meta name="description" content="GASH IT Solutions — Smart IT & AI-driven services.">
   <style>
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:#0b0f19;color:#e6eef6;line-height:1.6}
-    .wrap{width:min(1000px,92%);margin-inline:auto;padding:2rem 0}
-    header,footer{border-block:1px solid #1c2741}
-    nav a{color:#59a9ff;text-decoration:none;margin-right:1rem;font-weight:700}
-    .card{background:#111827;border:1px solid #1c2741;border-radius:12px;padding:1rem}
-    .btn{display:inline-block;background:#59a9ff;color:#05121f;font-weight:800;text-decoration:none;padding:.7rem 1rem;border-radius:.7rem;margin-top:1rem}
-    img{max-width:100%;display:block;border-radius:12px;border:1px solid #1c2741}
-    small{color:#9fb3c8}
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background: #006400; /* Dark green outer */
+      color: #052e16;       /* Darker text inside */
+      line-height: 1.6;
+    }
+    .wrap {
+      width: min(1000px, 92%);
+      margin-inline: auto;
+      padding: 2rem;
+      background: #90ee90; /* Light green inner */
+      border-radius: 12px;
+    }
+    header, footer {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    nav a {
+      color: #064e3b;
+      text-decoration: none;
+      margin: 0 1rem;
+      font-weight: bold;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    .card {
+      background: rgba(255,255,255,0.7); /* translucent background */
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-top: 1rem;
+    }
+    img {
+      max-width: 100%;
+      display: block;
+      border-radius: 12px;
+      opacity: 0.8; /* transparency effect */
+      margin: 1rem 0;
+    }
+    .btn {
+      display: inline-block;
+      background: #065f46;
+      color: #fff;
+      font-weight: bold;
+      text-decoration: none;
+      padding: 0.7rem 1rem;
+      border-radius: 8px;
+    }
+    .btn:hover {
+      background: #047857;
+    }
+    small { color: #064e3b; }
   </style>
 </head>
 <body>
-  <header>
-    <div class="wrap">
-      <h1 style="margin:0;">GASH IT Solutions</h1>
-      <nav aria-label="Primary"><a href="#">Home</a><a href="https://www.daytonastate.edu" target="_blank" rel="noopener">Daytona State</a></nav>
-    </div>
-  </header>
+  <div class="wrap">
+    <header>
+      <h1>GASH IT Solutions</h1>
+      <nav aria-label="Primary">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="services.html">Services</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+    </header>
 
-  <main class="wrap">
-    <div class="card">
-      <h2>Hello World</h2>
-      <p>This live page satisfies Assignment 1 requirements (custom domain/host, semantic HTML5, link, image, and attribution).</p>
-      <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop" alt="Abstract technology banner">
-      <p><a class="btn" href="https://www.daytonastate.edu" target="_blank" rel="noopener">Visit DSC</a></p>
-    </div>
-  </main>
+    <main>
+      <div class="card">
+        <h2>Welcome to GASH IT Solutions</h2>
+        <p>
+          We specialize in <strong>smart IT and AI-driven technologies</strong> 
+          to power businesses, secure systems, and enhance digital transformation.  
+          From network security to smart home integration, our goal is to make technology 
+          simpler, faster, and smarter for you.
+        </p>
 
-  <footer><div class="wrap"><small>Created by Ginelle Harvey • © <span id="y"></span> GASH IT Solutions</small></div></footer>
-  <script>document.getElementById('y').textContent=new Date().getFullYear();</script>
+        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop" alt="Abstract technology banner">
+
+        <p>
+          <a class="btn" href="services.html">Explore Our Services</a>
+        </p>
+      </div>
+    </main>
+
+    <footer>
+      <small>
+        Created by Ginelle Harvey • © <span id="y"></span> GASH IT Solutions
+      </small>
+    </footer>
+  </div>
+
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
