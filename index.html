@@ -3,39 +3,70 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>GASH IT Solutions — Smart IT Services</title>
+  <title>G⚡SH IT Solutions — Smart IT Services</title>
   <meta name="description" content="GASH IT Solutions — Smart IT & AI-driven services.">
-
-  <!-- Favicon (simple green hex logo) — no extra file needed -->
-  <link rel="icon" type="image/svg+xml"
-    href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="%23064e3b"/><stop offset=".9" stop-color="%2300a36c"/></linearGradient></defs><path d="M32 3 57 17v30L32 61 7 47V17z" fill="url(%23g)"/><text x="32" y="40" font-family="system-ui,Arial" font-size="20" text-anchor="middle" fill="white" font-weight="700">G</text></svg>' />
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 
   <style>
     :root{
       --outer:#006400;     /* dark green */
       --inner:#90ee90;     /* light green */
       --ink:#052e16;       /* text */
+      --link:#064e3b;      /* nav link */
+      --link-active:#00a36c;
       --btn:#065f46;
       --btn-hover:#90ee90; /* requested hover color */
     }
+
     /* layout / theme */
     body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--outer);color:var(--ink);line-height:1.6}
     .wrap{width:min(1000px,92%);margin-inline:auto;padding:2rem;background:var(--inner);border-radius:12px}
     header,footer{text-align:center;margin-bottom:1rem}
     small{color:#064e3b}
 
-    /* logo + nav */
-    .brand{display:inline-flex;align-items:center;gap:.6rem;font-weight:900;font-size:1.35rem}
-    .brand svg{width:28px;height:28px;flex:none;filter:drop-shadow(0 1px 0 rgba(0,0,0,.15))}
-    nav a{color:#064e3b;text-decoration:none;margin:0 1rem;font-weight:700}
-    nav a:hover{text-decoration:underline}
+    /* brand + nav */
+    .brand{display:inline-flex;align-items:center;gap:.6rem;font-weight:900;font-size:1.35rem;margin-bottom:.4rem}
+    .brand img{width:32px;height:32px;display:block;filter:drop-shadow(0 1px 0 rgba(0,0,0,.15));transition:filter .25s}
+    .brand:hover img{filter:drop-shadow(0 0 8px rgba(0,163,108,.6))}
+    .brand a{color:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:.6rem}
 
-    /* hero card */
+    /* inline wordmark with lightning A inside the link text */
+    .wordmark{font-weight:900;display:inline-flex;align-items:center;gap:.2rem}
+    .bolt{width:20px;height:20px;display:inline-block;transform:translateY(1px)}
+    .bolt path{fill:#00a36c}
+
+    nav a{
+      color:var(--link);
+      text-decoration:none;         
+      margin:0 1rem;
+      font-weight:700;
+      position:relative;
+      transition:color .2s, transform .06s;
+    }
+    /* subtle click animation & color change */
+    nav a:active{
+      color:var(--link-active);
+      transform:scale(0.97);
+    }
+    /* small bottom indicator animates in on focus/hover */
+    nav a::after{
+      content:"";
+      position:absolute;
+      left:0; right:0; bottom:-6px;
+      margin:auto;
+      width:0; height:3px;
+      background:linear-gradient(90deg,#00a36c,#90ee90);
+      border-radius:2px;
+      transition:width .2s ease-out;
+    }
+    nav a:hover::after, nav a:focus-visible::after{width:100%}
+
+    /* hero card with fade */
     .card{background:rgba(255,255,255,.7);border-radius:12px;padding:1.5rem;margin-top:1rem;
           animation:fadeUp .7s ease-out both}
     @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-    img{max-width:100%;display:block;border-radius:12px;opacity:.85;margin:1rem 0}
+    img.hero{max-width:100%;display:block;border-radius:12px;opacity:.85;margin:1rem 0}
 
     .btn{display:inline-block;background:var(--btn);color:#fff;font-weight:700;text-decoration:none;
          padding:.7rem 1rem;border-radius:8px;transition:background-color .2s,color .2s, transform .05s}
@@ -46,18 +77,19 @@
 <body>
   <div class="wrap">
     <header>
-      <!-- Simple SVG logo + wordmark -->
-      <div class="brand" aria-label="GASH IT Solutions">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" aria-hidden="true">
-          <defs>
-            <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-              <stop stop-color="#064e3b"/><stop offset=".9" stop-color="#00a36c"/>
-            </linearGradient>
-          </defs>
-          <path d="M32 3 57 17v30L32 61 7 47V17z" fill="url(#g)"/>
-          <text x="32" y="40" font-family="system-ui,Arial" font-size="20" text-anchor="middle" fill="#fff" font-weight="700">G</text>
-        </svg>
-        <span>GASH IT Solutions</span>
+      <!-- logo image + wordmark link -->
+      <div class="brand">
+        <a href="index.html" aria-label="GASH IT Solutions home">
+          <img src="assets/logo.svg" alt="">
+          <span class="wordmark">
+            G
+            <!-- lightning bolt stands in for A in the name -->
+            <svg class="bolt" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M13.5 2 5 13h6l-1.5 9L19 11h-6l1.5-9z"/>
+            </svg>
+            SH&nbsp;IT&nbsp;Solutions
+          </span>
+        </a>
       </div>
 
       <nav aria-label="Primary">
@@ -70,18 +102,15 @@
 
     <main>
       <div class="card">
-        <h2>Welcome to GASH IT Solutions</h2>
+        <h2>Welcome to G⚡SH IT Solutions</h2>
         <p>
-          We specialize in <strong>smart IT and AI-driven technologies</strong> to power businesses, secure systems,
-          and enhance digital transformation. From network security to smart home integration, our goal is to make
-          technology simpler, faster, and smarter for you.
+          We specialize in <strong>smart IT and AI-driven technologies</strong> that help businesses run efficiently, stay secure, and grow with confidence. 
+          From responsive technical support and network protection to smart home integration and digital transformation, our mission is to make technology simpler, faster, and smarter for you
         </p>
 
-        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop" alt="Abstract technology banner">
+        <img class="hero" src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop" alt="Abstract technology banner">
 
-        <p>
-          <a class="btn" href="services.html">Explore Our Services</a>
-        </p>
+        <p><a class="btn" href="services.html">Explore Our Services</a></p>
       </div>
     </main>
 
