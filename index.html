@@ -5,141 +5,46 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>GASH IT Solutions — Smart IT Services</title>
   <meta name="description" content="GASH IT Solutions — Smart IT & AI-driven services.">
-
-  <!-- Favicons -->
-  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48x48.png">
-  <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64x64.png">
-  <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon-128x128.png">
-
-  <style>
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-      background: #006400; /* Dark green outer */
-      color: #052e16; 
-      line-height: 1.6;
-    }
-    .wrap {
-      width: min(1000px, 92%);
-      margin-inline: auto;
-      padding: 2rem;
-      background: #90ee90; /* Light green inner */
-      border-radius: 12px;
-    }
-    header {
-      text-align: center;
-      margin-bottom: 1rem;
-    }
-    header img {
-      height: 60px;
-      vertical-align: middle;
-    }
-    header h1 {
-      display: inline-block;
-      margin: 0;
-      font-size: 1.8rem;
-      font-weight: 700;
-      vertical-align: middle;
-    }
-    nav {
-      margin-top: 0.5rem;
-    }
-    nav a {
-      color: #064e3b;
-      text-decoration: none;
-      margin: 0 1rem;
-      font-weight: bold;
-      position: relative;
-    }
-    nav a::after {
-      content: "";
-      position: absolute;
-      width: 0%;
-      height: 2px;
-      display: block;
-      margin-top: 4px;
-      right: 0;
-      background: #064e3b;
-      transition: width 0.3s ease;
-      -webkit-transition: width 0.3s ease;
-    }
-    nav a:hover::after {
-      width: 100%;
-      left: 0;
-      background: #047857; /* lighter green underline animation */
-    }
-    .card {
-      background: rgba(255,255,255,0.8);
-      border-radius: 12px;
-      padding: 1.5rem;
-      margin-top: 1rem;
-    }
-    img.banner {
-      max-width: 100%;
-      display: block;
-      border-radius: 12px;
-      margin: 1rem 0;
-    }
-    .btn {
-      display: inline-block;
-      background: #065f46;
-      color: #fff;
-      font-weight: bold;
-      text-decoration: none;
-      padding: 0.7rem 1rem;
-      border-radius: 8px;
-    }
-    .btn:hover {
-      background: #047857;
-    }
-    footer {
-      text-align: center;
-      margin-top: 2rem;
-    }
-    small { color: #064e3b; }
-  </style>
+  <!-- Link the external stylesheet -->
+  <link rel="stylesheet" href="assets/style.css">
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <a href="index.html" aria-label="GASH IT Solutions home">
-        <img src="assets/logo.svg" alt="GASH IT Solutions logo">
-      </a>
-      <h1>GASH IT Solutions</h1>
-      <nav aria-label="Primary">
+  <header class="header">
+    <div class="wrap">
+      <div class="brand">
+        <img src="assets/logo.svg" alt="GASH IT Solutions logo" width="48" height="48">
+        <a href="index.html">GASH IT Solutions</a>
+      </div>
+      <nav class="nav">
         <a href="index.html">Home</a>
         <a href="about.html">About</a>
         <a href="services.html">Services</a>
         <a href="contact.html">Contact</a>
       </nav>
-    </header>
+    </div>
+  </header>
 
-    <main>
-      <div class="card">
-        <h2>Welcome to GASH IT Solutions</h2>
-        <p>
-          We specialize in <strong>smart IT and AI-driven technologies</strong> that help businesses run efficiently, 
-          stay secure, and grow with confidence. From <strong>responsive technical support</strong> and network protection 
-          to smart-home integration and digital transformation, our mission is to make technology simpler, faster, 
-          and smarter for you.
-        </p>
+  <main class="container">
+    <section class="section card">
+      <h2>Welcome to GASH IT Solutions</h2>
+      <p>
+        We specialize in <strong>smart IT and AI-driven technologies</strong> that help businesses run efficiently, stay secure, and grow with confidence.  
+        From <strong>responsive technical support</strong> and network protection to smart-home integration and digital transformation, our mission is to make technology simpler, faster, and smarter for you.
+      </p>
+      <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop" alt="Abstract technology banner">
+      <p>
+        <a class="btn" href="services.html">Explore Our Services</a>
+      </p>
+    </section>
+  </main>
 
-        <img class="banner" src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop" alt="Abstract technology banner">
-
-        <p>
-          <a class="btn" href="services.html">Explore Our Services</a>
-        </p>
-      </div>
-    </main>
-
-    <footer>
-      <small>
-        Created by Ginelle Harvey • © <span id="y"></span> GASH IT Solutions
-      </small>
-    </footer>
-  </div>
+  <footer class="footer">
+    <div class="wrap">
+      <small>Created by Ginelle Harvey • © <span id="y"></span> GASH IT Solutions</small>
+    </div>
+  </footer>
 
   <script>
     document.getElementById('y').textContent = new Date().getFullYear();
