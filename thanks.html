@@ -3,18 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Thanks — GASH IT Solutions</title>
-  <link rel="stylesheet" href="assets/style.css">
+  <title>Thank You — GASH IT Solutions</title>
+  <meta name="description" content="Thank you for contacting GASH IT Solutions. We received your message and will reply shortly.">
+  <link rel="stylesheet" href="assets/style.css?v=9">
   <link rel="icon" type="image/png" href="assets/favicon.png">
 </head>
 <body>
+  <!-- Header -->
   <header class="header">
     <div class="wrap">
       <div class="brand">
         <img src="assets/logo.svg" alt="GASH IT Solutions logo" width="48" height="48">
         <a href="index.html">GASH IT Solutions</a>
       </div>
-      <nav class="nav">
+      <nav class="nav" aria-label="Primary">
         <a href="index.html">Home</a>
         <a href="about.html">About</a>
         <a href="services.html">Services</a>
@@ -23,20 +25,43 @@
     </div>
   </header>
 
+  <!-- Main -->
   <main class="wrap">
     <section class="card">
       <h1>Thank you!</h1>
-      <p>Your message has been sent. I’ll get back to you shortly.</p>
-      <p><a class="btn" href="index.html">Back to Home</a></p>
+      <p>
+        Your message has been received — I truly appreciate you reaching out.
+      </p>
+
+      <h2 style="margin-top:1rem;">What happens next</h2>
+      <ul>
+        <li>I’ll review your request and reply as soon as possible.</li>
+        <li>If it’s urgent, please reply to the confirmation email and include <strong>URGENT</strong> in the subject.</li>
+      </ul>
+
+      <h2 style="margin-top:1rem;">About GASH IT Solutions</h2>
+      <p>
+        We provide smart, secure, and supportive IT — from responsive support and network protection
+        to modern websites and practical AI.
+      </p>
+
+      <div style="display:flex; gap:.75rem; flex-wrap:wrap; margin-top:1rem;">
+        <a class="btn" href="index.html" aria-label="Back to Home">Back to Home</a>
+        <a class="btn" href="services.html" aria-label="View Services">View Services</a>
+        <a class="btn" href="contact.html" aria-label="Send another message">Send Another Message</a>
+      </div>
     </section>
   </main>
 
+  <!-- Footer -->
   <footer class="footer">
     <div class="wrap" style="text-align:center;">
       <small><strong><a href="contact.html">Created by Ginelle Harvey • © <span id="y"></span> GASH IT Solutions</a></strong></small>
     </div>
   </footer>
 
-  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
