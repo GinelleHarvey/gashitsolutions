@@ -8,8 +8,14 @@
   --ink-soft: #064e3b;
   --ink-hover: #047857;
 
-  --btn-base: #10b981;   /* emerald */
-  --btn-hover: #a8d5a2;  /* light green target on hover */
+  .btn:hover {
+  background: #a8d5a2;   /* hover green */
+  color: #ffffff;        /* switch text to white for contrast */
+  transform: translateY(-2px);
+}
+
+/*  --btn-base: #10b981;   /* emerald */
+    --btn-hover: #a8d5a2;  /* light green target on hover */
 }
 
 /* Page */
