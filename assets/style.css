@@ -1,104 +1,128 @@
-/* ---------- Reset / base ---------- */
+/* ========== Base / Reset ========== */
 * { box-sizing: border-box; }
 
-body {
-  margin: 0;
+:root{
+  --outer-bg: #0b1f14;   /* deep muted green-gray */
+  --inner-bg: #90ee90;   /* light green content & header */
+  --ink: #052e16;        /* dark readable text on light green */
+  --ink-soft: #064e3b;
+  --ink-hover: #047857;
+
+  --btn-base: #10b981;   /* emerald */
+  --btn-hover: #90ee90;  /* light green target on hover */
+}
+
+/* Page */
+body{
+  margin:0;
   font-family: system-ui, Arial, sans-serif;
-  background: #006400;   /* dark green outer */
-  color: #052e16;
-  line-height: 1.6;
+  background: var(--outer-bg);
+  color: var(--ink);
+  line-height:1.6;
 }
 
-a {
-  color: #064e3b;
-  text-decoration: none;
-  transition: color 0.3s ease;
+/* Links */
+a{
+  color: var(--ink-soft);
+  text-decoration:none;
+  transition: color .3s ease;
 }
-a:hover { color: #047857; }
+a:hover{ color: var(--ink-hover); }
 
-/* ---------- Main containers ---------- */
-/* Support both "wrap" and "container" since earlier HTML used both */
+/* ========== Header ========== */
+.header{
+  background: var(--inner-bg);           /* lighten header so brand/logo pop */
+  border-bottom: 2px solid var(--ink-soft);
+  padding:.5rem 0;
+}
+
+.header .wrap{
+  width:min(1000px,92%);
+  margin-inline:auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:.5rem;
+  font-weight:800;
+}
+.brand img{ width:40px; height:40px; }
+.brand a{
+  color: var(--ink);
+  font-size:1.25rem;
+  font-weight:800;
+}
+
+/* Primary nav */
+.nav{
+  display:flex;
+  gap:1rem;
+}
+.nav a{
+  font-weight:700;
+  position:relative;
+  color: var(--ink-soft);
+}
+.nav a::after{
+  content:"";
+  position:absolute;
+  left:0; bottom:-4px;
+  height:2px; width:0%;
+  background: var(--ink-hover);
+  transition: width .3s ease;
+}
+.nav a:hover::after{ width:100%; }
+
+/* ========== Content Containers ========== */
+/* Support both .wrap and .container */
 .wrap,
-.container {
-  width: min(1000px, 92%);
-  margin-inline: auto;
-  background: #90ee90;   /* light green inner */
-  border-radius: 12px;
-  padding: 2rem;
+.container{
+  width:min(1000px,92%);
+  margin: 1rem auto 2rem auto;
+  background: var(--inner-bg);
+  border-radius:12px;
+  padding:2rem;
 }
 
-/* ---------- Header / Footer ---------- */
-.header, .footer {
-  background: transparent;
-  border: 0;
-  text-align: center;
-  margin-bottom: 1rem;
-}
-
-.brand {
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: .5rem;
-}
-.brand img { width: 40px; height: 40px; }
-.brand a { color: #052e16; font-size: 1.25rem; font-weight: 800; }
-
-nav { margin-top: .5rem; }
-nav a {
-  margin: 0 1rem;
-  font-weight: bold;
-  position: relative;
-}
-nav a::after {
-  content: '';
-  position: absolute;
-  width: 0%;
-  height: 2px;
-  bottom: -3px;
-  left: 0;
-  background-color: #047857;
-  transition: width 0.3s ease;
-}
-nav a:hover::after { width: 100%; }
-
-/* ---------- Card ---------- */
-.card {
-  background: rgba(255, 255, 255, 0.92);
+/* Content cards */
+.card{
+  background: rgba(255,255,255,.92);
   border: 1px solid rgba(0,0,0,.08);
-  padding: 1.5rem;
-  border-radius: .75rem;
+  padding:1.5rem;
+  border-radius:.75rem;
 }
 
-/* Make sure images stay inside the card/container */
+/* Images never overflow the card/container */
 .card img,
 .wrap img,
-.container img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 12px;
-  display: block;
-  margin: 1rem 0;
+.container img{
+  max-width:100%;
+  height:auto;
+  display:block;
+  border-radius:12px;
+  margin:1rem 0;
 }
 
-/* ---------- Button (notched shape + animation) ---------- */
-.btn {
-  display: inline-block;
-  background: #10b981;                   /* emerald */
-  color: #0b0f19;
-  padding: .85rem 1.6rem;
-  font-weight: 800;
-  letter-spacing: .2px;
-  border: 0;
-  cursor: pointer;
-  text-decoration: none;
+/* ========== Button (notched, animated) ========== */
+.btn{
+  display:inline-block;
+  background: var(--btn-base);
+  color:#0b0f19;
+  padding:.85rem 1.6rem;
+  font-weight:800;
+  letter-spacing:.2px;
+  border:0;
+  cursor:pointer;
+  text-decoration:none;
 
-  /* raised and animated */
-  box-shadow: 0 6px 12px rgba(0,0,0,.28);
+  box-shadow:0 6px 12px rgba(0,0,0,.28);
   transition: background .25s ease, box-shadow .25s ease, transform .15s ease;
 
-  /* distinctive notched cuts */
+  /* Notched polygon shape */
   clip-path: polygon(
     16px 0,
     100% 0,
@@ -107,32 +131,37 @@ nav a:hover::after { width: 100%; }
     0 100%,
     0 16px
   );
-  position: relative;
+  position:relative;
+}
+.btn::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  clip-path:inherit;
+  border:2px solid rgba(0,0,0,.06);
+  pointer-events:none;
 }
 
-.btn::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  clip-path: inherit;
-  border: 2px solid rgba(0,0,0,.06);
-  pointer-events: none;
-}
-
-.btn:hover {
-  background: #90ee90;                   /* lighter green */
-  box-shadow: 0 10px 20px rgba(0,0,0,.35), 0 0 12px rgba(144,238,144,.55);
+.btn:hover{
+  background: var(--btn-hover);
+  box-shadow:0 10px 20px rgba(0,0,0,.35), 0 0 12px rgba(144,238,144,.55);
   transform: translateY(-2px);
 }
-.btn:active {
-  background: #90ee90;
-  box-shadow: 0 4px 8px rgba(0,0,0,.25);
+.btn:active{
+  background: var(--btn-hover);
+  box-shadow:0 4px 8px rgba(0,0,0,.25);
   transform: translateY(1px) scale(.985);
 }
-.btn:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(89,169,255,.45), 0 10px 20px rgba(0,0,0,.35);
+.btn:focus-visible{
+  outline:none;
+  box-shadow:0 0 0 3px rgba(89,169,255,.45), 0 10px 20px rgba(0,0,0,.35);
 }
 
-/* ---------- Footer text ---------- */
-footer small { color: #064e3b; }
+/* ========== Footer ========== */
+.footer{
+  background: transparent;
+  border:0;
+  text-align:center;
+  margin-bottom:1rem;
+}
+footer small{ color: var(--ink-soft); }
