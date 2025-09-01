@@ -1,138 +1,114 @@
-/* Global styles */
+/* Base */
 body {
   margin: 0;
   font-family: system-ui, Arial, sans-serif;
-  background: #0b0f19;
-  color: #e6eef6;
+  background: #006400;   /* dark green outer */
+  color: #052e16;
+  line-height: 1.6;
 }
 
-/* Links */
 a {
-  color: #59a9ff;
+  color: #064e3b;
   text-decoration: none;
+  transition: color 0.3s ease;
 }
+
 a:hover {
-  text-decoration: underline;
+  color: #047857;
 }
 
 /* Container */
 .container {
   width: min(1000px, 92%);
   margin-inline: auto;
+  background: #90ee90;   /* light green inner */
+  border-radius: 12px;
+  padding: 2rem;
 }
 
-/* Header & footer */
+/* Header + Footer */
 .header, .footer {
-  background: #111827;
-  border-bottom: 1px solid #1c2741;
-}
-.header .wrap, .footer .wrap {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
+  text-align: center;
+  margin-bottom: 1rem;
 }
 
-/* Brand */
 .brand {
   font-weight: 800;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: .5rem;
 }
-.brand a {
-  color: #e6eef6;
-  font-size: 1.25rem;
-  font-weight: 800;
+
+.brand img {
+  width: 40px;
+  height: 40px;
 }
 
-/* Nav */
-.nav {
-  display: flex;
-  gap: 1rem;
+nav {
+  margin-top: .5rem;
 }
-.nav a {
-  color: #59a9ff;
-  font-weight: 700;
+
+nav a {
+  margin: 0 1rem;
+  font-weight: bold;
   position: relative;
 }
-.nav a::after {
+
+nav a::after {
   content: '';
-  display: block;
-  width: 0;
+  position: absolute;
+  width: 0%;
   height: 2px;
-  background: #59a9ff;
-  transition: width .3s;
-  margin-top: 2px;
+  bottom: -3px;
+  left: 0;
+  background-color: #047857;
+  transition: width 0.3s ease;
 }
-.nav a:hover::after {
+
+nav a:hover::after {
   width: 100%;
 }
 
-/* Section & card */
-.section {
-  padding: 2rem 0;
-}
+/* Card */
 .card {
-  background: #111827;
+  background: rgba(255, 255, 255, 0.9);
   border: 1px solid #1c2741;
-  padding: 1rem;
+  padding: 1.5rem;
   border-radius: .75rem;
 }
 
-/* Button - stylized */
-a.btn {
-  background: #10b981;   /* emerald green */
-  color: #0b0f19;
-  padding: .85rem 1.6rem;
-  font-weight: 800;
-  letter-spacing: .2px;
+.card img {
+  max-width: 100%;
+  border-radius: 12px;
+  display: block;
+  margin: 1rem 0;
+}
+
+/* Services Button */
+.btn {
   display: inline-block;
-  margin-top: 1rem;
-  text-decoration: none;
-  position: relative;
-  box-shadow: 0 36px 56px rgba(0,0,0,.28);
-  transition: background .25s ease, box-shadow .25s ease, transform .25s ease;
-  /* Fancy angled cut shape */
-  clip-path: polygon(
-    16px 0,
-    100% 0,
-    100% calc(100% - 16px),
-    calc(100% - 34px) 100%,
-    0 100%,
-    0 16px
-  );
-  border: 0;
+  background: #065f46;
+  color: #fff;
+  font-weight: bold;
+  padding: 0.7rem 1.2rem;
+  border: none;
+  border-radius: 12px 2px 12px 2px; /* angled cuts */
+  box-shadow: 0 28px 56px rgba(0, 0, 0, 0.25);
   cursor: pointer;
-}
-a.btn::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  clip-path: inherit;
-  border: 2px solid rgba(255,255,255,.12);
-  pointer-events: none;
-}
-/* Hover: animate to lighter green */
-a.btn:hover {
-  background: #90ee90;
-  box-shadow: 0 10px 20px rgba(0,0,0,.35), 0 0 12px rgba(144,238,144,.55);
-  transform: translateY(-2px);
-}
-/* Active (clicked) */
-a.btn:active {
-  background: #90ee90;
-  box-shadow: 0 4px 8px rgba(0,0,0,.25);
-  transform: translateY(1px) scale(.985);
-}
-/* Focus */
-a.btn:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(89,169,255,.45), 0 10px 20px rgba(0,0,0,.35);
+  transition: all 0.3s ease;
 }
 
-/* Footer text */
+.btn:hover {
+  background: #22c55e; /* light green on hover */
+  transform: translateY(-2px); /* lift effect */
+}
+
+.btn:active {
+  background: #15803d; /* darker pressed state */
+  transform: translateY(0) scale(0.97); /* subtle click animation */
+}
+
 footer small {
-  color: #9fb3c8;
+  color: #064e3b;
 }
-
