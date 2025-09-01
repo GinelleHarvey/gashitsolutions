@@ -4,60 +4,105 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>About — GASH IT Solutions</title>
-  <meta name="description" content="About GASH IT Solutions and founder Ginelle Harvey." />
-  <style>
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:#006400;color:#052e16;line-height:1.6}
-    .wrap{width:min(1000px,92%);margin-inline:auto;padding:2rem;background:#90ee90;border-radius:12px}
-    header,footer{text-align:center;margin-bottom:1rem}
-    nav a{color:#064e3b;text-decoration:none;margin:0 1rem;font-weight:bold}
-    nav a:hover{text-decoration:underline}
-    .card{background:rgba(255,255,255,.7);border-radius:12px;padding:1.5rem;margin-top:1rem}
-    img{max-width:100%;display:block;border-radius:12px;opacity:.85;margin:1rem 0}
-    small{color:#064e3b}
-    ul{margin:0;padding-left:1.1rem}
-  </style>
+  <meta name="description" content="About GASH IT Solutions — our story, values, and mission.">
+  <link rel="stylesheet" href="assets/style.css?v=6">
+  <link rel="icon" type="image/png" href="assets/favicon.png">
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <h1>GASH IT Solutions</h1>
-      <nav aria-label="Primary">
+  <!-- Header -->
+  <header class="header">
+    <div class="wrap">
+      <div class="brand">
+        <img src="assets/logo.svg" alt="GASH IT Solutions logo" width="48" height="48">
+        <a href="index.html">GASH IT Solutions</a>
+      </div>
+      <nav class="nav">
         <a href="index.html">Home</a>
-        <a href="about.html" aria-current="page">About</a>
+        <a aria-current="page" href="about.html">About</a>
         <a href="services.html">Services</a>
         <a href="contact.html">Contact</a>
       </nav>
-    </header>
+    </div>
+  </header>
 
-    <main>
-      <div class="card">
-        <h2>About GASH IT Solutions</h2>
-        <p><strong>GASH</strong> stands for <em>Ginelle A. S. Harvey</em>. I’m building a practical, people-first IT practice focused on reliability, security, and simple automation. This site also serves as my live portfolio for <strong>COP 4813 – Web Systems I</strong>.</p>
+  <!-- About -->
+  <main class="wrap">
+    <section class="card">
+      <h1>About GASH IT Solutions</h1>
+      <p>
+        Hi — I’m <strong>Ginelle Harvey</strong>. I love my family, I love technology, and I’m building a business
+        that blends both: <strong>reliable, human-centered IT</strong> with practical, real-world results.
+      </p>
 
-        <h3>What I’m about</h3>
-        <ul>
-          <li><strong>Clear outcomes:</strong> fast response, minimal downtime, and plain-English explanations.</li>
-          <li><strong>Security from day one:</strong> patching, backups, and sensible hardening baked in.</li>
-          <li><strong>Right-sized automation:</strong> small scripts and AI helpers that save time without adding risk.</li>
-          <li><strong>Continual learning:</strong> modern web, client-side JavaScript, accessibility, and mobile-friendly design.</li>
-        </ul>
-
-        <img src="https://images.unsplash.com/photo-1527443154391-507e9dc6c5cc?q=80&w=1200&auto=format&fit=crop" alt="Green network cabling and circuits">
-
-        <h3>Skills Snapshot</h3>
-        <ul>
-          <li>Windows & Linux setup, backups, and troubleshooting</li>
-          <li>Routers, VLANs, Wi-Fi, and basic firewall rules</li>
-          <li>Endpoint security hygiene & update policies</li>
-          <li>Web basics: HTML5, CSS, DOM, JavaScript, JSON</li>
-        </ul>
+      <div class="grid-3" style="margin-top:1rem;">
+        <div class="card" style="background:rgba(255,255,255,.86);">
+          <h3>Family First</h3>
+          <p>
+            Family is my compass. It keeps me grounded, focused, and driven to deliver work I’m proud of.
+            I bring that same care and commitment to every client relationship.
+          </p>
+        </div>
+        <div class="card" style="background:rgba(255,255,255,.86);">
+          <h3>Tech that Helps</h3>
+          <p>
+            I believe technology should <em>work for people</em> — not the other way around. From networks to AI,
+            my approach is to simplify, secure, and accelerate what you already do well.
+          </p>
+        </div>
+        <div class="card" style="background:rgba(255,255,255,.86);">
+          <h3>Building a Business</h3>
+          <p>
+            GASH IT Solutions is growing — ethically, sustainably, and client-first. My goal is to earn trust through
+            clear communication, consistent delivery, and measurable outcomes.
+          </p>
+        </div>
       </div>
-    </main>
 
-    <footer>
-      <small>Created by Ginelle Harvey • © <span id="y"></span> GASH IT Solutions</small>
-    </footer>
-  </div>
-  <script>document.getElementById('y').textContent=new Date().getFullYear();</script>
+      <h2 style="margin-top:1.5rem;">Mission</h2>
+      <p>
+        To provide <strong>smart, secure, and supportive IT services</strong> that help people and businesses thrive —
+        with reliability you can feel and results you can measure.
+      </p>
+
+      <h2>What I’m Great At</h2>
+      <ul>
+        <li><strong>Responsive Support:</strong> friendly, clear, and timely help — no jargon, just solutions.</li>
+        <li><strong>Secure Setups:</strong> networks, endpoints, backups, and best practices you can trust.</li>
+        <li><strong>Modern Web:</strong> accessible, mobile-friendly sites with clean HTML/CSS/JS.</li>
+        <li><strong>Practical AI:</strong> automation and data tasks that save time and reduce errors.</li>
+      </ul>
+
+      <h2>How I Work</h2>
+      <ol>
+        <li><strong>Listen:</strong> understand your goals, constraints, and what “good” looks like for you.</li>
+        <li><strong>Plan:</strong> recommend a right-sized solution — nothing extra, nothing missing.</li>
+        <li><strong>Deliver:</strong> build, test, and launch with clear checkpoints and updates.</li>
+        <li><strong>Support:</strong> monitor, maintain, and improve as your needs evolve.</li>
+      </ol>
+
+      <h2>Values</h2>
+      <ul>
+        <li><strong>Integrity:</strong> clear pricing, honest timelines, and transparent communication.</li>
+        <li><strong>Reliability:</strong> if I say it, I’ll do it — and I’ll do it right.</li>
+        <li><strong>Respect:</strong> for people, time, and data.</li>
+        <li><strong>Learning:</strong> tech moves fast — I invest in staying sharp so you don’t have to.</li>
+      </ul>
+
+      <div style="margin-top:1.5rem;">
+        <a class="btn" href="contact.html">Work with GASH IT Solutions</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="wrap" style="text-align:center;">
+      <small><strong>Created by Ginelle Harvey • © <span id="y"></span><a href="contact.html"> GASH IT Solutions</a></strong></small>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
