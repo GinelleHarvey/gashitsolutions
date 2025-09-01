@@ -1,1 +1,138 @@
+/* Global styles */
+body {
+  margin: 0;
+  font-family: system-ui, Arial, sans-serif;
+  background: #0b0f19;
+  color: #e6eef6;
+}
+
+/* Links */
+a {
+  color: #59a9ff;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* Container */
+.container {
+  width: min(1000px, 92%);
+  margin-inline: auto;
+}
+
+/* Header & footer */
+.header, .footer {
+  background: #111827;
+  border-bottom: 1px solid #1c2741;
+}
+.header .wrap, .footer .wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+}
+
+/* Brand */
+.brand {
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+.brand a {
+  color: #e6eef6;
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+/* Nav */
+.nav {
+  display: flex;
+  gap: 1rem;
+}
+.nav a {
+  color: #59a9ff;
+  font-weight: 700;
+  position: relative;
+}
+.nav a::after {
+  content: '';
+  display: block;
+  width: 0;
+  height: 2px;
+  background: #59a9ff;
+  transition: width .3s;
+  margin-top: 2px;
+}
+.nav a:hover::after {
+  width: 100%;
+}
+
+/* Section & card */
+.section {
+  padding: 2rem 0;
+}
+.card {
+  background: #111827;
+  border: 1px solid #1c2741;
+  padding: 1rem;
+  border-radius: .75rem;
+}
+
+/* Button - stylized */
+a.btn {
+  background: #10b981;   /* emerald green */
+  color: #0b0f19;
+  padding: .85rem 1.6rem;
+  font-weight: 800;
+  letter-spacing: .2px;
+  display: inline-block;
+  margin-top: 1rem;
+  text-decoration: none;
+  position: relative;
+  box-shadow: 0 36px 56px rgba(0,0,0,.28);
+  transition: background .25s ease, box-shadow .25s ease, transform .25s ease;
+  /* Fancy angled cut shape */
+  clip-path: polygon(
+    16px 0,
+    100% 0,
+    100% calc(100% - 16px),
+    calc(100% - 34px) 100%,
+    0 100%,
+    0 16px
+  );
+  border: 0;
+  cursor: pointer;
+}
+a.btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  clip-path: inherit;
+  border: 2px solid rgba(255,255,255,.12);
+  pointer-events: none;
+}
+/* Hover: animate to lighter green */
+a.btn:hover {
+  background: #90ee90;
+  box-shadow: 0 10px 20px rgba(0,0,0,.35), 0 0 12px rgba(144,238,144,.55);
+  transform: translateY(-2px);
+}
+/* Active (clicked) */
+a.btn:active {
+  background: #90ee90;
+  box-shadow: 0 4px 8px rgba(0,0,0,.25);
+  transform: translateY(1px) scale(.985);
+}
+/* Focus */
+a.btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(89,169,255,.45), 0 10px 20px rgba(0,0,0,.35);
+}
+
+/* Footer text */
+footer small {
+  color: #9fb3c8;
+}
 
