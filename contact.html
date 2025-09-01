@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Contact — GASH IT Solutions</title>
   <meta name="description" content="Contact GASH IT Solutions for support, projects, or a quick consultation.">
-  <link rel="stylesheet" href="assets/style.css?v=7">
+  <link rel="stylesheet" href="assets/style.css?v=8">
   <link rel="icon" type="image/png" href="assets/favicon.png">
 </head>
 <body>
@@ -31,74 +31,75 @@
       <h1>Contact</h1>
       <p>Tell me a little about what you need and the best way to reach you. I’ll get back to you promptly.</p>
 
-    <form action="https://formsubmit.co/ginelle_sutherland_harvey@daytonastate.edu" method="POST"
-      style="display:grid; gap:1rem; max-width:720px;">
+      <form action="https://formsubmit.co/info@gashitsolutions.com" method="POST"
+            style="display:grid; gap:1rem; max-width:720px;">
 
-  <!-- Name -->
-  <div style="display:grid; gap:.5rem;">
-    <label for="name"><strong>Name</strong></label>
-    <input id="name" name="name" type="text" required
-           style="padding:.75rem;border-radius:.5rem;border:1px solid rgba(0,0,0,.2);width:100%;">
-  </div>
+        <!-- Name -->
+        <div style="display:grid; gap:.5rem;">
+          <label for="name"><strong>Name</strong></label>
+          <input id="name" name="name" type="text" required
+                 style="padding:.75rem;border-radius:.5rem;border:1px solid rgba(0,0,0,.2);width:100%;">
+        </div>
 
-  <!-- Email -->
-  <div style="display:grid; gap:.5rem;">
-    <label for="email"><strong>Email</strong></label>
-    <input id="email" name="email" type="email" required
-           style="padding:.75rem;border-radius:.5rem;border:1px solid rgba(0,0,0,.2);width:100%;">
-  </div>
+        <!-- Email -->
+        <div style="display:grid; gap:.5rem;">
+          <label for="email"><strong>Email</strong></label>
+          <input id="email" name="email" type="email" required
+                 style="padding:.75rem;border-radius:.5rem;border:1px solid rgba(0,0,0,.2);width:100%;">
+        </div>
 
-  <!-- Subject -->
-  <div style="display:grid; gap:.5rem;">
-    <label for="subject"><strong>Subject</strong></label>
-    <input id="subject" name="subject" type="text"
-           style="padding:.75rem;border-radius:.5rem;border:1px solid rgba(0,0,0,.2);width:100%;">
-  </div>
+        <!-- Subject -->
+        <div style="display:grid; gap:.5rem;">
+          <label for="subject"><strong>Subject</strong></label>
+          <input id="subject" name="subject" type="text"
+                 style="padding:.75rem;border-radius:.5rem;border:1px solid rgba(0,0,0,.2);width:100%;">
+        </div>
 
-  <!-- Message -->
-  <div style="display:grid; gap:.5rem;">
-    <label for="message"><strong>How can I help?</strong></label>
-    <textarea id="message" name="message" rows="6" required
-              style="padding:.75rem;border-radius:.5rem;border:1px solid rgba(0,0,0,.2);width:100%;"></textarea>
-  </div>
+        <!-- Message -->
+        <div style="display:grid; gap:.5rem;">
+          <label for="message"><strong>How can I help?</strong></label>
+          <textarea id="message" name="message" rows="6" required
+                    style="padding:.75rem;border-radius:.5rem;border:1px solid rgba(0,0,0,.2);width:100%;"></textarea>
+        </div>
 
-  <!-- Anti-spam honeypot -->
-  <input type="text" name="_honey" style="display:none">
+        <!-- Anti-spam honeypot -->
+        <input type="text" name="_honey" style="display:none">
 
-  <!-- Settings -->
-  <input type="hidden" name="_subject" value="New message from GASH IT Solutions">
-  <input type="hidden" name="_captcha" value="true">
-  <input type="hidden" name="_next" value="https://gashitsolutions.com/thanks.html">
-  <input type="hidden" name="_autoresponse" 
-         value="Hello,
+        <!-- Settings -->
+        <input type="hidden" name="_subject" value="New message from GASH IT Solutions">
+        <input type="hidden" name="_captcha" value="true">
+        <input type="hidden" name="_next" value="https://gashitsolutions.com/thanks.html">
+
+        <!-- Auto-reply -->
+        <textarea name="_autoresponse" style="display:none;">
+Hello,
 
 Thank you for contacting GASH IT Solutions!
 Your message has been received — I truly appreciate you reaching out.
 
-What happens next
+What happens next:
 • I’ll review your request and reply as soon as possible.
 • If it’s urgent, please reply to this email and include URGENT in the subject.
 
-About GASH IT Solutions
+About GASH IT Solutions:
 We provide smart, secure, and supportive IT — from responsive support and network protection to modern websites and practical AI.
 
-Useful Links
+Useful Links:
 • Website: https://gashitsolutions.com
 • Services: https://gashitsolutions.com/services.html
 • Contact: https://gashitsolutions.com/contact.html
 
-Warm regards,
-Ginelle Harvey
-GASH IT Solutions
+Warm regards,  
+Ginelle Harvey  
+GASH IT Solutions  
 info@gashitsolutions.com
-">
+        </textarea>
 
-  <!-- Submit button -->
-  <div>
-    <button class="btn" type="submit">Send Message</button>
-  </div>
-</form>
-
+        <!-- Submit button -->
+        <div>
+          <button class="btn" type="submit">Send Message</button>
+        </div>
+      </form>
 
       <hr style="margin:2rem 0;border:0;border-top:1px solid rgba(0,0,0,.15)">
 
@@ -117,6 +118,8 @@ info@gashitsolutions.com
     </div>
   </footer>
 
-  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
