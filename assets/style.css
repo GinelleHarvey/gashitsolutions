@@ -3,7 +3,7 @@
 
 :root{
   --outer-bg: #0b1f14;   /* deep muted green-gray */
-  --inner-bg: #6fbf83;   /* light green content & header */
+  --inner-bg: #6fbf93;   /* light green content & header */
   --ink: #052e16;        /* dark readable text on light green */
   --ink-soft: #064e3b;
   --ink-hover: #047857;
