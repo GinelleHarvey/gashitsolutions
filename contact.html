@@ -31,41 +31,49 @@
       <h1>Contact</h1>
       <p>Tell me a little about what you need and the best way to reach you. I’ll get back to you promptly.</p>
 
-      <form action="https://formspree.io/f/your-form-id" method="POST" style="display:grid; gap:1rem; max-width:720px;">
-        <div style="display:grid; gap:.5rem;">
-          <label for="name"><strong>Name</strong></label>
-          <input id="name" name="name" type="text" required
-                 style="padding:.75rem;border-radius:.5rem;border:1px solid rgba(0,0,0,.2);width:100%;">
-        </div>
+      <form action="https://formsubmit.co/ginelle_sutherland_harvey@daytonastate.edu" method="POST"
+      style="display:grid; gap:1rem; max-width:720px;">
+  <!-- Visible fields -->
+  <div style="display:grid; gap:.5rem;">
+    <label for="name"><strong>Name</strong></label>
+    <input id="name" name="name" type="text" required
+           style="padding:.75rem;border-radius:.5rem;border:1px solid rgba(0,0,0,.2);width:100%;">
+  </div>
 
-        <div style="display:grid; gap:.5rem;">
-          <label for="email"><strong>Email</strong></label>
-          <input id="email" name="email" type="email" required
-                 style="padding:.75rem;border-radius:.5rem;border:1px solid rgba(0,0,0,.2);width:100%;">
-        </div>
+  <div style="display:grid; gap:.5rem;">
+    <label for="email"><strong>Email</strong></label>
+    <input id="email" name="email" type="email" required
+           style="padding:.75rem;border-radius:.5rem;border:1px solid rgba(0,0,0,.2);width:100%;">
+  </div>
 
-        <div style="display:grid; gap:.5rem;">
-          <label for="subject"><strong>Subject</strong></label>
-          <input id="subject" name="subject" type="text"
-                 style="padding:.75rem;border-radius:.5rem;border:1px solid rgba(0,0,0,.2);width:100%;">
-        </div>
+  <div style="display:grid; gap:.5rem;">
+    <label for="subject"><strong>Subject</strong></label>
+    <input id="subject" name="subject" type="text"
+           style="padding:.75rem;border-radius:.5rem;border:1px solid rgba(0,0,0,.2);width:100%;">
+  </div>
 
-        <div style="display:grid; gap:.5rem;">
-          <label for="message"><strong>How can I help?</strong></label>
-          <textarea id="message" name="message" rows="6" required
-                    style="padding:.75rem;border-radius:.5rem;border:1px solid rgba(0,0,0,.2);width:100%;"></textarea>
-        </div>
+  <div style="display:grid; gap:.5rem;">
+    <label for="message"><strong>How can I help?</strong></label>
+    <textarea id="message" name="message" rows="6" required
+              style="padding:.75rem;border-radius:.5rem;border:1px solid rgba(0,0,0,.2);width:100%;"></textarea>
+  </div>
 
-        <!-- Honeypot field (spam protection) -->
-        <input type="text" name="_gotcha" style="display:none">
+  <!-- Anti-spam honeypot -->
+  <input type="text" name="_honey" style="display:none">
 
-        <div>
-          <button class="btn" type="submit">Send Message</button>
-        </div>
+  <!-- FormSubmit settings -->
+  <input type="hidden" name="_subject" value="New message from GASH IT Solutions">
+  <input type="hidden" name="_captcha" value="true">
+  <input type="hidden" name="_next" value="https://gashitsolutions.com/thanks.html">
+  <!-- Auto-reply message to the sender -->
+  <input type="hidden" name="_autoresponse"
+         value="Thanks for contacting GASH IT Solutions. Your message was received and I’ll reply shortly. – Ginelle">
 
-        <!-- Optional confirmation redirect -->
-        <!-- <input type="hidden" name="_redirect" value="https://yourdomain.com/thanks.html"> -->
-      </form>
+  <div>
+    <button class="btn" type="submit">Send Message</button>
+  </div>
+</form>
+
 
       <hr style="margin:2rem 0;border:0;border-top:1px solid rgba(0,0,0,.15)">
 
