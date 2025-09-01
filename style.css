@@ -1,3 +1,4 @@
+/* === Base layout / your existing styles (unchanged) === */
 body { 
   margin:0; 
   font-family: system-ui, Arial, sans-serif; 
@@ -57,34 +58,6 @@ a {
   border-radius:.75rem; 
 }
 
-/* Exlpore Services Button */
-.btn { 
-  background:#10b981; /* vibrant emerald */
-  color:#fff; 
-  padding:.8rem 1.5rem; 
-  font-weight:700; 
-  display:inline-block; 
-  margin-top:1rem; 
-  text-decoration:none; 
-  position:relative; 
-  box-shadow:0 4px 8px rgba(0,0,0,0.25); 
-  transition: all 0.25s ease; 
-  /* angled/cut shape */
-  clip-path: polygon(8% 0, 100% 0, 92% 100%, 0 100%); 
-}
-
-.btn:hover { 
-  background:#34d399; /* lighter green */
-  box-shadow:0 6px 14px rgba(0,0,0,0.3), 0 0 12px rgba(52,211,153,0.6); 
-  transform:translateY(-2px); 
-}
-
-.btn:active { 
-  background:#059669; 
-  box-shadow:0 2px 4px rgba(0,0,0,0.2); 
-  transform:translateY(1px) scale(0.97); 
-}
-
 .grid-3 { 
   display:grid; 
   grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); 
@@ -93,4 +66,73 @@ a {
 
 footer small { 
   color:#9fb3c8; 
+}
+
+/* === Upgraded Button (distinctive cuts + smooth rollover to light green) === */
+:root{
+  /* You can tweak these two to fine-tune colors site-wide */
+  --btn-base:#10b981;   /* emerald base */
+  --btn-hover:#90ee90;  /* your site’s light green */
+}
+
+.btn { 
+  background:var(--btn-base);
+  color:#0b0f19;               /* dark text reads well on both greens */
+  padding:.85rem 1.6rem; 
+  font-weight:800; 
+  letter-spacing:.2px;
+  display:inline-block; 
+  margin-top:1rem; 
+  text-decoration:none; 
+  position:relative; 
+  /* raised + tidy edges */
+  box-shadow:0 6px 12px rgba(0,0,0,.28);
+  transition: background .25s ease, box-shadow .25s ease, transform .15s ease;
+  /* DISTINCTIVE CUTS (not square, not pill) */
+  clip-path: polygon(
+    16px 0,              /* top-left notch */
+    100% 0, 
+    100% calc(100% - 16px), 
+    calc(100% - 34px) 100%, /* diagonal cut on bottom-right */
+    0 100%, 
+    0 16px               /* left notch */
+  );
+  border:0;
+  cursor:pointer;
+}
+
+/* subtle decorative outline that follows the shape */
+.btn::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  clip-path: inherit;
+  border:2px solid rgba(255,255,255,.12);
+  pointer-events:none;
+  border-radius:0; /* clip-path handles the shape */
+}
+
+/* Hover: lighten to site light green + gentle glow + lift */
+.btn:hover { 
+  background:var(--btn-hover);
+  box-shadow:0 10px 20px rgba(0,0,0,.35), 0 0 12px rgba(144,238,144,.55);
+  transform:translateY(-2px);
+}
+
+/* Click/pressed: keep the light green, press down slightly */
+.btn:active { 
+  background:var(--btn-hover);
+  box-shadow:0 4px 8px rgba(0,0,0,.25);
+  transform:translateY(1px) scale(.985);
+}
+
+/* Keyboard focus: clear, accessible ring that matches brand */
+.btn:focus-visible{
+  outline:none;
+  box-shadow:0 0 0 3px rgba(89,169,255,.45), 0 10px 20px rgba(0,0,0,.35);
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce){
+  .btn{ transition:none; }
 }
