@@ -4,67 +4,86 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Contact — GASH IT Solutions</title>
-  <meta name="description" content="Contact GASH IT Solutions for support and inquiries." />
-  <style>
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:#006400;color:#052e16;line-height:1.6}
-    .wrap{width:min(1000px,92%);margin-inline:auto;padding:2rem;background:#90ee90;border-radius:12px}
-    header,footer{text-align:center;margin-bottom:1rem}
-    nav a{color:#064e3b;text-decoration:none;margin:0 1rem;font-weight:bold}
-    nav a:hover{text-decoration:underline}
-    .card{background:rgba(255,255,255,.7);border-radius:12px;padding:1.5rem;margin-top:1rem}
-    label{display:block;margin:.6rem 0 .25rem;font-weight:600}
-    input,textarea{width:100%;padding:.7rem;border-radius:8px;border:1px solid #065f46;background:#fff;color:#052e16}
-    .actions{margin-top:1rem;display:flex;gap:.6rem;flex-wrap:wrap}
-    .btn{background:#065f46;color:#fff;border:none;border-radius:8px;padding:.7rem 1rem;font-weight:700;cursor:pointer}
-    .btn.secondary{background:#047857}
-    small{color:#064e3b}
-    .notice{background:#d1fae5;border-left:4px solid #065f46;padding:.7rem 1rem;border-radius:8px;margin-top:1rem}
-  </style>
+  <meta name="description" content="Contact GASH IT Solutions for support, projects, or a quick consultation.">
+  <link rel="stylesheet" href="assets/style.css?v=7">
+  <link rel="icon" type="image/png" href="assets/favicon.png">
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <h1>GASH IT Solutions</h1>
-      <nav aria-label="Primary">
+  <!-- Header -->
+  <header class="header">
+    <div class="wrap">
+      <div class="brand">
+        <img src="assets/logo.svg" alt="GASH IT Solutions logo" width="48" height="48">
+        <a href="index.html">GASH IT Solutions</a>
+      </div>
+      <nav class="nav" aria-label="Primary">
         <a href="index.html">Home</a>
         <a href="about.html">About</a>
         <a href="services.html">Services</a>
-        <a href="contact.html" aria-current="page">Contact</a>
+        <a aria-current="page" href="contact.html">Contact</a>
       </nav>
-    </header>
+    </div>
+  </header>
 
-    <main>
-      <div class="card">
-        <h2>Contact</h2>
-        <p>Have a question or need help? Send a message and I’ll respond as soon as possible.</p>
+  <!-- Contact -->
+  <main class="wrap">
+    <section class="card">
+      <h1>Contact</h1>
+      <p>Tell me a little about what you need and the best way to reach you. I’ll get back to you promptly.</p>
 
-        <!-- Demo-only form (no backend). Replace 'alert' when you hook up a form service. -->
-        <form onsubmit="alert('Thanks! Your message has been recorded (demo).'); return false;" aria-label="Contact form">
-          <label for="name">Name</label>
-          <input id="name" name="name" autocomplete="name" required />
-
-          <label for="email">Email</label>
-          <input id="email" name="email" type="email" autocomplete="email" required />
-
-          <label for="msg">Message</label>
-          <textarea id="msg" name="message" rows="6" required></textarea>
-
-          <div class="actions">
-            <button class="btn" type="submit">Send</button>
-            <button class="btn secondary" type="reset">Clear</button>
-          </div>
-        </form>
-
-        <div class="notice">
-          Production option: connect this form to a service like <em>Formspree</em> or <em>Netlify Forms</em>, or a custom server endpoint.
+      <form action="https://formspree.io/f/your-form-id" method="POST" style="display:grid; gap:1rem; max-width:720px;">
+        <div style="display:grid; gap:.5rem;">
+          <label for="name"><strong>Name</strong></label>
+          <input id="name" name="name" type="text" required
+                 style="padding:.75rem;border-radius:.5rem;border:1px solid rgba(0,0,0,.2);width:100%;">
         </div>
-      </div>
-    </main>
 
-    <footer>
-      <small>Created by Ginelle Harvey • © <span id="y"></span> GASH IT Solutions</small>
-    </footer>
-  </div>
-  <script>document.getElementById('y').textContent=new Date().getFullYear();</script>
+        <div style="display:grid; gap:.5rem;">
+          <label for="email"><strong>Email</strong></label>
+          <input id="email" name="email" type="email" required
+                 style="padding:.75rem;border-radius:.5rem;border:1px solid rgba(0,0,0,.2);width:100%;">
+        </div>
+
+        <div style="display:grid; gap:.5rem;">
+          <label for="subject"><strong>Subject</strong></label>
+          <input id="subject" name="subject" type="text"
+                 style="padding:.75rem;border-radius:.5rem;border:1px solid rgba(0,0,0,.2);width:100%;">
+        </div>
+
+        <div style="display:grid; gap:.5rem;">
+          <label for="message"><strong>How can I help?</strong></label>
+          <textarea id="message" name="message" rows="6" required
+                    style="padding:.75rem;border-radius:.5rem;border:1px solid rgba(0,0,0,.2);width:100%;"></textarea>
+        </div>
+
+        <!-- Honeypot field (spam protection) -->
+        <input type="text" name="_gotcha" style="display:none">
+
+        <div>
+          <button class="btn" type="submit">Send Message</button>
+        </div>
+
+        <!-- Optional confirmation redirect -->
+        <!-- <input type="hidden" name="_redirect" value="https://yourdomain.com/thanks.html"> -->
+      </form>
+
+      <hr style="margin:2rem 0;border:0;border-top:1px solid rgba(0,0,0,.15)">
+
+      <h2>Other ways to reach me</h2>
+      <p>
+        Email: <a href="mailto:info@gashitsolutions.com">info@gashitsolutions.com</a><br>
+        Quick intro call: <a href="mailto:info@gashitsolutions.com?subject=Intro%20Call%20Request">request by email</a>
+      </p>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="wrap" style="text-align:center;">
+      <small><strong><a href="contact.html">Created by Ginelle Harvey • © <span id="y"></span> GASH IT Solutions</a></strong></small>
+    </div>
+  </footer>
+
+  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
 </body>
 </html>
