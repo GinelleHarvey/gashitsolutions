@@ -4,77 +4,116 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Services — GASH IT Solutions</title>
-  <meta name="description" content="IT support, networking, security hardening, and lightweight automation." />
-  <style>
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:#006400;color:#052e16;line-height:1.6}
-    .wrap{width:min(1000px,92%);margin-inline:auto;padding:2rem;background:#90ee90;border-radius:12px}
-    header,footer{text-align:center;margin-bottom:1rem}
-    nav a{color:#064e3b;text-decoration:none;margin:0 1rem;font-weight:bold}
-    nav a:hover{text-decoration:underline}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin-top:1rem}
-    .card{background:rgba(255,255,255,.7);border-radius:12px;padding:1.2rem}
-    .badge{display:inline-block;background:#065f46;color:#fff;border-radius:999px;padding:.25rem .6rem;font-size:.8rem;margin-right:.3rem}
-    small{color:#064e3b}
-  </style>
+  <meta name="description" content="GASH IT Solutions services: support, security, web, and practical AI for business.">
+  <link rel="stylesheet" href="assets/style.css?v=7">
+  <link rel="icon" type="image/png" href="assets/favicon.png">
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <h1>GASH IT Solutions</h1>
-      <nav aria-label="Primary">
+  <!-- Header -->
+  <header class="header">
+    <div class="wrap">
+      <div class="brand">
+        <img src="assets/logo.svg" alt="GASH IT Solutions logo" width="48" height="48">
+        <a href="index.html">GASH IT Solutions</a>
+      </div>
+      <nav class="nav" aria-label="Primary">
         <a href="index.html">Home</a>
         <a href="about.html">About</a>
-        <a href="services.html" aria-current="page">Services</a>
+        <a aria-current="page" href="services.html">Services</a>
         <a href="contact.html">Contact</a>
       </nav>
-    </header>
+    </div>
+  </header>
 
-    <main>
-      <h2>Services</h2>
-      <div class="grid">
-        <section class="card">
-          <h3>Helpdesk & Endpoint</h3>
-          <span class="badge">Windows</span>
-          <span class="badge">Linux</span>
-          <ul>
-            <li>Setup, hardening, and routine maintenance</li>
-            <li>Backup configuration & restore testing</li>
-            <li>Asset onboarding and documentation</li>
-          </ul>
-        </section>
+  <!-- Services -->
+  <main class="wrap">
+    <section class="card">
+      <h1>Services</h1>
+      <p>Smart, secure, and supportive IT built around real needs — not buzzwords. Start small, scale as you grow.</p>
 
-        <section class="card">
-          <h3>Networking & Security</h3>
-          <span class="badge">VLANs</span>
-          <span class="badge">Wi-Fi</span>
+      <div class="grid-3" style="margin-top:1rem;">
+        <div class="card" style="background:rgba(255,255,255,.9);">
+          <h3>Responsive IT Support</h3>
+          <p>Clear, friendly help when you need it — remote or onsite. Troubleshooting, setup, and ongoing care.</p>
           <ul>
-            <li>Router/firewall rules & secure Wi-Fi</li>
-            <li>Patch policy and baseline hardening</li>
-            <li>Basic monitoring & incident checklists</li>
+            <li>Device setup &amp; tune-ups</li>
+            <li>Backups &amp; recovery</li>
+            <li>Email &amp; productivity tools</li>
           </ul>
-        </section>
+        </div>
 
-        <section class="card">
-          <h3>Automation & AI</h3>
-          <span class="badge">Scripting</span>
-          <span class="badge">Dashboards</span>
+        <div class="card" style="background:rgba(255,255,255,.9);">
+          <h3>Network &amp; Security</h3>
+          <p>Protect what matters. Practical security that fits your size and risk profile.</p>
           <ul>
-            <li>Simple scripts for repetitive tasks</li>
-            <li>Lightweight AI helpers for triage</li>
-            <li>Weekly health reports & KPIs</li>
+            <li>Wi-Fi &amp; wired networks</li>
+            <li>Firewalls &amp; endpoint security</li>
+            <li>Policies, backups, best practices</li>
           </ul>
-        </section>
+        </div>
+
+        <div class="card" style="background:rgba(255,255,255,.9);">
+          <h3>Modern Websites</h3>
+          <p>Fast, accessible, mobile-friendly sites with clean HTML/CSS/JS — no bloated stacks.</p>
+          <ul>
+            <li>Landing pages &amp; portfolios</li>
+            <li>Small business sites</li>
+            <li>Performance &amp; SEO basics</li>
+          </ul>
+        </div>
+
+        <div class="card" style="background:rgba(255,255,255,.9);">
+          <h3>Automation &amp; AI</h3>
+          <p>Save time and reduce errors with practical automations and AI-assisted workflows.</p>
+          <ul>
+            <li>Data cleanup &amp; reporting</li>
+            <li>Email &amp; form automations</li>
+            <li>Content &amp; Q&amp;A assistants</li>
+          </ul>
+        </div>
+
+        <div class="card" style="background:rgba(255,255,255,.9);">
+          <h3>Smart Home &amp; Office</h3>
+          <p>Make spaces safer and more efficient — cameras, sensors, voice, and energy controls.</p>
+          <ul>
+            <li>Smart security &amp; lighting</li>
+            <li>Home office setups</li>
+            <li>Network optimization</li>
+          </ul>
+        </div>
+
+        <div class="card" style="background:rgba(255,255,255,.9);">
+          <h3>Training &amp; Onboarding</h3>
+          <p>Short, focused trainings to help teams use tech confidently and securely.</p>
+          <ul>
+            <li>New-hire setups</li>
+            <li>Security awareness</li>
+            <li>Tool walk-throughs</li>
+          </ul>
+        </div>
       </div>
 
-      <p style="margin-top:1rem">
-        Looking for something not listed? <a href="contact.html">Send a request</a> and I’ll scope it with you.
-      </p>
-    </main>
+      <h2 style="margin-top:1.5rem;">Why Choose GASH IT Solutions</h2>
+      <ul>
+        <li><strong>Human-centered:</strong> clear communication, no jargon.</li>
+        <li><strong>Right-sized:</strong> solutions that fit your goals and budget.</li>
+        <li><strong>Reliable:</strong> we show up, follow through, and document.</li>
+        <li><strong>Secure by default:</strong> backups, updates, and best practices baked in.</li>
+      </ul>
 
-    <footer>
-      <small>Created by Ginelle Harvey • © <span id="y"></span> GASH IT Solutions</small>
-    </footer>
-  </div>
-  <script>document.getElementById('y').textContent=new Date().getFullYear();</script>
+      <div style="margin-top:1rem;">
+        <a class="btn" href="contact.html" aria-label="Contact GASH IT Solutions">Let’s get started</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="wrap" style="text-align:center;">
+      <small><strong>Created by Ginelle Harvey • © <span id="y"></span><a href="contact.html">GASH IT Solutions</a></strong></small>
+    </div>
+  </footer>
+
+  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
 </body>
 </html>
