@@ -1,3 +1,4 @@
+/* ===== Base ===== */
 body { 
   margin:0; 
   font-family: system-ui, Arial, sans-serif; 
@@ -15,6 +16,7 @@ a {
   margin-inline:auto; 
 }
 
+/* ===== Header & Footer ===== */
 .header, .footer { 
   background:#111827; 
   border-bottom:1px solid #1c2741; 
@@ -67,16 +69,15 @@ footer small {
   color:#9fb3c8; 
 }
 
-/* === Upgraded Button (distinctive cuts + smooth rollover to light green) === */
+/* ===== Buttons ===== */
 :root{
-  /* You can tweak these two to fine-tune colors site-wide */
   --btn-base:#10b981;   /* emerald base */
-  --btn-hover:#90ee90;  /* your site’s light green */
+  --btn-hover:#90ee90;  /* light green */
 }
 
 .btn { 
   background:var(--btn-base);
-  color:#0b0f19;               /* dark text reads well on both greens */
+  color:#0b0f19; 
   padding:.85rem 1.6rem; 
   font-weight:800; 
   letter-spacing:.2px;
@@ -84,23 +85,15 @@ footer small {
   margin-top:1rem; 
   text-decoration:none; 
   position:relative; 
-  /* raised + tidy edges */
   box-shadow:0 24px 48px rgba(0,0,0,.56);
   transition: background .25s ease, box-shadow .25s ease, transform .15s ease;
-  /* DISTINCTIVE CUTS (not square, not pill) */
   clip-path: polygon(
-    16px 0,              /* top-left notch */
-    100% 0, 
-    100% calc(100% - 16px), 
-    calc(100% - 34px) 100%, /* diagonal cut on bottom-right */
-    0 100%, 
-    0 16px               /* left notch */
+    16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 34px) 100%, 0 100%, 0 16px
   );
   border:0;
   cursor:pointer;
 }
 
-/* subtle decorative outline that follows the shape */
 .btn::after{
   content:"";
   position:absolute;
@@ -108,30 +101,103 @@ footer small {
   clip-path: inherit;
   border:2px solid rgba(255,255,255,.12);
   pointer-events:none;
-  border-radius:0; /* clip-path handles the shape */
 }
 
-/* Hover: lighten to site light green + gentle glow + lift */
 .btn:hover { 
   background:var(--btn-hover);
   box-shadow:0 10px 20px rgba(0,0,0,.35), 0 0 12px rgba(144,238,144,.55);
   transform:translateY(-2px);
 }
 
-/* Click/pressed: keep the light green, press down slightly */
 .btn:active { 
   background:var(--btn-hover);
   box-shadow:0 4px 8px rgba(0,0,0,.25);
   transform:translateY(1px) scale(.985);
 }
 
-/* Keyboard focus: clear, accessible ring that matches brand */
 .btn:focus-visible{
   outline:none;
   box-shadow:0 0 0 3px rgba(89,169,255,.45), 0 10px 20px rgba(0,0,0,.35);
 }
 
-/* Respect reduced motion preferences */
 @media (prefers-reduced-motion: reduce){
   .btn{ transition:none; }
+}
+
+/* ===== Forms ===== */
+.form-grid {
+  display: grid;
+  gap: 1rem;
+  max-width: 760px;
+}
+
+.row {
+  display: grid;
+  gap: .75rem;
+}
+
+.row.cols-2 {
+  grid-template-columns: 1fr 1fr;
+}
+
+.row.cols-3 {
+  grid-template-columns: 2fr 1fr 1fr;
+}
+
+.field {
+  display: grid;
+  gap: .375rem;
+}
+
+.field input,
+.field select,
+.field textarea {
+  padding: .75rem;
+  border-radius: .625rem;
+  border: 1px solid rgba(0,0,0,.18);
+  width: 100%;
+  background:#0b0f19;
+  color:#e6eef6;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  outline:2px solid #59a9ff;
+  border-color:#59a9ff;
+}
+
+.error {
+  color: #ff6b6b;
+  font-weight:600;
+}
+
+.error-input {
+  border-color: #ff6b6b !important;
+  outline-color: #ff6b6b;
+}
+
+.helper {
+  font-size:.85rem;
+  color:#9fb3c8;
+}
+
+/* ===== Confirmation Review ===== */
+.review {
+  display: grid;
+  gap: .5rem;
+}
+
+.review div {
+  padding: .5rem;
+  border: 1px solid #1c2741;
+  border-radius: .25rem;
+  background:#0f1628;
+}
+
+.btns {
+  margin-top: 1rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
