@@ -4,25 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Contact — GASH IT Solutions</title>
-  <link rel="stylesheet" href="assets/style.css?v=9">
-  <!-- Favicons -->
-<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48x48.png">
-<link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64x64.png">
-<link rel="icon" type="image/png" sizes="128x128" href="assets/favicon-128x128.png">
-<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="stylesheet" href="assets/style.css?v=10">
 
-  <style>
-    .form-grid{display:grid;gap:1rem;max-width:760px}
-    .row{display:grid;gap:.75rem}
-    .row.cols-2{grid-template-columns:1fr 1fr}
-    .row.cols-3{grid-template-columns:2fr 1fr 1fr}
-    .field{display:grid;gap:.375rem}
-    .field input,.field select,.field textarea{padding:.75rem;border-radius:.625rem;border:1px solid rgba(0,0,0,.18);width:100%}
-    .error{color:#9b1c1c}
-    .error-input{border-color:#9b1c1c !important; outline-color:#9b1c1c}
-  </style>
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48x48.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64x64.png">
+  <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon-128x128.png">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 </head>
 <body>
   <header class="header">
@@ -132,53 +122,11 @@
 
   <footer class="footer">
     <div class="wrap" style="text-align:center;">
-      <small>© <span id="y"></span> GASH IT Solutions</small>
+      <small>© <span class="js-year"></span> GASH IT Solutions</small>
     </div>
   </footer>
 
-  <script>
-    document.getElementById('y').textContent = new Date().getFullYear();
-
-    // Phone mask
-    const phoneEl = document.getElementById('phone');
-    phoneEl.addEventListener('input', () => {
-      const d = phoneEl.value.replace(/\D/g,'').slice(0,10);
-      let out = '';
-      if(d.length>0) out='('+d.slice(0,3);
-      if(d.length>=4) out+=')'+d.slice(3,6);
-      if(d.length>=7) out+='-'+d.slice(6,10);
-      phoneEl.value = out;
-    });
-
-    // Captcha
-    const a=Math.floor(Math.random()*8)+2, b=Math.floor(Math.random()*8)+1;
-    document.getElementById('captchaLabel').textContent=`What is ${a}+${b}?`;
-    document.getElementById('captchaExpected').value=a+b;
-
-    // Submit
-    document.getElementById('contactForm').addEventListener('submit',e=>{
-      e.preventDefault();
-      const data={
-        firstName:document.getElementById('firstName').value.trim(),
-        lastName:document.getElementById('lastName').value.trim(),
-        street:document.getElementById('street').value.trim(),
-        city:document.getElementById('city').value.trim(),
-        state:document.getElementById('state').value.trim(),
-        zip:document.getElementById('zip').value.trim(),
-        phone:document.getElementById('phone').value.trim(),
-        email:document.getElementById('email').value.trim(),
-        birthdate:document.getElementById('birthdate').value,
-        message:document.getElementById('message').value.trim(),
-        captcha:document.getElementById('captcha').value.trim(),
-        captchaExpected:document.getElementById('captchaExpected').value
-      };
-      if(data.captcha!==data.captchaExpected){
-        alert('Captcha is incorrect.');
-        return;
-      }
-      sessionStorage.setItem('contactFormData',JSON.stringify(data));
-      window.location.href='confirm.html';
-    });
-  </script>
+  <!-- External JS -->
+  <script src="assets/script.js"></script>
 </body>
 </html>
