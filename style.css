@@ -195,3 +195,88 @@ footer small {
   gap: 1rem;
   flex-wrap: wrap;
 }
+
+/* === Force Contact Form Styling === */
+.form-grid {
+  display: grid;
+  gap: 1rem;
+  max-width: 760px;
+  margin-top: 1.5rem;
+}
+
+.row {
+  display: grid;
+  gap: .75rem;
+}
+
+.row.cols-2 { grid-template-columns: 1fr 1fr; }
+.row.cols-3 { grid-template-columns: 2fr 1fr 1fr; }
+
+.field {
+  display: grid;
+  gap: .375rem;
+}
+
+.field label {
+  font-weight: 600;
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  padding: .75rem;
+  border-radius: .625rem;
+  border: 1px solid #1c2741;
+  background:#0b0f19;
+  color:#e6eef6;
+  font-size: 1rem;
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: #9fb3c8;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  outline: 2px solid #59a9ff;
+  border-color: #59a9ff;
+}
+
+.error {
+  color: #ff6b6b;
+  font-weight: 600;
+  margin-top:.5rem;
+}
+
+.error-input {
+  border-color: #ff6b6b !important;
+  outline-color: #ff6b6b;
+}
+
+.helper {
+  font-size:.85rem;
+  color:#9fb3c8;
+}
+
+/* Review panel on confirm.html */
+.review {
+  display: grid;
+  gap: .5rem;
+}
+
+.review div {
+  padding: .75rem;
+  border: 1px solid #1c2741;
+  border-radius: .25rem;
+  background:#0f1628;
+}
+
+.btns {
+  margin-top: 1rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
