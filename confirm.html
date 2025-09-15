@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Confirm — GASH IT Solutions</title>
+  <link rel="stylesheet" href="assets/style.css?v=9">
+  <style>
+    .review{display:grid;gap:.5rem}
+    .review div{padding:.5rem;border:1px solid #ccc;border-radius:.25rem}
+    .btns{margin-top:1rem;display:flex;gap:1rem}
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="wrap">
+      <div class="brand">
+        <img src="assets/logo.svg" alt="Logo" width="48" height="48">
+        <a href="index.html">GASH IT Solutions</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="card">
+      <h1>Confirm Your Details</h1>
+      <div id="review" class="review"></div>
+      <div class="btns">
+        <button id="editBtn" class="btn">Edit</button>
+        <button id="sendBtn" class="btn">Confirm & Send</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap" style="text-align:center;">
+      <small>© <span id="y2"></span> GASH IT Solutions</small>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('y2').textContent=new Date().getFullYear();
+    const dataRaw=sessionStorage.getItem('contactFormData');
+    if(!dataRaw){window.location.href='contact.html';}
+    const d=JSON.parse(dataRaw);
+    const review=document.getElementById('review');
+    review.innerHTML=`
+      <div><b>Name:</b> ${d.firstName} ${d.lastName}</div>
+      <div><b>Email:</b> ${d.email}</div>
+      <div><b>Phone:</b> ${d.phone}</div>
+      <div><b>Address:</b> ${d.street}, ${d.city}, ${d.state} ${d.zip}</div>
+      <div><b>Birthdate:</b> ${d.birthdate}</div>
+      <div><b>Message:</b> ${d.message}</div>
+    `;
+    document.getElementById('editBtn').onclick=()=>{window.location.href='contact.html';};
+    document.getElementById('sendBtn').onclick=()=>{
+      const subject=encodeURIComponent('New contact form submission');
+      const body=encodeURIComponent(
+        `Name: ${d.firstName} ${d.lastName}\nEmail: ${d.email}\nPhone: ${d.phone}\nAddress: ${d.street}, ${d.city}, ${d.state} ${d.zip}\nBirthdate: ${d.birthdate}\n\nMessage:\n${d.message}`
+      );
+      window.location.href=`mailto:info@gashitsolutions.com?subject=${subject}&body=${body}`;
+    };
+  </script>
+</body>
+</html>
