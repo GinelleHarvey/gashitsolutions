@@ -11,9 +11,16 @@ a {
   text-decoration:none; 
 }
 
+/* Container & Layout */
 .container { 
   width:min(1000px,92%); 
   margin-inline:auto; 
+}
+
+.wrap {
+  width:min(1000px,92%);
+  margin-inline:auto;
+  padding:1.25rem;
 }
 
 /* ===== Header & Footer ===== */
@@ -55,8 +62,9 @@ a {
 .card { 
   background:#111827; 
   border:1px solid #1c2741; 
-  padding:1rem; 
+  padding:1.5rem; 
   border-radius:.75rem; 
+  box-shadow:0 4px 12px rgba(0,0,0,.35);
 }
 
 .grid-3 { 
@@ -136,51 +144,37 @@ footer small {
   gap: .75rem;
 }
 
-.row.cols-2 {
-  grid-template-columns: 1fr 1fr;
-}
+.row.cols-2 { grid-template-columns: 1fr 1fr; }
+.row.cols-3 { grid-template-columns: 2fr 1fr 1fr; }
 
-.row.cols-3 {
-  grid-template-columns: 2fr 1fr 1fr;
-}
-
-.field {
-  display: grid;
-  gap: .375rem;
-}
+.field { display: grid; gap: .375rem; }
+.field label { font-weight: 600; }
 
 .field input,
 .field select,
 .field textarea {
+  width: 100%;
   padding: .75rem;
   border-radius: .625rem;
   border: 1px solid rgba(0,0,0,.18);
-  width: 100%;
   background:#0b0f19;
   color:#e6eef6;
 }
 
+.field input::placeholder,
+.field textarea::placeholder { color: #9fb3c8; }
+
 .field input:focus,
 .field select:focus,
 .field textarea:focus {
-  outline:2px solid #59a9ff;
-  border-color:#59a9ff;
+  outline: 2px solid #59a9ff;
+  border-color: #59a9ff;
 }
 
-.error {
-  color: #ff6b6b;
-  font-weight:600;
-}
-
-.error-input {
-  border-color: #ff6b6b !important;
-  outline-color: #ff6b6b;
-}
-
-.helper {
-  font-size:.85rem;
-  color:#9fb3c8;
-}
+/* Error & helper text */
+.error { color: #ff6b6b; font-weight: 600; margin-top:.5rem; }
+.error-input { border-color: #ff6b6b !important; outline-color: #ff6b6b; }
+.helper { font-size:.85rem; color:#9fb3c8; }
 
 /* ===== Confirmation Review ===== */
 .review {
@@ -189,7 +183,7 @@ footer small {
 }
 
 .review div {
-  padding: .5rem;
+  padding: .75rem;
   border: 1px solid #1c2741;
   border-radius: .25rem;
   background:#0f1628;
