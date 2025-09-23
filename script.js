@@ -216,227 +216,182 @@ if (review) {
   });
 }
 
-/* === A4 – Michaelis–Menten (no libraries; Canvas + MathML) =============== */
-(function () {
-  function init() {
-    const form = document.getElementById('mmForm');
-    if (!form) return;
+/* === A4 – Michaelis–Menten with sliders + ANIMATION (no libraries) ======= */
+(function(){
+  // Grab elements
+  const Vmax = document.getElementById("Vmax");
+  const Km   = document.getElementById("Km");
+  const I    = document.getElementById("I");
+  const Ki   = document.getElementById("Ki");
+  const Smax = document.getElementById("Smax");
+  const Speed= document.getElementById("Speed");
 
-    const els = {
-      err: document.getElementById('mmError'),
-      vmax: document.getElementById('mmVmax'),
-      km: document.getElementById('mmKm'),
-      smin: document.getElementById('mmSmin'),
-      smax: document.getElementById('mmSmax'),
-      step: document.getElementById('mmStep'),
-      mode: document.getElementById('mmMode'),
-      inhibWrap: document.getElementById('mmInhibWrap'),
-      I: document.getElementById('mmI'),
-      Ki: document.getElementById('mmKi'),
-      meta: document.getElementById('mmMeta'),
-      tableBody: document.getElementById('mmTableBody'),
-      download: document.getElementById('mmDownload'),
-      seed: document.getElementById('mmSeed'),
-      canvas: document.getElementById('mmCanvas')
-    };
-    const ctx = els.canvas.getContext('2d');
+  const outVmax = document.getElementById("outVmax");
+  const outKm   = document.getElementById("outKm");
+  const outI    = document.getElementById("outI");
+  const outKi   = document.getElementById("outKi");
+  const outSmax = document.getElementById("outSmax");
+  const outSpeed= document.getElementById("outSpeed");
 
-    /* ---------- helpers ---------- */
-    function updateSummary(alpha, km, vmax) {
-      els.meta.innerHTML = `Half-max at <em>S</em> = ${round(alpha * km)} (α=${round(alpha)}) ⇒ v = ${round(vmax/2)}.`;
-    }
-    function showInhibFields() {
-      const comp = els.mode.value === 'competitive';
-      els.inhibWrap.hidden = !comp;
-    }
-    function readParams() {
-      const vmax = +els.vmax.value, km = +els.km.value;
-      const smin = +els.smin.value, smax = +els.smax.value, step = +els.step.value;
-      const I = +els.I.value, Ki = +els.Ki.value;
-      const comp = els.mode.value === 'competitive';
-      const errors = [];
-      if (!(vmax > 0)) errors.push('Vmax must be > 0');
-      if (!(km > 0)) errors.push('Km must be > 0');
-      if (!(smax > smin)) errors.push('Smax must be greater than Smin');
-      if (!(step > 0)) errors.push('Step must be > 0');
-      if (comp) { if (!(Ki > 0)) errors.push('Ki must be > 0'); if (I < 0) errors.push('I must be ≥ 0'); }
-      if (errors.length) {
-        els.err.textContent = 'Please fix: ' + errors.join('; ');
-        els.err.hidden = false; return null;
-      }
-      els.err.hidden = true;
-      const alpha = comp ? 1 + (I / Ki) : 1;
-      return { vmax, km, smin, smax, step, alpha };
-    }
-    function computeSeries({vmax, km, smin, smax, step, alpha}) {
-      const data = [];
-      const n = Math.min(20000, Math.floor((smax - smin) / step) + 1);
-      for (let i = 0; i < n; i++) {
-        const S = smin + i * step;
-        const v = (vmax * S) / (alpha * km + S);
-        data.push({S, v});
-      }
-      return data;
-    }
-    function round(n) { return Math.abs(n) < 1e-6 ? 0 : +n.toFixed(4); }
+  const halfMax = document.getElementById("halfMax");
+  const live    = document.getElementById("liveReadout");
 
-    /* ---------- drawing ---------- */
-    function fitCanvasToCSS() {
-      const dpr = window.devicePixelRatio || 1;
-      const rect = els.canvas.getBoundingClientRect();
-      els.canvas.width  = Math.max(320, Math.floor(rect.width * dpr));
-      els.canvas.height = Math.max(260, Math.floor(rect.height * dpr));
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0); // scale drawing commands
-    }
-    function drawAxes(rect, xMin, xMax, yMin, yMax) {
-      const {x, y, w, h} = rect;
-      ctx.fillStyle = '#000';
-      ctx.strokeStyle = '#888';
-      ctx.lineWidth = 1;
+  const canvas  = document.getElementById("plot");
+  if (!canvas) return;               // only run on this page
+  const ctx     = canvas.getContext("2d");
 
-      // border
-      ctx.strokeRect(x, y, w, h);
+  const btnPlay = document.getElementById("btnPlay");
+  const btnReset= document.getElementById("btnReset");
 
-      // ticks/grid
-      const xticks = 6, yticks = 5;
-      ctx.font = '12px system-ui, sans-serif';
-      ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  // Utility formatting
+  const f1 = n => (+n).toFixed(1);
+  const f2 = n => (+n).toFixed(2);
 
-      for (let i=0;i<=xticks;i++){
-        const t = i/xticks, xv = xMin + t*(xMax-xMin);
-        const px = x + t*w;
-        // grid line
-        ctx.strokeStyle = 'rgba(0,0,0,.08)'; ctx.beginPath();
-        ctx.moveTo(px, y); ctx.lineTo(px, y+h); ctx.stroke();
-        ctx.strokeStyle = '#888';
-        ctx.beginPath(); ctx.moveTo(px, y+h); ctx.lineTo(px, y+h+4); ctx.stroke();
-        ctx.fillStyle = '#000'; ctx.fillText(round(xv), px, y+h+6);
-      }
-
-      ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
-      for (let j=0;j<=yticks;j++){
-        const t = j/yticks, yv = yMax - t*(yMax-yMin);
-        const py = y + t*h;
-        ctx.strokeStyle = 'rgba(0,0,0,.08)'; ctx.beginPath();
-        ctx.moveTo(x, py); ctx.lineTo(x+w, py); ctx.stroke();
-        ctx.strokeStyle = '#888';
-        ctx.beginPath(); ctx.moveTo(x-4, py); ctx.lineTo(x, py); ctx.stroke();
-        ctx.fillStyle = '#000'; ctx.fillText(round(yv), x-6, py);
-      }
-
-      // axis labels
-      ctx.save();
-      ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
-      ctx.fillText('S (substrate concentration)', x + w/2, y + h + 28);
-      ctx.translate(x - 36, y + h/2); ctx.rotate(-Math.PI/2);
-      ctx.textAlign = 'center'; ctx.textBaseline = 'top';
-      ctx.fillText('v (rate)', 0, 0);
-      ctx.restore();
-    }
-    function worldToScreen(rect, xMin, xMax, yMin, yMax, S, v) {
-      const {x, y, w, h} = rect;
-      const px = x + ((S - xMin) / (xMax - xMin)) * w;
-      const py = y + h - ((v - yMin) / (yMax - yMin)) * h;
-      return [px, py];
-    }
-    function drawCurve(rect, xMin, xMax, yMin, yMax, series, color='#0b65d1') {
-      ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.beginPath();
-      for (let i=0;i<series.length;i++){
-        const [px, py] = worldToScreen(rect, xMin, xMax, yMin, yMax, series[i].S, series[i].v);
-        if (i===0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
-      }
-      ctx.stroke();
-    }
-    function drawHalfMax(rect, xMin, xMax, yMin, yMax, sHalf, vHalf) {
-      ctx.strokeStyle = '#cc5500'; ctx.setLineDash([5,5]); ctx.lineWidth = 1.25;
-      // vertical
-      let p1 = worldToScreen(rect, xMin, xMax, yMin, yMax, sHalf, yMin);
-      let p2 = worldToScreen(rect, xMin, xMax, yMin, yMax, sHalf, vHalf);
-      ctx.beginPath(); ctx.moveTo(p1[0], p1[1]); ctx.lineTo(p2[0], p2[1]); ctx.stroke();
-      // horizontal
-      p1 = worldToScreen(rect, xMin, xMax, yMin, yMax, xMin, vHalf);
-      p2 = worldToScreen(rect, xMin, xMax, yMin, yMax, sHalf, vHalf);
-      ctx.beginPath(); ctx.moveTo(p1[0], p1[1]); ctx.lineTo(p2[0], p2[1]); ctx.stroke();
-      ctx.setLineDash([]);
-      // marker + label
-      const [mx,my] = worldToScreen(rect, xMin, xMax, yMin, yMax, sHalf, vHalf);
-      ctx.fillStyle = '#cc5500'; ctx.beginPath(); ctx.arc(mx, my, 3, 0, Math.PI*2); ctx.fill();
-      ctx.font = '12px system-ui, sans-serif'; ctx.textAlign='left'; ctx.textBaseline='bottom';
-      ctx.fillText(`Half-max: S=${round(sHalf)}, v=${round(vHalf)}`, mx+6, my-6);
-    }
-
-    /* ---------- render pipeline ---------- */
-    let lastParams = null, lastSeries = null, lastY = null;
-    function render() {
-      const p = readParams(); if (!p) return;
-      lastParams = p;
-      const series = computeSeries(p);
-      lastSeries = series;
-      // determine y-range with padding
-      let ymin = Infinity, ymax = -Infinity;
-      for (const d of series){ if (d.v < ymin) ymin = d.v; if (d.v > ymax) ymax = d.v; }
-      if (!isFinite(ymin) || !isFinite(ymax)) { ymin=0; ymax=1; }
-      if (ymax === ymin) ymax = ymin + 1;
-      const pad = (ymax - ymin) * 0.15;
-      ymin -= pad; ymax += pad;
-      lastY = {ymin, ymax};
-
-      // canvas sizing + clear
-      fitCanvasToCSS();
-      ctx.clearRect(0,0,els.canvas.width,els.canvas.height);
-
-      // plot rect
-      const rect = { x: 56, y: 16, w: els.canvas.clientWidth - 80, h: els.canvas.clientHeight - 70 };
-      // axes
-      drawAxes(rect, p.smin, p.smax, ymin, ymax);
-      // curve
-      drawCurve(rect, p.smin, p.smax, ymin, ymax, series);
-      // half-max marker
-      const sHalf = p.alpha * p.km, vHalf = p.vmax/2;
-      drawHalfMax(rect, p.smin, p.smax, ymin, ymax, sHalf, vHalf);
-      updateSummary(p.alpha, p.km, p.vmax);
-
-      // table
-      els.tableBody.innerHTML = series.map(d => `<tr><td>${round(d.S)}</td><td>${round(d.v)}</td></tr>`).join('');
-    }
-
-    /* ---------- events ---------- */
-    form.addEventListener('submit', (e)=>{ e.preventDefault(); render(); });
-    els.mode.addEventListener('change', ()=>{ showInhibFields(); render(); });
-    els.seed.addEventListener('click', ()=>{
-      els.vmax.value=100; els.km.value=30; els.smin.value=0; els.smax.value=200; els.step.value=1;
-      els.mode.value='none'; els.I.value=0; els.Ki.value=50; showInhibFields(); render();
-    });
-    els.download.addEventListener('click', ()=>{
-      const p = lastParams || readParams(); if (!p) return;
-      const data = lastSeries || computeSeries(p);
-      const rows = [['S','v'], ...data.map(d=>[round(d.S), round(d.v)])];
-      const csv = rows.map(r=>r.join(',')).join('\n');
-      const blob = new Blob([csv], {type:'text/csv'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href = url; a.download = 'michaelis_menten.csv'; a.click();
-      URL.revokeObjectURL(url);
-    });
-    window.addEventListener('resize', ()=>{
-      if (!lastParams || !lastSeries || !lastY) return;
-      // redraw with cached results on resize
-      fitCanvasToCSS();
-      ctx.clearRect(0,0,els.canvas.width,els.canvas.height);
-      const rect = { x: 56, y: 16, w: els.canvas.clientWidth - 80, h: els.canvas.clientHeight - 70 };
-      drawAxes(rect, lastParams.smin, lastParams.smax, lastY.ymin, lastY.ymax);
-      drawCurve(rect, lastParams.smin, lastParams.smax, lastY.ymin, lastY.ymax, lastSeries);
-      const sHalf = lastParams.alpha * lastParams.km, vHalf = lastParams.vmax/2;
-      drawHalfMax(rect, lastParams.smin, lastParams.smax, lastY.ymin, lastY.ymax, sHalf, vHalf);
-    });
-
-    // initial
-    showInhibFields();
-    render();
+  // Slider -> output mirrors
+  function syncOutputs(){
+    outVmax.textContent = Vmax.value;
+    outKm.textContent   = Km.value;
+    outI.textContent    = I.value;
+    outKi.textContent   = Ki.value;
+    outSmax.textContent = Smax.value;
+    outSpeed.textContent= f1(Speed.value) + "×";
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
+  // Compute alpha and series
+  function alpha(){ return 1 + (parseFloat(I.value)/parseFloat(Ki.value)); }
+  function series(){
+    const vmax = +Vmax.value, km = +Km.value, smax = +Smax.value, a = alpha();
+    const step = smax/240;              // 240 points → smooth line
+    const pts = [];
+    for(let s=0; s<=smax; s+=step){
+      const v = (vmax*s)/(a*km + s);
+      pts.push({s,v});
+    }
+    return pts;
   }
+
+  // Canvas sizing (retina crisp)
+  function fitCanvas(){
+    const dpr = window.devicePixelRatio || 1;
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    canvas.width = Math.max(320, Math.floor(w*dpr));
+    canvas.height= Math.max(240, Math.floor(h*dpr));
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+
+  // Axes & curve
+  function drawAll(sMarker){
+    syncOutputs();
+    fitCanvas();
+
+    const vmax = +Vmax.value, km = +Km.value, smax = +Smax.value, a = alpha();
+    const pts = series();
+
+    // y-range with a little headroom
+    let ymin = 0, ymax = vmax * 1.15;
+    const padL = 56, padB = 40, padR = 16, padT = 16;
+    const plot = { x: padL, y: padT, w: canvas.clientWidth - padL - padR, h: canvas.clientHeight - padT - padB };
+
+    // Clear
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    // Border + grid
+    ctx.strokeStyle = "#888"; ctx.lineWidth = 1;
+    ctx.strokeRect(plot.x, plot.y, plot.w, plot.h);
+
+    // grid lines
+    ctx.font = "12px system-ui, sans-serif";
+    ctx.fillStyle = "#000"; ctx.textAlign="center"; ctx.textBaseline="top";
+    const xticks = 6, yticks = 5;
+    for(let i=0;i<=xticks;i++){
+      const t=i/xticks, s=t*smax, px=plot.x + t*plot.w;
+      ctx.strokeStyle="rgba(0,0,0,.08)"; ctx.beginPath();
+      ctx.moveTo(px, plot.y); ctx.lineTo(px, plot.y+plot.h); ctx.stroke();
+      ctx.strokeStyle="#888"; ctx.beginPath(); ctx.moveTo(px, plot.y+plot.h); ctx.lineTo(px, plot.y+plot.h+4); ctx.stroke();
+      ctx.fillText(f1(s), px, plot.y+plot.h+6);
+    }
+    ctx.textAlign="right"; ctx.textBaseline="middle";
+    for(let j=0;j<=yticks;j++){
+      const t=j/yticks, v = ymax - t*(ymax-ymin), py = plot.y + t*plot.h;
+      ctx.strokeStyle="rgba(0,0,0,.08)"; ctx.beginPath();
+      ctx.moveTo(plot.x, py); ctx.lineTo(plot.x+plot.w, py); ctx.stroke();
+      ctx.strokeStyle="#888"; ctx.beginPath(); ctx.moveTo(plot.x-4, py); ctx.lineTo(plot.x, py); ctx.stroke();
+      ctx.fillText(f1(v), plot.x-6, py);
+    }
+    // axis labels
+    ctx.save();
+    ctx.textAlign="center"; ctx.textBaseline="bottom";
+    ctx.fillText("S (substrate concentration)", plot.x + plot.w/2, plot.y + plot.h + 28);
+    ctx.translate(plot.x - 36, plot.y + plot.h/2);
+    ctx.rotate(-Math.PI/2);
+    ctx.textAlign="center"; ctx.textBaseline="top";
+    ctx.fillText("v (rate)", 0, 0);
+    ctx.restore();
+
+    // mapping
+    const X = s => plot.x + (s/smax)*plot.w;
+    const Y = v => plot.y + plot.h - ((v-ymin)/(ymax-ymin))*plot.h;
+
+    // curve
+    ctx.strokeStyle = "#0b65d1"; ctx.lineWidth = 2; ctx.beginPath();
+    pts.forEach((p,i)=>{ const x=X(p.s), y=Y(p.v); i?ctx.lineTo(x,y):ctx.moveTo(x,y); });
+    ctx.stroke();
+
+    // half-max marker
+    const sHalf = a*km, vHalf = (+Vmax.value)/2;
+    ctx.setLineDash([5,5]); ctx.strokeStyle = "#cc5500"; ctx.lineWidth=1.25;
+    ctx.beginPath(); ctx.moveTo(X(sHalf), Y(ymin)); ctx.lineTo(X(sHalf), Y(vHalf)); ctx.lineTo(X(0), Y(vHalf)); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle="#cc5500"; ctx.beginPath(); ctx.arc(X(sHalf), Y(vHalf), 3, 0, Math.PI*2); ctx.fill();
+    halfMax.innerHTML = `Half-max at S = ${f1(sHalf)} (α = ${f2(a)}) → v = ${f1(vHalf)}`;
+
+    // moving marker
+    const sm = Math.max(0, Math.min(smax, sMarker==null?0:sMarker));
+    const vm = ( +Vmax.value * sm ) / ( a * km + sm );
+    ctx.fillStyle="#2a9d8f"; ctx.beginPath(); ctx.arc(X(sm), Y(vm), 4, 0, Math.PI*2); ctx.fill();
+    // crosshair
+    ctx.setLineDash([3,3]); ctx.strokeStyle="#2a9d8f";
+    ctx.beginPath(); ctx.moveTo(X(sm), Y(ymin)); ctx.lineTo(X(sm), Y(vm)); ctx.lineTo(X(0), Y(vm)); ctx.stroke();
+    ctx.setLineDash([]);
+
+    live.textContent = `S = ${f2(sm)}, v(S) = ${f2(vm)}, α = ${f2(a)}`;
+  }
+
+  // Animation state
+  let playing = false, dir = 1, sAnim = 0, lastT = 0;
+
+  function step(ts){
+    if (!playing){ lastT = ts; return; }
+    const dt = (ts - lastT) / 1000;        // seconds
+    lastT = ts;
+
+    const smax = +Smax.value;
+    const speed = +Speed.value;            // fraction of Smax per second
+    sAnim += dir * (speed * smax * dt);
+
+    if (sAnim > smax){ sAnim = smax; dir = -1; }
+    if (sAnim < 0){ sAnim = 0; dir = +1; }
+
+    drawAll(sAnim);
+    requestAnimationFrame(step);
+  }
+
+  function playPause(){
+    playing = !playing;
+    btnPlay.textContent = playing ? "⏸ Pause" : "▶ Play";
+    if (playing) requestAnimationFrame((t)=>{ lastT=t; requestAnimationFrame(step); });
+  }
+  function reset(){
+    playing = false; btnPlay.textContent = "▶ Play";
+    dir = 1; sAnim = 0; drawAll(sAnim);
+  }
+
+  // Wire up
+  [Vmax,Km,I,Ki,Smax,Speed].forEach(el => el.addEventListener("input", ()=> drawAll(sAnim)));
+  btnPlay.addEventListener("click", playPause);
+  btnReset.addEventListener("click", reset);
+  window.addEventListener("resize", ()=> drawAll(sAnim));
+
+  // First paint
+  drawAll(0);
 })();
