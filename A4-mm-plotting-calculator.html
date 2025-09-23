@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Assignment 4 – Plotting Calculator (Michaelis–Menten, Plotly.js)</title>
-  <meta name="description" content="Assignment 4: JavaScript calculator with plotting using the Michaelis–Menten model (optional competitive inhibition).">
+  <title>Assignment 4 – Plotting Calculator (Michaelis–Menten, Vanilla JS)</title>
+  <meta name="description" content="Assignment 4: JavaScript calculator with plotting using the Michaelis–Menten model (no external libraries).">
 
-  <!-- Your site CSS + icons (root paths) -->
+  <!-- Your site CSS + icons (root) -->
   <link rel="stylesheet" href="assets/style.css?v=5">
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
@@ -14,12 +14,19 @@
   <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64x64.png">
   <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon-128x128.png">
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-
-  <!-- Plotly must load BEFORE script.js -->
-  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <style>
+    /* tiny page-only helpers; everything else uses your site CSS */
+    .eq-block { text-align:center; margin: 1rem 0 0.5rem; }
+    .controls { display:grid; gap:.5rem; max-width:680px; margin:.5rem 0 1rem; }
+    .controls .row { display:grid; grid-template-columns: 1fr 1fr; gap:.5rem; }
+    @media (max-width:700px){ .controls .row{ grid-template-columns: 1fr; } }
+    .meta { text-align:center; font-size:.9rem; opacity:.8; margin:.25rem 0 1rem; }
+    #mmCanvas { width:100%; height:420px; border:1px solid rgba(0,0,0,.1); background: #fff; }
+    .backlink { margin: .75rem auto 0; }
+  </style>
 </head>
 <body>
-  <!-- Header (site’s header) -->
+  <!-- Header (exactly like your site) -->
   <header class="header">
     <div class="wrap">
       <div class="brand">
@@ -36,51 +43,79 @@
     </div>
   </header>
 
-  <!-- Breadcrumb (root link to purpose.html) -->
-  <div class="wrap" style="margin: 0.75rem auto 0;">
+  <!-- Breadcrumb (root) -->
+  <div class="wrap backlink">
     <a href="purpose.html">← Back to Purpose &amp; Assignments</a>
   </div>
 
   <main class="wrap">
-    <h1>Assignment 4: JavaScript Calculator + Plot</h1>
-    <p>
-      This page is my Assignment 4 JavaScript calculator and plot using the Michaelis–Menten (MM) model.
-      Enter seed values for Vmax and Km, set an S range (Smin, Smax, Step), and click
-      <em>Compute &amp; Plot</em> to graph the nonlinear curve
-      <code>v(S) = (Vmax·S)/(α·Km + S)</code>. You can optionally enable competitive inhibition
-      (<code>α = 1 + I/Ki</code>) to see how it shifts the half-max point.
-      The plot shows <strong>v</strong> on the Y-axis and <strong>S</strong> on the X-axis, marks the half-max
-      point, lists computed values in a table, and lets you download them as CSV.
-    </p>
+    <h1 style="text-align:center;">Assignment 4: JavaScript Calculator + Plot</h1>
 
-    <form id="mmForm" novalidate>
-      <div id="mmError" hidden style="color:#b33;margin:.5rem 0;"></div>
+    <!-- Big equation (MathML, no libraries) -->
+    <div class="eq-block">
+      <math display="block">
+        <mi>v</mi><mo>(</mo><mi>S</mi><mo>)</mo>
+        <mo>=</mo>
+        <mfrac>
+          <mrow>
+            <msub><mi>V</mi><mtext>max</mtext></msub>
+            <mo>&#x22C5;</mo><mi>S</mi>
+          </mrow>
+          <mrow>
+            <mi>&#x03B1;</mi><mo>&#x22C5;</mo>
+            <msub><mi>K</mi><mi>m</mi></msub>
+            <mo>+</mo><mi>S</mi>
+          </mrow>
+        </mfrac>
+      </math>
+      <math display="block" style="margin-top:.25rem;">
+        <mi>&#x03B1;</mi><mo>=</mo><mn>1</mn><mo>+</mo>
+        <mfrac><mi>I</mi><msub><mi>K</mi><mi>i</mi></msub></mfrac>
+      </math>
+      <div class="meta" id="mmMeta">Half-max at <em>S</em> = <em>K</em><sub>m</sub> (α=1) ⇒ v = V<sub>max</sub>/2.</div>
+    </div>
 
-      <label for="mmVmax">V<sub>max</sub></label>
-      <input id="mmVmax" type="number" step="any" value="100" required />
+    <!-- Controls -->
+    <form id="mmForm" class="controls" novalidate>
+      <div id="mmError" hidden style="color:#b33;"></div>
 
-      <label for="mmKm">K<sub>m</sub></label>
-      <input id="mmKm" type="number" step="any" value="30" required />
-
-      <div>
-        <label for="mmSmin">S<sub>min</sub></label>
-        <input id="mmSmin" type="number" step="any" value="0" required />
+      <div class="row">
+        <div>
+          <label for="mmVmax">V<sub>max</sub></label>
+          <input id="mmVmax" type="number" step="any" value="100" required />
+        </div>
+        <div>
+          <label for="mmKm">K<sub>m</sub></label>
+          <input id="mmKm" type="number" step="any" value="30" required />
+        </div>
       </div>
-      <div>
-        <label for="mmSmax">S<sub>max</sub></label>
-        <input id="mmSmax" type="number" step="any" value="200" required />
+
+      <div class="row">
+        <div>
+          <label for="mmSmin">S<sub>min</sub></label>
+          <input id="mmSmin" type="number" step="any" value="0" required />
+        </div>
+        <div>
+          <label for="mmSmax">S<sub>max</sub></label>
+          <input id="mmSmax" type="number" step="any" value="200" required />
+        </div>
       </div>
 
-      <label for="mmStep">Step (ΔS)</label>
-      <input id="mmStep" type="number" step="any" value="1" required />
+      <div class="row">
+        <div>
+          <label for="mmStep">Step (ΔS)</label>
+          <input id="mmStep" type="number" step="any" value="1" required />
+        </div>
+        <div>
+          <label for="mmMode">Inhibition</label>
+          <select id="mmMode">
+            <option value="none" selected>None</option>
+            <option value="competitive">Competitive (use I &amp; K<sub>i</sub>)</option>
+          </select>
+        </div>
+      </div>
 
-      <label for="mmMode">Inhibition</label>
-      <select id="mmMode">
-        <option value="none" selected>None</option>
-        <option value="competitive">Competitive (use I &amp; K<sub>i</sub>)</option>
-      </select>
-
-      <div id="mmInhibWrap" hidden>
+      <div class="row" id="mmInhibWrap" hidden>
         <div>
           <label for="mmI">Inhibitor (I)</label>
           <input id="mmI" type="number" step="any" value="0" />
@@ -91,10 +126,6 @@
         </div>
       </div>
 
-      <p id="mmSummary" aria-live="polite">
-        Half-max at S = K<sub>m</sub> (α=1). v = V<sub>max</sub>/2 there.
-      </p>
-
       <div style="display:flex;gap:.5rem;flex-wrap:wrap">
         <button type="submit">Compute &amp; Plot</button>
         <button type="button" id="mmDownload">Download CSV</button>
@@ -102,16 +133,21 @@
       </div>
     </form>
 
-    <div id="mmPlot" style="height:520px;margin-top:1rem" aria-label="Michaelis–Menten plot"></div>
+    <!-- Plot (native Canvas) -->
+    <canvas id="mmCanvas" aria-label="Michaelis–Menten plot"></canvas>
 
-    <table style="width:100%;margin-top:1rem;border-collapse:collapse">
-      <thead><tr><th style="text-align:left">S</th><th style="text-align:left">v</th></tr></thead>
-      <tbody id="mmTableBody"></tbody>
-    </table>
+    <div style="overflow:auto; margin-top:1rem;">
+      <table style="width:100%; border-collapse:collapse;">
+        <thead>
+          <tr><th style="text-align:left">S</th><th style="text-align:left">v</th></tr>
+        </thead>
+        <tbody id="mmTableBody"></tbody>
+      </table>
+    </div>
   </main>
 
   <footer class="wrap" style="margin:2rem 0">
-    Plotting library: <strong>Plotly.js</strong>. Model: Michaelis–Menten with optional competitive inhibition.
+    No external libraries. Equation rendered with MathML; plot drawn with HTML5 Canvas.
   </footer>
 
   <!-- Your global JS (root) -->
