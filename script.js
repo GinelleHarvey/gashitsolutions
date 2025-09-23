@@ -216,11 +216,11 @@ if (review) {
   });
 }
 
-/* === Assignment 4 – Michaelis–Menten plotting module ===================== */
+/* === A4 – Michaelis–Menten (no libraries; Canvas + MathML) =============== */
 (function () {
   function init() {
     const form = document.getElementById('mmForm');
-    if (!form) return; // only run on the A4 page
+    if (!form) return;
 
     const els = {
       err: document.getElementById('mmError'),
@@ -233,149 +233,205 @@ if (review) {
       inhibWrap: document.getElementById('mmInhibWrap'),
       I: document.getElementById('mmI'),
       Ki: document.getElementById('mmKi'),
-      summary: document.getElementById('mmSummary'),
-      plot: document.getElementById('mmPlot'),
+      meta: document.getElementById('mmMeta'),
       tableBody: document.getElementById('mmTableBody'),
       download: document.getElementById('mmDownload'),
-      seed: document.getElementById('mmSeed')
+      seed: document.getElementById('mmSeed'),
+      canvas: document.getElementById('mmCanvas')
     };
+    const ctx = els.canvas.getContext('2d');
 
-    // UI helpers
-    function updateSummary() {
-      const competitive = els.mode.value === 'competitive';
-      if (els.inhibWrap) els.inhibWrap.hidden = !competitive;
-      if (els.summary) {
-        els.summary.innerHTML = competitive
-          ? 'Competitive inhibition: α = 1 + I/K<sub>i</sub>. Half-max at S = α·K<sub>m</sub>, v = V<sub>max</sub>/2.'
-          : 'Half-max at S = K<sub>m</sub> (α=1). v = V<sub>max</sub>/2 there.';
-      }
+    /* ---------- helpers ---------- */
+    function updateSummary(alpha, km, vmax) {
+      els.meta.innerHTML = `Half-max at <em>S</em> = ${round(alpha * km)} (α=${round(alpha)}) ⇒ v = ${round(vmax/2)}.`;
     }
-
+    function showInhibFields() {
+      const comp = els.mode.value === 'competitive';
+      els.inhibWrap.hidden = !comp;
+    }
     function readParams() {
-      const vmax = +els.vmax.value;
-      const km = +els.km.value;
-      const smin = +els.smin.value;
-      const smax = +els.smax.value;
-      const step = +els.step.value;
-      const mode = els.mode.value;
-      const I = +els.I.value;
-      const Ki = +els.Ki.value;
-
+      const vmax = +els.vmax.value, km = +els.km.value;
+      const smin = +els.smin.value, smax = +els.smax.value, step = +els.step.value;
+      const I = +els.I.value, Ki = +els.Ki.value;
+      const comp = els.mode.value === 'competitive';
       const errors = [];
       if (!(vmax > 0)) errors.push('Vmax must be > 0');
       if (!(km > 0)) errors.push('Km must be > 0');
       if (!(smax > smin)) errors.push('Smax must be greater than Smin');
       if (!(step > 0)) errors.push('Step must be > 0');
-      if (mode === 'competitive') {
-        if (!(Ki > 0)) errors.push('Ki must be > 0 for competitive inhibition');
-        if (I < 0) errors.push('Inhibitor concentration I must be ≥ 0');
-      }
-
+      if (comp) { if (!(Ki > 0)) errors.push('Ki must be > 0'); if (I < 0) errors.push('I must be ≥ 0'); }
       if (errors.length) {
         els.err.textContent = 'Please fix: ' + errors.join('; ');
-        els.err.hidden = false;
-        return null;
+        els.err.hidden = false; return null;
       }
       els.err.hidden = true;
-
-      const alpha = mode === 'competitive' ? 1 + (I / Ki) : 1;
+      const alpha = comp ? 1 + (I / Ki) : 1;
       return { vmax, km, smin, smax, step, alpha };
     }
-
-    function computeSeries({ vmax, km, smin, smax, step, alpha }) {
-      const out = [];
-      const nSteps = Math.min(20000, Math.floor((smax - smin) / step) + 1);
-      for (let i = 0; i < nSteps; i++) {
+    function computeSeries({vmax, km, smin, smax, step, alpha}) {
+      const data = [];
+      const n = Math.min(20000, Math.floor((smax - smin) / step) + 1);
+      for (let i = 0; i < n; i++) {
         const S = smin + i * step;
         const v = (vmax * S) / (alpha * km + S);
-        out.push({ S: +S.toFixed(6), v: +v.toFixed(6) });
+        data.push({S, v});
       }
-      return out;
+      return data;
     }
-
-    function renderTable(data) {
-      if (!els.tableBody) return;
-      els.tableBody.innerHTML = data.map(d => `<tr><td>${d.S}</td><td>${d.v}</td></tr>`).join('');
-    }
-
-    function renderPlot(data, { vmax, km, alpha }) {
-      if (typeof Plotly === 'undefined') {
-        console.error('Plotly not loaded. Check the CDN script tag order.');
-        return;
-      }
-      const x = data.map(d => d.S);
-      const y = data.map(d => d.v);
-      const sHalf = alpha * km;
-      const vHalf = vmax / 2;
-
-      const curve = { x, y, mode: 'lines', name: 'v(S)', line: { width: 3 } };
-      const halfPoint = {
-        x: [sHalf], y: [vHalf], mode: 'markers+text', name: 'Half-max',
-        text: [`S=${round(sHalf)}, v=${round(vHalf)}`], textposition: 'top center',
-        marker: { size: 10 }
-      };
-
-      const layout = {
-        margin: { l: 60, r: 20, t: 20, b: 50 },
-        xaxis: { title: 'S (substrate concentration)' },
-        yaxis: { title: 'v (rate)' },
-        shapes: [
-          { type: 'line', x0: sHalf, x1: sHalf, y0: 0, y1: vHalf, line: { dash: 'dot' } },
-          { type: 'line', x0: 0, x1: sHalf, y0: vHalf, y1: vHalf, line: { dash: 'dot' } }
-        ],
-        legend: { orientation: 'h', y: -0.2 }
-      };
-
-      Plotly.newPlot(els.plot, [curve, halfPoint], layout, { displayModeBar: true, responsive: true });
-    }
-
     function round(n) { return Math.abs(n) < 1e-6 ? 0 : +n.toFixed(4); }
 
-    // Events
-    els.mode.addEventListener('change', updateSummary);
+    /* ---------- drawing ---------- */
+    function fitCanvasToCSS() {
+      const dpr = window.devicePixelRatio || 1;
+      const rect = els.canvas.getBoundingClientRect();
+      els.canvas.width  = Math.max(320, Math.floor(rect.width * dpr));
+      els.canvas.height = Math.max(260, Math.floor(rect.height * dpr));
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0); // scale drawing commands
+    }
+    function drawAxes(rect, xMin, xMax, yMin, yMax) {
+      const {x, y, w, h} = rect;
+      ctx.fillStyle = '#000';
+      ctx.strokeStyle = '#888';
+      ctx.lineWidth = 1;
 
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const p = readParams();
-      if (!p) return;
-      const data = computeSeries(p);
-      renderTable(data);
-      renderPlot(data, p);
+      // border
+      ctx.strokeRect(x, y, w, h);
+
+      // ticks/grid
+      const xticks = 6, yticks = 5;
+      ctx.font = '12px system-ui, sans-serif';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+
+      for (let i=0;i<=xticks;i++){
+        const t = i/xticks, xv = xMin + t*(xMax-xMin);
+        const px = x + t*w;
+        // grid line
+        ctx.strokeStyle = 'rgba(0,0,0,.08)'; ctx.beginPath();
+        ctx.moveTo(px, y); ctx.lineTo(px, y+h); ctx.stroke();
+        ctx.strokeStyle = '#888';
+        ctx.beginPath(); ctx.moveTo(px, y+h); ctx.lineTo(px, y+h+4); ctx.stroke();
+        ctx.fillStyle = '#000'; ctx.fillText(round(xv), px, y+h+6);
+      }
+
+      ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+      for (let j=0;j<=yticks;j++){
+        const t = j/yticks, yv = yMax - t*(yMax-yMin);
+        const py = y + t*h;
+        ctx.strokeStyle = 'rgba(0,0,0,.08)'; ctx.beginPath();
+        ctx.moveTo(x, py); ctx.lineTo(x+w, py); ctx.stroke();
+        ctx.strokeStyle = '#888';
+        ctx.beginPath(); ctx.moveTo(x-4, py); ctx.lineTo(x, py); ctx.stroke();
+        ctx.fillStyle = '#000'; ctx.fillText(round(yv), x-6, py);
+      }
+
+      // axis labels
+      ctx.save();
+      ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+      ctx.fillText('S (substrate concentration)', x + w/2, y + h + 28);
+      ctx.translate(x - 36, y + h/2); ctx.rotate(-Math.PI/2);
+      ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+      ctx.fillText('v (rate)', 0, 0);
+      ctx.restore();
+    }
+    function worldToScreen(rect, xMin, xMax, yMin, yMax, S, v) {
+      const {x, y, w, h} = rect;
+      const px = x + ((S - xMin) / (xMax - xMin)) * w;
+      const py = y + h - ((v - yMin) / (yMax - yMin)) * h;
+      return [px, py];
+    }
+    function drawCurve(rect, xMin, xMax, yMin, yMax, series, color='#0b65d1') {
+      ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.beginPath();
+      for (let i=0;i<series.length;i++){
+        const [px, py] = worldToScreen(rect, xMin, xMax, yMin, yMax, series[i].S, series[i].v);
+        if (i===0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+    }
+    function drawHalfMax(rect, xMin, xMax, yMin, yMax, sHalf, vHalf) {
+      ctx.strokeStyle = '#cc5500'; ctx.setLineDash([5,5]); ctx.lineWidth = 1.25;
+      // vertical
+      let p1 = worldToScreen(rect, xMin, xMax, yMin, yMax, sHalf, yMin);
+      let p2 = worldToScreen(rect, xMin, xMax, yMin, yMax, sHalf, vHalf);
+      ctx.beginPath(); ctx.moveTo(p1[0], p1[1]); ctx.lineTo(p2[0], p2[1]); ctx.stroke();
+      // horizontal
+      p1 = worldToScreen(rect, xMin, xMax, yMin, yMax, xMin, vHalf);
+      p2 = worldToScreen(rect, xMin, xMax, yMin, yMax, sHalf, vHalf);
+      ctx.beginPath(); ctx.moveTo(p1[0], p1[1]); ctx.lineTo(p2[0], p2[1]); ctx.stroke();
+      ctx.setLineDash([]);
+      // marker + label
+      const [mx,my] = worldToScreen(rect, xMin, xMax, yMin, yMax, sHalf, vHalf);
+      ctx.fillStyle = '#cc5500'; ctx.beginPath(); ctx.arc(mx, my, 3, 0, Math.PI*2); ctx.fill();
+      ctx.font = '12px system-ui, sans-serif'; ctx.textAlign='left'; ctx.textBaseline='bottom';
+      ctx.fillText(`Half-max: S=${round(sHalf)}, v=${round(vHalf)}`, mx+6, my-6);
+    }
+
+    /* ---------- render pipeline ---------- */
+    let lastParams = null, lastSeries = null, lastY = null;
+    function render() {
+      const p = readParams(); if (!p) return;
+      lastParams = p;
+      const series = computeSeries(p);
+      lastSeries = series;
+      // determine y-range with padding
+      let ymin = Infinity, ymax = -Infinity;
+      for (const d of series){ if (d.v < ymin) ymin = d.v; if (d.v > ymax) ymax = d.v; }
+      if (!isFinite(ymin) || !isFinite(ymax)) { ymin=0; ymax=1; }
+      if (ymax === ymin) ymax = ymin + 1;
+      const pad = (ymax - ymin) * 0.15;
+      ymin -= pad; ymax += pad;
+      lastY = {ymin, ymax};
+
+      // canvas sizing + clear
+      fitCanvasToCSS();
+      ctx.clearRect(0,0,els.canvas.width,els.canvas.height);
+
+      // plot rect
+      const rect = { x: 56, y: 16, w: els.canvas.clientWidth - 80, h: els.canvas.clientHeight - 70 };
+      // axes
+      drawAxes(rect, p.smin, p.smax, ymin, ymax);
+      // curve
+      drawCurve(rect, p.smin, p.smax, ymin, ymax, series);
+      // half-max marker
+      const sHalf = p.alpha * p.km, vHalf = p.vmax/2;
+      drawHalfMax(rect, p.smin, p.smax, ymin, ymax, sHalf, vHalf);
+      updateSummary(p.alpha, p.km, p.vmax);
+
+      // table
+      els.tableBody.innerHTML = series.map(d => `<tr><td>${round(d.S)}</td><td>${round(d.v)}</td></tr>`).join('');
+    }
+
+    /* ---------- events ---------- */
+    form.addEventListener('submit', (e)=>{ e.preventDefault(); render(); });
+    els.mode.addEventListener('change', ()=>{ showInhibFields(); render(); });
+    els.seed.addEventListener('click', ()=>{
+      els.vmax.value=100; els.km.value=30; els.smin.value=0; els.smax.value=200; els.step.value=1;
+      els.mode.value='none'; els.I.value=0; els.Ki.value=50; showInhibFields(); render();
     });
-
-    els.download.addEventListener('click', () => {
-      const p = readParams();
-      if (!p) return;
-      const data = computeSeries(p);
-      const rows = [['S', 'v'], ...data.map(d => [d.S, d.v])];
-      const csv = rows.map(r => r.join(',')).join('\n');
-      const blob = new Blob([csv], { type: 'text/csv' });
+    els.download.addEventListener('click', ()=>{
+      const p = lastParams || readParams(); if (!p) return;
+      const data = lastSeries || computeSeries(p);
+      const rows = [['S','v'], ...data.map(d=>[round(d.S), round(d.v)])];
+      const csv = rows.map(r=>r.join(',')).join('\n');
+      const blob = new Blob([csv], {type:'text/csv'});
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = 'michaelis_menten.csv'; a.click();
+      const a = document.createElement('a'); a.href = url; a.download = 'michaelis_menten.csv'; a.click();
       URL.revokeObjectURL(url);
     });
-
-    els.seed.addEventListener('click', () => {
-      els.vmax.value = 100; els.km.value = 30;
-      els.smin.value = 0;   els.smax.value = 200; els.step.value = 1;
-      els.mode.value = 'none'; els.I.value = 0; els.Ki.value = 50;
-      updateSummary();
-      // also replot right away after reset
-      const p = readParams(); if (!p) return;
-      const data = computeSeries(p);
-      renderTable(data);
-      renderPlot(data, p);
+    window.addEventListener('resize', ()=>{
+      if (!lastParams || !lastSeries || !lastY) return;
+      // redraw with cached results on resize
+      fitCanvasToCSS();
+      ctx.clearRect(0,0,els.canvas.width,els.canvas.height);
+      const rect = { x: 56, y: 16, w: els.canvas.clientWidth - 80, h: els.canvas.clientHeight - 70 };
+      drawAxes(rect, lastParams.smin, lastParams.smax, lastY.ymin, lastY.ymax);
+      drawCurve(rect, lastParams.smin, lastParams.smax, lastY.ymin, lastY.ymax, lastSeries);
+      const sHalf = lastParams.alpha * lastParams.km, vHalf = lastParams.vmax/2;
+      drawHalfMax(rect, lastParams.smin, lastParams.smax, lastY.ymin, lastY.ymax, sHalf, vHalf);
     });
 
-    // Initial render on page load
-    updateSummary();
-    const p = readParams();
-    if (p) {
-      const data = computeSeries(p);
-      renderTable(data);
-      renderPlot(data, p);
-    }
+    // initial
+    showInhibFields();
+    render();
   }
 
   if (document.readyState === 'loading') {
