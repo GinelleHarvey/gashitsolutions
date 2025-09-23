@@ -6,7 +6,7 @@
   <title>Assignment 4 – Plotting Calculator (Michaelis–Menten, Plotly.js)</title>
   <meta name="description" content="Assignment 4: JavaScript calculator with plotting using the Michaelis–Menten model (optional competitive inhibition).">
 
-  <!-- Site stylesheet + favicons to match your other pages -->
+  <!-- Your site CSS + icons (root paths) -->
   <link rel="stylesheet" href="assets/style.css?v=5">
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
@@ -15,11 +15,11 @@
   <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon-128x128.png">
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 
-  <!-- Plotly CDN -->
+  <!-- Plotly must load BEFORE script.js -->
   <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 </head>
 <body>
-  <!-- Header-->
+  <!-- Header (exactly your site’s header) -->
   <header class="header">
     <div class="wrap">
       <div class="brand">
@@ -35,6 +35,11 @@
       </nav>
     </div>
   </header>
+
+  <!-- Breadcrumb (root link to purpose.html) -->
+  <div class="wrap" style="margin: 0.75rem auto 0;">
+    <a href="purpose.html">← Back to Purpose &amp; Assignments</a>
+  </div>
 
   <main class="wrap">
     <h1>Assignment 4: JavaScript Calculator + Plot</h1>
@@ -109,6 +114,7 @@
     Plotting library: <strong>Plotly.js</strong>. Model: Michaelis–Menten with optional competitive inhibition.
   </footer>
 
+  <!-- Your global JS (root) -->
   <script src="script.js"></script>
 </body>
 </html>
