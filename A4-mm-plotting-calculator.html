@@ -4,9 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>A4 — Equation Calculator &amp; Animated Plot (Michaelis–Menten)</title>
-  <meta name="description" content="Assignment 4: Equation Calculator & Animated Plot using the Michaelis–Menten model.">
+  <meta name="description" content="Assignment 4: Equation Calculator & Animated Plot using the Michaelis–Menten model. No external libraries; sliders and canvas animation.">
 
-  <!-- Site CSS + icons (root paths) -->
+  <!-- Your site CSS + icons (root paths) -->
   <link rel="stylesheet" href="assets/style.css?v=5">
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
@@ -16,8 +16,10 @@
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 
   <style>
-    /* page-only helpers; site CSS handles the rest */
+    /* Page helpers only; your site CSS handles the rest */
     .wrap { max-width: 980px; margin: 0 auto; padding: 1rem; }
+    .page-banner { text-align: center; padding: .9rem 0 .6rem; }
+    .page-banner .crumb a { text-decoration: none; }
     .eq { text-align: center; margin: 1rem 0 .5rem; font-size: 1.35rem; line-height: 1.35; }
     .meta { text-align: center; color: #555; margin: .25rem 0 1rem; }
     .controls { margin: .5rem 0 1rem; }
@@ -29,10 +31,13 @@
     .toolbar button { padding: .45rem .7rem; }
     .legend { text-align: center; margin: .25rem 0 .75rem; color: #333; font-size: .95rem; }
     canvas { width: 100%; height: 430px; border: 1px solid #ccc; background: #fff; display: block; }
+    /* Footer helper to center content like other pages */
+    .footer .wrap { display: flex; justify-content: space-between; align-items: center; gap: .75rem; }
+    @media (max-width: 720px){ .footer .wrap { flex-direction: column; } }
   </style>
 </head>
 <body>
-  <!-- Header -->
+  <!-- Header (unchanged) -->
   <header class="header">
     <div class="wrap">
       <div class="brand">
@@ -49,14 +54,16 @@
     </div>
   </header>
 
-  <!-- Breadcrumb -->
-  <div class="wrap" style="margin:.6rem auto 0;">
-    <a href="purpose.html">← Back to Purpose &amp; Assignments</a>
-  </div>
+  <!-- Centered page banner with back link + title -->
+  <section class="page-banner">
+    <div class="wrap">
+      <p class="crumb"><a href="purpose.html">← Back to Purpose &amp; Assignments</a></p>
+      <h1>Equation Calculator &amp; Animated Plot</h1>
+    </div>
+  </section>
 
   <main class="wrap">
-    <h1 style="text-align:center;">Equation Calculator &amp; Animated Plot</h1>
-
+    <!-- Big equation line -->
     <div class="eq">
       v(S) = ( V<sub>max</sub> · S ) / ( α · K<sub>m</sub> + S ) &nbsp;&nbsp;&nbsp;
       with &nbsp;&nbsp; α = 1 + I / K<sub>i</sub>
@@ -106,11 +113,25 @@
     <canvas id="plot" aria-label="Michaelis–Menten animated plot"></canvas>
   </main>
 
-  <footer class="wrap" style="margin:2rem 0">
-    No external libraries. Plot drawn with Canvas; sliders update live; animated marker sweeps along the curve.
+  <!-- Footer matching other pages + link back to Purpose -->
+  <footer class="footer">
+    <div class="wrap">
+      <small>&copy; <span id="year"></span> GASH IT Solutions</small>
+      <nav class="footer-nav">
+        <a href="purpose.html">← Back to Purpose &amp; Assignments</a>
+      </nav>
+    </div>
   </footer>
 
-  <!-- Single site script (loaded last so DOM exists) -->
+  <!-- Year stamp (same helper used on your other pages) -->
+  <script>
+    (function(){
+      var y = document.getElementById('year');
+      if (y) y.textContent = new Date().getFullYear();
+    })();
+  </script>
+
+  <!-- Your site script with the animated MM module already added -->
   <script src="script.js"></script>
 </body>
 </html>
