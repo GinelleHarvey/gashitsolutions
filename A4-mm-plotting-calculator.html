@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Assignment 4 – Michaelis–Menten Calculator + Plot</title>
+  <title>Assignment 4 – Michaelis–Menten Calculator + Animated Plot</title>
   <link rel="stylesheet" href="assets/style.css?v=5">
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
@@ -12,18 +12,22 @@
   <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon-128x128.png">
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <style>
-    .wrap { max-width: 800px; margin: auto; padding: 1rem; }
-    .slider-row { display: flex; align-items: center; margin: 0.5rem 0; }
-    .slider-row label { flex: 1; }
-    .slider-row input[type="range"] { flex: 2; margin: 0 1rem; }
-    .slider-row output { width: 50px; text-align: right; }
-    canvas { width: 100%; height: 400px; border: 1px solid #ccc; background: #fff; }
-    .eq { text-align:center; margin: 1rem 0; font-size: 1.4rem; }
-    .meta { text-align:center; margin: 0.5rem 0 1rem; font-size: 0.9rem; color:#555; }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 1rem; }
+    .eq { text-align:center; margin: 1rem 0 .5rem; font-size: 1.35rem; line-height: 1.35; }
+    .meta { text-align:center; color:#555; margin:.25rem 0 1rem; }
+    .slider-row { display:flex; align-items:center; gap:1rem; margin:.5rem 0; }
+    .slider-row label { width: 180px; }
+    .slider-row input[type="range"] { flex: 1; }
+    .slider-row output { width:72px; text-align:right; }
+    .controls { margin: .5rem 0 1rem; }
+    canvas { width: 100%; height: 430px; border:1px solid #ccc; background:#fff; display:block; }
+    .toolbar { display:flex; gap:.5rem; flex-wrap:wrap; margin:.25rem 0 1rem; }
+    .toolbar button { padding:.45rem .7rem; }
+    .legend { text-align:center; margin:.25rem 0 .75rem; color:#333; font-size:.95rem; }
   </style>
 </head>
 <body>
-  <!-- Header exactly as your site -->
+  <!-- Header (unchanged) -->
   <header class="header">
     <div class="wrap">
       <div class="brand">
@@ -40,48 +44,65 @@
     </div>
   </header>
 
-  <div class="wrap">
-    <a href="purpose.html">← Back to Purpose & Assignments</a>
+  <div class="wrap" style="margin:.6rem auto 0;">
+    <a href="purpose.html">← Back to Purpose &amp; Assignments</a>
+  </div>
 
+  <main class="wrap">
     <h1 style="text-align:center;">Assignment 4: Michaelis–Menten Calculator</h1>
 
+    <!-- Big readable equation (no libs) -->
     <div class="eq">
-      v(S) = ( V<sub>max</sub> × S ) / ( α × K<sub>m</sub> + S )  
-      &nbsp;&nbsp;&nbsp; α = 1 + I / K<sub>i</sub>
+      v(S) = ( V<sub>max</sub> · S ) / ( α · K<sub>m</sub> + S ) &nbsp;&nbsp;&nbsp; with &nbsp;&nbsp; α = 1 + I / K<sub>i</sub>
     </div>
-
-    <div class="meta" id="halfMax">Half-max at S = Km, v = Vmax/2</div>
+    <div class="meta" id="halfMax">Half-max at S = K<sub>m</sub> (α = 1) → v = V<sub>max</sub>/2</div>
 
     <!-- Sliders -->
-    <div class="slider-row">
-      <label>Vmax</label>
-      <input type="range" id="Vmax" min="10" max="200" step="1" value="100">
-      <output id="outVmax">100</output>
-    </div>
-    <div class="slider-row">
-      <label>K<sub>m</sub></label>
-      <input type="range" id="Km" min="1" max="100" step="1" value="30">
-      <output id="outKm">30</output>
-    </div>
-    <div class="slider-row">
-      <label>Inhibitor I</label>
-      <input type="range" id="I" min="0" max="100" step="1" value="0">
-      <output id="outI">0</output>
-    </div>
-    <div class="slider-row">
-      <label>K<sub>i</sub></label>
-      <input type="range" id="Ki" min="1" max="100" step="1" value="50">
-      <output id="outKi">50</output>
-    </div>
-    <div class="slider-row">
-      <label>S range max</label>
-      <input type="range" id="Smax" min="50" max="500" step="10" value="200">
-      <output id="outSmax">200</output>
-    </div>
+    <section class="controls">
+      <div class="slider-row">
+        <label for="Vmax">V<sub>max</sub></label>
+        <input type="range" id="Vmax" min="10" max="200" step="1" value="100" />
+        <output id="outVmax">100</output>
+      </div>
+      <div class="slider-row">
+        <label for="Km">K<sub>m</sub></label>
+        <input type="range" id="Km" min="1" max="100" step="1" value="30" />
+        <output id="outKm">30</output>
+      </div>
+      <div class="slider-row">
+        <label for="I">Inhibitor I</label>
+        <input type="range" id="I" min="0" max="100" step="1" value="0" />
+        <output id="outI">0</output>
+      </div>
+      <div class="slider-row">
+        <label for="Ki">K<sub>i</sub></label>
+        <input type="range" id="Ki" min="1" max="100" step="1" value="50" />
+        <output id="outKi">50</output>
+      </div>
+      <div class="slider-row">
+        <label for="Smax">S range max</label>
+        <input type="range" id="Smax" min="50" max="600" step="10" value="200" />
+        <output id="outSmax">200</output>
+      </div>
+      <div class="slider-row">
+        <label for="Speed">Animation speed</label>
+        <input type="range" id="Speed" min="0.2" max="3" step="0.1" value="1" />
+        <output id="outSpeed">1.0×</output>
+      </div>
+      <div class="toolbar">
+        <button type="button" id="btnPlay">▶ Play</button>
+        <button type="button" id="btnReset">Reset</button>
+      </div>
+      <div class="legend" id="liveReadout">S = 0.0, v(S) = 0.0, α = 1.0</div>
+    </section>
 
-    <!-- Canvas for plot -->
-    <canvas id="plot"></canvas>
-  </div>
+    <!-- Canvas plot -->
+    <canvas id="plot" aria-label="Michaelis–Menten animated plot"></canvas>
+  </main>
+
+  <footer class="wrap" style="margin:2rem 0">
+    No external libraries. Equation shown above; plot drawn with Canvas; sliders update live. Animated marker sweeps along the curve.
+  </footer>
 
   <script src="script.js"></script>
 </body>
