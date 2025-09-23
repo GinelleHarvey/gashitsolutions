@@ -216,7 +216,8 @@ if (review) {
   });
 }
 
-/* === A4 – Michaelis–Menten with sliders + ANIMATION (no libraries) ======= */
+
+/* === A4 – Equation Calculator & Animated Plot (no libraries) ============ */
 (function(){
   // Grab elements
   const Vmax = document.getElementById("Vmax");
@@ -237,17 +238,17 @@ if (review) {
   const live    = document.getElementById("liveReadout");
 
   const canvas  = document.getElementById("plot");
-  if (!canvas) return;               // only run on this page
+  if (!canvas) return;               // run only on this page
   const ctx     = canvas.getContext("2d");
 
   const btnPlay = document.getElementById("btnPlay");
   const btnReset= document.getElementById("btnReset");
 
-  // Utility formatting
+  // Utils
   const f1 = n => (+n).toFixed(1);
   const f2 = n => (+n).toFixed(2);
+  const alpha = () => 1 + (parseFloat(I.value)/parseFloat(Ki.value));
 
-  // Slider -> output mirrors
   function syncOutputs(){
     outVmax.textContent = Vmax.value;
     outKm.textContent   = Km.value;
@@ -257,20 +258,16 @@ if (review) {
     outSpeed.textContent= f1(Speed.value) + "×";
   }
 
-  // Compute alpha and series
-  function alpha(){ return 1 + (parseFloat(I.value)/parseFloat(Ki.value)); }
   function series(){
     const vmax = +Vmax.value, km = +Km.value, smax = +Smax.value, a = alpha();
-    const step = smax/240;              // 240 points → smooth line
+    const step = smax/240; // smooth
     const pts = [];
     for(let s=0; s<=smax; s+=step){
-      const v = (vmax*s)/(a*km + s);
-      pts.push({s,v});
+      pts.push({ s, v: (vmax*s)/(a*km + s) });
     }
     return pts;
   }
 
-  // Canvas sizing (retina crisp)
   function fitCanvas(){
     const dpr = window.devicePixelRatio || 1;
     const w = canvas.clientWidth, h = canvas.clientHeight;
@@ -279,7 +276,6 @@ if (review) {
     ctx.setTransform(dpr,0,0,dpr,0,0);
   }
 
-  // Axes & curve
   function drawAll(sMarker){
     syncOutputs();
     fitCanvas();
@@ -287,21 +283,21 @@ if (review) {
     const vmax = +Vmax.value, km = +Km.value, smax = +Smax.value, a = alpha();
     const pts = series();
 
-    // y-range with a little headroom
-    let ymin = 0, ymax = vmax * 1.15;
+    // y-range with headroom
+    const ymin = 0, ymax = vmax * 1.15;
     const padL = 56, padB = 40, padR = 16, padT = 16;
     const plot = { x: padL, y: padT, w: canvas.clientWidth - padL - padR, h: canvas.clientHeight - padT - padB };
 
-    // Clear
+    // clear + border
     ctx.clearRect(0,0,canvas.width,canvas.height);
-
-    // Border + grid
     ctx.strokeStyle = "#888"; ctx.lineWidth = 1;
     ctx.strokeRect(plot.x, plot.y, plot.w, plot.h);
 
-    // grid lines
+    // grid + ticks
     ctx.font = "12px system-ui, sans-serif";
-    ctx.fillStyle = "#000"; ctx.textAlign="center"; ctx.textBaseline="top";
+    ctx.fillStyle = "#000";
+    // X ticks
+    ctx.textAlign="center"; ctx.textBaseline="top";
     const xticks = 6, yticks = 5;
     for(let i=0;i<=xticks;i++){
       const t=i/xticks, s=t*smax, px=plot.x + t*plot.w;
@@ -310,6 +306,7 @@ if (review) {
       ctx.strokeStyle="#888"; ctx.beginPath(); ctx.moveTo(px, plot.y+plot.h); ctx.lineTo(px, plot.y+plot.h+4); ctx.stroke();
       ctx.fillText(f1(s), px, plot.y+plot.h+6);
     }
+    // Y ticks
     ctx.textAlign="right"; ctx.textBaseline="middle";
     for(let j=0;j<=yticks;j++){
       const t=j/yticks, v = ymax - t*(ymax-ymin), py = plot.y + t*plot.h;
@@ -328,7 +325,7 @@ if (review) {
     ctx.fillText("v (rate)", 0, 0);
     ctx.restore();
 
-    // mapping
+    // mapping helpers
     const X = s => plot.x + (s/smax)*plot.w;
     const Y = v => plot.y + plot.h - ((v-ymin)/(ymax-ymin))*plot.h;
 
@@ -337,8 +334,8 @@ if (review) {
     pts.forEach((p,i)=>{ const x=X(p.s), y=Y(p.v); i?ctx.lineTo(x,y):ctx.moveTo(x,y); });
     ctx.stroke();
 
-    // half-max marker
-    const sHalf = a*km, vHalf = (+Vmax.value)/2;
+    // half-max
+    const sHalf = a*km, vHalf = vmax/2;
     ctx.setLineDash([5,5]); ctx.strokeStyle = "#cc5500"; ctx.lineWidth=1.25;
     ctx.beginPath(); ctx.moveTo(X(sHalf), Y(ymin)); ctx.lineTo(X(sHalf), Y(vHalf)); ctx.lineTo(X(0), Y(vHalf)); ctx.stroke();
     ctx.setLineDash([]);
@@ -347,31 +344,28 @@ if (review) {
 
     // moving marker
     const sm = Math.max(0, Math.min(smax, sMarker==null?0:sMarker));
-    const vm = ( +Vmax.value * sm ) / ( a * km + sm );
+    const vm = ( vmax * sm ) / ( a * km + sm );
     ctx.fillStyle="#2a9d8f"; ctx.beginPath(); ctx.arc(X(sm), Y(vm), 4, 0, Math.PI*2); ctx.fill();
     // crosshair
     ctx.setLineDash([3,3]); ctx.strokeStyle="#2a9d8f";
-    ctx.beginPath(); ctx.moveTo(X(sm), Y(ymin)); ctx.lineTo(X(sm), Y(vm)); ctx.lineTo(X(0), Y(vm)); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(X(sm), Y(0)); ctx.lineTo(X(sm), Y(vm)); ctx.lineTo(X(0), Y(vm)); ctx.stroke();
     ctx.setLineDash([]);
 
     live.textContent = `S = ${f2(sm)}, v(S) = ${f2(vm)}, α = ${f2(a)}`;
   }
 
-  // Animation state
+  // animation state
   let playing = false, dir = 1, sAnim = 0, lastT = 0;
 
   function step(ts){
     if (!playing){ lastT = ts; return; }
-    const dt = (ts - lastT) / 1000;        // seconds
+    const dt = (ts - lastT) / 1000;  // seconds
     lastT = ts;
-
     const smax = +Smax.value;
-    const speed = +Speed.value;            // fraction of Smax per second
+    const speed = +Speed.value;      // fraction of Smax per second
     sAnim += dir * (speed * smax * dt);
-
     if (sAnim > smax){ sAnim = smax; dir = -1; }
     if (sAnim < 0){ sAnim = 0; dir = +1; }
-
     drawAll(sAnim);
     requestAnimationFrame(step);
   }
@@ -386,12 +380,12 @@ if (review) {
     dir = 1; sAnim = 0; drawAll(sAnim);
   }
 
-  // Wire up
-  [Vmax,Km,I,Ki,Smax,Speed].forEach(el => el.addEventListener("input", ()=> drawAll(sAnim)));
-  btnPlay.addEventListener("click", playPause);
-  btnReset.addEventListener("click", reset);
+  // wire up
+  [Vmax,Km,I,Ki,Smax,Speed].forEach(el => el && el.addEventListener("input", ()=> drawAll(sAnim)));
+  btnPlay && btnPlay.addEventListener("click", playPause);
+  btnReset && btnReset.addEventListener("click", reset);
   window.addEventListener("resize", ()=> drawAll(sAnim));
 
-  // First paint
+  // first paint
   drawAll(0);
 })();
