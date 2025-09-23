@@ -3,10 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Assignment 4 – Plotting Calculator (Michaelis–Menten, Vanilla JS)</title>
-  <meta name="description" content="Assignment 4: JavaScript calculator with plotting using the Michaelis–Menten model (no external libraries).">
-
-  <!-- Your site CSS + icons (root) -->
+  <title>Assignment 4 – Michaelis–Menten Calculator + Plot</title>
   <link rel="stylesheet" href="assets/style.css?v=5">
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
@@ -15,18 +12,18 @@
   <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon-128x128.png">
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <style>
-    /* tiny page-only helpers; everything else uses your site CSS */
-    .eq-block { text-align:center; margin: 1rem 0 0.5rem; }
-    .controls { display:grid; gap:.5rem; max-width:680px; margin:.5rem 0 1rem; }
-    .controls .row { display:grid; grid-template-columns: 1fr 1fr; gap:.5rem; }
-    @media (max-width:700px){ .controls .row{ grid-template-columns: 1fr; } }
-    .meta { text-align:center; font-size:.9rem; opacity:.8; margin:.25rem 0 1rem; }
-    #mmCanvas { width:100%; height:420px; border:1px solid rgba(0,0,0,.1); background: #fff; }
-    .backlink { margin: .75rem auto 0; }
+    .wrap { max-width: 800px; margin: auto; padding: 1rem; }
+    .slider-row { display: flex; align-items: center; margin: 0.5rem 0; }
+    .slider-row label { flex: 1; }
+    .slider-row input[type="range"] { flex: 2; margin: 0 1rem; }
+    .slider-row output { width: 50px; text-align: right; }
+    canvas { width: 100%; height: 400px; border: 1px solid #ccc; background: #fff; }
+    .eq { text-align:center; margin: 1rem 0; font-size: 1.4rem; }
+    .meta { text-align:center; margin: 0.5rem 0 1rem; font-size: 0.9rem; color:#555; }
   </style>
 </head>
 <body>
-  <!-- Header (exactly like your site) -->
+  <!-- Header exactly as your site -->
   <header class="header">
     <div class="wrap">
       <div class="brand">
@@ -43,114 +40,49 @@
     </div>
   </header>
 
-  <!-- Breadcrumb (root) -->
-  <div class="wrap backlink">
-    <a href="purpose.html">← Back to Purpose &amp; Assignments</a>
+  <div class="wrap">
+    <a href="purpose.html">← Back to Purpose & Assignments</a>
+
+    <h1 style="text-align:center;">Assignment 4: Michaelis–Menten Calculator</h1>
+
+    <div class="eq">
+      v(S) = ( V<sub>max</sub> × S ) / ( α × K<sub>m</sub> + S )  
+      &nbsp;&nbsp;&nbsp; α = 1 + I / K<sub>i</sub>
+    </div>
+
+    <div class="meta" id="halfMax">Half-max at S = Km, v = Vmax/2</div>
+
+    <!-- Sliders -->
+    <div class="slider-row">
+      <label>Vmax</label>
+      <input type="range" id="Vmax" min="10" max="200" step="1" value="100">
+      <output id="outVmax">100</output>
+    </div>
+    <div class="slider-row">
+      <label>K<sub>m</sub></label>
+      <input type="range" id="Km" min="1" max="100" step="1" value="30">
+      <output id="outKm">30</output>
+    </div>
+    <div class="slider-row">
+      <label>Inhibitor I</label>
+      <input type="range" id="I" min="0" max="100" step="1" value="0">
+      <output id="outI">0</output>
+    </div>
+    <div class="slider-row">
+      <label>K<sub>i</sub></label>
+      <input type="range" id="Ki" min="1" max="100" step="1" value="50">
+      <output id="outKi">50</output>
+    </div>
+    <div class="slider-row">
+      <label>S range max</label>
+      <input type="range" id="Smax" min="50" max="500" step="10" value="200">
+      <output id="outSmax">200</output>
+    </div>
+
+    <!-- Canvas for plot -->
+    <canvas id="plot"></canvas>
   </div>
 
-  <main class="wrap">
-    <h1 style="text-align:center;">Assignment 4: JavaScript Calculator + Plot</h1>
-
-    <!-- Big equation (MathML, no libraries) -->
-    <div class="eq-block">
-      <math display="block">
-        <mi>v</mi><mo>(</mo><mi>S</mi><mo>)</mo>
-        <mo>=</mo>
-        <mfrac>
-          <mrow>
-            <msub><mi>V</mi><mtext>max</mtext></msub>
-            <mo>&#x22C5;</mo><mi>S</mi>
-          </mrow>
-          <mrow>
-            <mi>&#x03B1;</mi><mo>&#x22C5;</mo>
-            <msub><mi>K</mi><mi>m</mi></msub>
-            <mo>+</mo><mi>S</mi>
-          </mrow>
-        </mfrac>
-      </math>
-      <math display="block" style="margin-top:.25rem;">
-        <mi>&#x03B1;</mi><mo>=</mo><mn>1</mn><mo>+</mo>
-        <mfrac><mi>I</mi><msub><mi>K</mi><mi>i</mi></msub></mfrac>
-      </math>
-      <div class="meta" id="mmMeta">Half-max at <em>S</em> = <em>K</em><sub>m</sub> (α=1) ⇒ v = V<sub>max</sub>/2.</div>
-    </div>
-
-    <!-- Controls -->
-    <form id="mmForm" class="controls" novalidate>
-      <div id="mmError" hidden style="color:#b33;"></div>
-
-      <div class="row">
-        <div>
-          <label for="mmVmax">V<sub>max</sub></label>
-          <input id="mmVmax" type="number" step="any" value="100" required />
-        </div>
-        <div>
-          <label for="mmKm">K<sub>m</sub></label>
-          <input id="mmKm" type="number" step="any" value="30" required />
-        </div>
-      </div>
-
-      <div class="row">
-        <div>
-          <label for="mmSmin">S<sub>min</sub></label>
-          <input id="mmSmin" type="number" step="any" value="0" required />
-        </div>
-        <div>
-          <label for="mmSmax">S<sub>max</sub></label>
-          <input id="mmSmax" type="number" step="any" value="200" required />
-        </div>
-      </div>
-
-      <div class="row">
-        <div>
-          <label for="mmStep">Step (ΔS)</label>
-          <input id="mmStep" type="number" step="any" value="1" required />
-        </div>
-        <div>
-          <label for="mmMode">Inhibition</label>
-          <select id="mmMode">
-            <option value="none" selected>None</option>
-            <option value="competitive">Competitive (use I &amp; K<sub>i</sub>)</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="row" id="mmInhibWrap" hidden>
-        <div>
-          <label for="mmI">Inhibitor (I)</label>
-          <input id="mmI" type="number" step="any" value="0" />
-        </div>
-        <div>
-          <label for="mmKi">K<sub>i</sub></label>
-          <input id="mmKi" type="number" step="any" value="50" />
-        </div>
-      </div>
-
-      <div style="display:flex;gap:.5rem;flex-wrap:wrap">
-        <button type="submit">Compute &amp; Plot</button>
-        <button type="button" id="mmDownload">Download CSV</button>
-        <button type="button" id="mmSeed">Reset Seeds</button>
-      </div>
-    </form>
-
-    <!-- Plot (native Canvas) -->
-    <canvas id="mmCanvas" aria-label="Michaelis–Menten plot"></canvas>
-
-    <div style="overflow:auto; margin-top:1rem;">
-      <table style="width:100%; border-collapse:collapse;">
-        <thead>
-          <tr><th style="text-align:left">S</th><th style="text-align:left">v</th></tr>
-        </thead>
-        <tbody id="mmTableBody"></tbody>
-      </table>
-    </div>
-  </main>
-
-  <footer class="wrap" style="margin:2rem 0">
-    No external libraries. Equation rendered with MathML; plot drawn with HTML5 Canvas.
-  </footer>
-
-  <!-- Your global JS (root) -->
   <script src="script.js"></script>
 </body>
 </html>
