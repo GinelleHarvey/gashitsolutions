@@ -215,3 +215,172 @@ if (review) {
     window.location.href = `mailto:info@gashitsolutions.com?subject=${subject}&body=${body}`;
   });
 }
+
+/* === Assignment 4 – Michaelis–Menten plotting module ===================== */
+(function () {
+  function init() {
+    const form = document.getElementById('mmForm');
+    if (!form) return; // only run on the A4 page
+
+    const els = {
+      err: document.getElementById('mmError'),
+      vmax: document.getElementById('mmVmax'),
+      km: document.getElementById('mmKm'),
+      smin: document.getElementById('mmSmin'),
+      smax: document.getElementById('mmSmax'),
+      step: document.getElementById('mmStep'),
+      mode: document.getElementById('mmMode'),
+      inhibWrap: document.getElementById('mmInhibWrap'),
+      I: document.getElementById('mmI'),
+      Ki: document.getElementById('mmKi'),
+      summary: document.getElementById('mmSummary'),
+      plot: document.getElementById('mmPlot'),
+      tableBody: document.getElementById('mmTableBody'),
+      download: document.getElementById('mmDownload'),
+      seed: document.getElementById('mmSeed')
+    };
+
+    // UI helpers
+    function updateSummary() {
+      const competitive = els.mode.value === 'competitive';
+      if (els.inhibWrap) els.inhibWrap.hidden = !competitive;
+      if (els.summary) {
+        els.summary.innerHTML = competitive
+          ? 'Competitive inhibition: α = 1 + I/K<sub>i</sub>. Half-max at S = α·K<sub>m</sub>, v = V<sub>max</sub>/2.'
+          : 'Half-max at S = K<sub>m</sub> (α=1). v = V<sub>max</sub>/2 there.';
+      }
+    }
+
+    function readParams() {
+      const vmax = +els.vmax.value;
+      const km = +els.km.value;
+      const smin = +els.smin.value;
+      const smax = +els.smax.value;
+      const step = +els.step.value;
+      const mode = els.mode.value;
+      const I = +els.I.value;
+      const Ki = +els.Ki.value;
+
+      const errors = [];
+      if (!(vmax > 0)) errors.push('Vmax must be > 0');
+      if (!(km > 0)) errors.push('Km must be > 0');
+      if (!(smax > smin)) errors.push('Smax must be greater than Smin');
+      if (!(step > 0)) errors.push('Step must be > 0');
+      if (mode === 'competitive') {
+        if (!(Ki > 0)) errors.push('Ki must be > 0 for competitive inhibition');
+        if (I < 0) errors.push('Inhibitor concentration I must be ≥ 0');
+      }
+
+      if (errors.length) {
+        els.err.textContent = 'Please fix: ' + errors.join('; ');
+        els.err.hidden = false;
+        return null;
+      }
+      els.err.hidden = true;
+
+      const alpha = mode === 'competitive' ? 1 + (I / Ki) : 1;
+      return { vmax, km, smin, smax, step, alpha };
+    }
+
+    function computeSeries({ vmax, km, smin, smax, step, alpha }) {
+      const out = [];
+      const nSteps = Math.min(20000, Math.floor((smax - smin) / step) + 1);
+      for (let i = 0; i < nSteps; i++) {
+        const S = smin + i * step;
+        const v = (vmax * S) / (alpha * km + S);
+        out.push({ S: +S.toFixed(6), v: +v.toFixed(6) });
+      }
+      return out;
+    }
+
+    function renderTable(data) {
+      if (!els.tableBody) return;
+      els.tableBody.innerHTML = data.map(d => `<tr><td>${d.S}</td><td>${d.v}</td></tr>`).join('');
+    }
+
+    function renderPlot(data, { vmax, km, alpha }) {
+      if (typeof Plotly === 'undefined') {
+        console.error('Plotly not loaded. Check the CDN script tag order.');
+        return;
+      }
+      const x = data.map(d => d.S);
+      const y = data.map(d => d.v);
+      const sHalf = alpha * km;
+      const vHalf = vmax / 2;
+
+      const curve = { x, y, mode: 'lines', name: 'v(S)', line: { width: 3 } };
+      const halfPoint = {
+        x: [sHalf], y: [vHalf], mode: 'markers+text', name: 'Half-max',
+        text: [`S=${round(sHalf)}, v=${round(vHalf)}`], textposition: 'top center',
+        marker: { size: 10 }
+      };
+
+      const layout = {
+        margin: { l: 60, r: 20, t: 20, b: 50 },
+        xaxis: { title: 'S (substrate concentration)' },
+        yaxis: { title: 'v (rate)' },
+        shapes: [
+          { type: 'line', x0: sHalf, x1: sHalf, y0: 0, y1: vHalf, line: { dash: 'dot' } },
+          { type: 'line', x0: 0, x1: sHalf, y0: vHalf, y1: vHalf, line: { dash: 'dot' } }
+        ],
+        legend: { orientation: 'h', y: -0.2 }
+      };
+
+      Plotly.newPlot(els.plot, [curve, halfPoint], layout, { displayModeBar: true, responsive: true });
+    }
+
+    function round(n) { return Math.abs(n) < 1e-6 ? 0 : +n.toFixed(4); }
+
+    // Events
+    els.mode.addEventListener('change', updateSummary);
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const p = readParams();
+      if (!p) return;
+      const data = computeSeries(p);
+      renderTable(data);
+      renderPlot(data, p);
+    });
+
+    els.download.addEventListener('click', () => {
+      const p = readParams();
+      if (!p) return;
+      const data = computeSeries(p);
+      const rows = [['S', 'v'], ...data.map(d => [d.S, d.v])];
+      const csv = rows.map(r => r.join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'michaelis_menten.csv'; a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    els.seed.addEventListener('click', () => {
+      els.vmax.value = 100; els.km.value = 30;
+      els.smin.value = 0;   els.smax.value = 200; els.step.value = 1;
+      els.mode.value = 'none'; els.I.value = 0; els.Ki.value = 50;
+      updateSummary();
+      // also replot right away after reset
+      const p = readParams(); if (!p) return;
+      const data = computeSeries(p);
+      renderTable(data);
+      renderPlot(data, p);
+    });
+
+    // Initial render on page load
+    updateSummary();
+    const p = readParams();
+    if (p) {
+      const data = computeSeries(p);
+      renderTable(data);
+      renderPlot(data, p);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
