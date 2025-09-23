@@ -3,7 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Assignment 4 – Michaelis–Menten Calculator + Animated Plot</title>
+  <title>A4 — Equation Calculator &amp; Animated Plot (Michaelis–Menten)</title>
+  <meta name="description" content="Assignment 4: Equation Calculator & Animated Plot using the Michaelis–Menten model. No external libraries; sliders and canvas animation.">
+
+  <!-- Your site CSS + icons (root paths) -->
   <link rel="stylesheet" href="assets/style.css?v=5">
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
@@ -11,23 +14,25 @@
   <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64x64.png">
   <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon-128x128.png">
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+
   <style>
+    /* page-only helpers; your site CSS handles the rest */
     .wrap { max-width: 980px; margin: 0 auto; padding: 1rem; }
-    .eq { text-align:center; margin: 1rem 0 .5rem; font-size: 1.35rem; line-height: 1.35; }
-    .meta { text-align:center; color:#555; margin:.25rem 0 1rem; }
-    .slider-row { display:flex; align-items:center; gap:1rem; margin:.5rem 0; }
+    .eq { text-align: center; margin: 1rem 0 .5rem; font-size: 1.35rem; line-height: 1.35; }
+    .meta { text-align: center; color: #555; margin: .25rem 0 1rem; }
+    .controls { margin: .5rem 0 1rem; }
+    .slider-row { display: flex; align-items: center; gap: 1rem; margin: .5rem 0; }
     .slider-row label { width: 180px; }
     .slider-row input[type="range"] { flex: 1; }
-    .slider-row output { width:72px; text-align:right; }
-    .controls { margin: .5rem 0 1rem; }
-    canvas { width: 100%; height: 430px; border:1px solid #ccc; background:#fff; display:block; }
-    .toolbar { display:flex; gap:.5rem; flex-wrap:wrap; margin:.25rem 0 1rem; }
-    .toolbar button { padding:.45rem .7rem; }
-    .legend { text-align:center; margin:.25rem 0 .75rem; color:#333; font-size:.95rem; }
+    .slider-row output { width: 72px; text-align: right; }
+    .toolbar { display: flex; gap: .5rem; flex-wrap: wrap; margin: .25rem 0 1rem; }
+    .toolbar button { padding: .45rem .7rem; }
+    .legend { text-align: center; margin: .25rem 0 .75rem; color: #333; font-size: .95rem; }
+    canvas { width: 100%; height: 430px; border: 1px solid #ccc; background: #fff; display: block; }
   </style>
 </head>
 <body>
-  <!-- Header (unchanged) -->
+  <!-- Header (your exact markup) -->
   <header class="header">
     <div class="wrap">
       <div class="brand">
@@ -44,16 +49,17 @@
     </div>
   </header>
 
+  <!-- Breadcrumb -->
   <div class="wrap" style="margin:.6rem auto 0;">
     <a href="purpose.html">← Back to Purpose &amp; Assignments</a>
   </div>
 
   <main class="wrap">
-    <h1 style="text-align:center;">Assignment 4: Michaelis–Menten Calculator</h1>
+    <h1 style="text-align:center;">Equation Calculator &amp; Animated Plot</h1>
 
-    <!-- Big readable equation (no libs) -->
     <div class="eq">
-      v(S) = ( V<sub>max</sub> · S ) / ( α · K<sub>m</sub> + S ) &nbsp;&nbsp;&nbsp; with &nbsp;&nbsp; α = 1 + I / K<sub>i</sub>
+      v(S) = ( V<sub>max</sub> · S ) / ( α · K<sub>m</sub> + S ) &nbsp;&nbsp;&nbsp;
+      with &nbsp;&nbsp; α = 1 + I / K<sub>i</sub>
     </div>
     <div class="meta" id="halfMax">Half-max at S = K<sub>m</sub> (α = 1) → v = V<sub>max</sub>/2</div>
 
@@ -93,7 +99,7 @@
         <button type="button" id="btnPlay">▶ Play</button>
         <button type="button" id="btnReset">Reset</button>
       </div>
-      <div class="legend" id="liveReadout">S = 0.0, v(S) = 0.0, α = 1.0</div>
+      <div class="legend" id="liveReadout">S = 0.00, v(S) = 0.00, α = 1.00</div>
     </section>
 
     <!-- Canvas plot -->
@@ -101,9 +107,10 @@
   </main>
 
   <footer class="wrap" style="margin:2rem 0">
-    No external libraries. Equation shown above; plot drawn with Canvas; sliders update live. Animated marker sweeps along the curve.
+    No external libraries. Plot drawn with Canvas; sliders update live; animated marker sweeps along the curve.
   </footer>
 
+  <!-- Single site script (loaded last so DOM exists) -->
   <script src="script.js"></script>
 </body>
 </html>
