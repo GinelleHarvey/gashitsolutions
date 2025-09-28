@@ -1,79 +1,91 @@
 /* ===========================
-   Global: footer year (supports both #year and .js-year)
+   GLOBAL: Footer year (supports #year and .js-year)
 =========================== */
-(function(){
+(function () {
+  const nowYear = String(new Date().getFullYear());
   const y1 = document.getElementById('year');
-  if (y1) y1.textContent = new Date().getFullYear();
-  document.querySelectorAll('.js-year').forEach(n => n.textContent = new Date().getFullYear());
+  if (y1) y1.textContent = nowYear;
+  document.querySelectorAll('.js-year').forEach(n => (n.textContent = nowYear));
 })();
 
 /* ===========================
-   Mobile Nav + UX
+   GLOBAL: Mobile Nav (white header)
+   Requires:
+     <button id="navToggle" class="nav__toggle" aria-expanded="false" aria-controls="navMenu">Menu</button>
+     <ul id="navMenu" class="nav__menu">...</ul>
 =========================== */
-(function(){
-  const navToggle = document.getElementById('navToggle');
-  const navMenu   = document.getElementById('navMenu');
-  if (!navToggle || !navMenu) return;
+(function () {
+  const btn = document.getElementById('navToggle');
+  const menu = document.getElementById('navMenu');
+  if (!btn || !menu) return;
 
-  const setExpanded = (open) => navToggle.setAttribute('aria-expanded', String(open));
+  const setExpanded = open => btn.setAttribute('aria-expanded', String(open));
 
-  navToggle.addEventListener('click', () => {
-    const open = navMenu.classList.toggle('is-open');
+  btn.addEventListener('click', () => {
+    const open = menu.classList.toggle('is-open');
     setExpanded(open);
   });
 
-  // Close on link click (mobile)
-  navMenu.addEventListener('click', (e) => {
+  // Close on link click (useful on mobile)
+  menu.addEventListener('click', e => {
     const link = e.target.closest('a');
     if (!link) return;
-    if (navMenu.classList.contains('is-open')) {
-      navMenu.classList.remove('is-open');
+    if (menu.classList.contains('is-open')) {
+      menu.classList.remove('is-open');
       setExpanded(false);
     }
   });
 
-  // Close with Escape
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && navMenu.classList.contains('is-open')) {
-      navMenu.classList.remove('is-open');
+  // Close on Escape
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && menu.classList.contains('is-open')) {
+      menu.classList.remove('is-open');
       setExpanded(false);
-      navToggle.focus();
+      btn.focus();
     }
   });
 })();
 
 /* ===========================
-   Smooth Scroll for #anchors
+   GLOBAL: Smooth Scroll for in-page #anchors
 =========================== */
-document.addEventListener('click', (e) => {
+document.addEventListener('click', e => {
   const a = e.target.closest('a[href^="#"]');
   if (!a) return;
-
   const id = a.getAttribute('href').slice(1);
   const dest = document.getElementById(id);
   if (!dest) return;
-
   e.preventDefault();
   dest.scrollIntoView({ behavior: 'smooth', block: 'start' });
 });
 
 /* ===========================
-   Panels / Drawers (Accordion: one open)
+   GLOBAL: Panels / Drawers accordion (only one <details> open)
+   Structure:
+     <section class="panels">
+       <div class="panels__list">
+         <details> <summary>...</summary> ... </details>
+         ...
+       </div>
+     </section>
 =========================== */
-document.querySelectorAll('.panels').forEach((section) => {
-  section.addEventListener('click', (e) => {
+document.querySelectorAll('.panels').forEach(section => {
+  section.addEventListener('click', e => {
     if (e.target.nodeName.toLowerCase() !== 'summary') return;
-    const current = e.target.parentElement; // <details>
-    section.querySelectorAll('details[open]').forEach((d) => {
+    const current = e.target.parentElement; // the <details> clicked
+    section.querySelectorAll('details[open]').forEach(d => {
       if (d !== current) d.removeAttribute('open');
     });
   });
 });
 
 /* ===========================
-   CONTACT PAGE LOGIC (as provided, preserved)
+   CONTACT PAGE LOGIC
+   Expects IDs:
+     contactForm, phone, captchaLabel, captchaExpected, errorSummary, birthdate
+     firstName, lastName, street, city, state, zip, email, message, captcha
 =========================== */
-(function(){
+(function () {
   const form = document.getElementById('contactForm');
   if (!form) return; // only run on contact page
 
@@ -83,6 +95,14 @@ document.querySelectorAll('.panels').forEach((section) => {
   const captchaExpected= $('captchaExpected');
   const errorSummary   = $('errorSummary');
   const birthdateEl    = $('birthdate');
+
+  // Center the main container if needed (safety: only if a main.wrap exists)
+  const mainWrap = document.querySelector('main .wrap, .container');
+  if (mainWrap) {
+    mainWrap.style.marginInline = 'auto';
+    mainWrap.style.maxWidth = getComputedStyle(document.documentElement)
+      .getPropertyValue('--wrap').trim() || '1400px';
+  }
 
   // Phone input mask -> (000)000-0000
   if (phoneEl){
@@ -112,7 +132,7 @@ document.querySelectorAll('.panels').forEach((section) => {
     birthdateEl.min = `${yyyy-120}-${mm}-${dd}`;
   }
 
-  // Repopulate from sessionStorage if returning from confirm
+  // If returning from confirm, repopulate from sessionStorage
   try {
     const saved = JSON.parse(sessionStorage.getItem('contactFormData') || '{}');
     if (saved && saved.firstName) {
@@ -127,8 +147,9 @@ document.querySelectorAll('.panels').forEach((section) => {
       $('birthdate').value = saved.birthdate || '';
       $('message').value   = saved.message   || '';
     }
-  } catch {}
+  } catch { /* ignore */ }
 
+  // Submit handler (strict validation)
   form.addEventListener('submit', (e) => {
     e.preventDefault();
 
@@ -151,7 +172,7 @@ document.querySelectorAll('.panels').forEach((section) => {
       birthdate: $('birthdate').value,
       message:   $('message').value.trim(),
       captcha:   $('captcha').value.trim(),
-      captchaExpected: captchaExpected.value
+      captchaExpected: (captchaExpected && captchaExpected.value) || ''
     };
 
     const errors = [];
@@ -160,11 +181,12 @@ document.querySelectorAll('.panels').forEach((section) => {
     const phoneRe = /^\(\d{3}\)\d{3}-\d{4}$/;
     const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
+    // Require all fields
     function req(id, label) {
       const el = $(id);
-      if (!el.value.trim()) {
+      if (!el || !el.value.trim()) {
         errors.push(`${label} is required.`);
-        el.classList.add('error-input');
+        el && el.classList.add('error-input');
         return false;
       }
       return true;
@@ -182,30 +204,26 @@ document.querySelectorAll('.panels').forEach((section) => {
     req('message','Message');
     req('captcha','Confirmation answer');
 
+    // Format checks
     if (data.firstName && !nameRe.test(data.firstName)) {
-      errors.push('First name looks invalid.');
-      $('firstName').classList.add('error-input');
+      errors.push('First name looks invalid.'); $('firstName').classList.add('error-input');
     }
     if (data.lastName && !nameRe.test(data.lastName)) {
-      errors.push('Last name looks invalid.');
-      $('lastName').classList.add('error-input');
+      errors.push('Last name looks invalid.'); $('lastName').classList.add('error-input');
     }
     if (data.zip && !zipRe.test(data.zip)) {
-      errors.push('ZIP must be 5 digits (optionally +4).');
-      $('zip').classList.add('error-input');
+      errors.push('ZIP must be 5 digits (optionally +4).'); $('zip').classList.add('error-input');
     }
     if (data.phone && !phoneRe.test(data.phone)) {
-      errors.push('Phone format must be (000)000-0000.');
-      $('phone').classList.add('error-input');
+      errors.push('Phone format must be (000)000-0000.'); $('phone').classList.add('error-input');
     }
     if (data.email && !emailRe.test(data.email)) {
-      errors.push('Please enter a valid email address.');
-      $('email').classList.add('error-input');
+      errors.push('Please enter a valid email address.'); $('email').classList.add('error-input');
     }
 
     // Birthdate not in future
-    const today = new Date();
     if (data.birthdate) {
+      const today = new Date();
       const b = new Date(data.birthdate);
       if (b > today) {
         errors.push('Birthdate cannot be in the future.');
@@ -223,8 +241,10 @@ document.querySelectorAll('.panels').forEach((section) => {
     if (errors.length) {
       if (errorSummary) {
         errorSummary.style.display = 'block';
-        errorSummary.innerHTML = '<strong>Please fix the following:</strong><ul><li>' + errors.join('</li><li>') + '</li></ul>';
-        errorSummary.scrollIntoView({behavior:'smooth', block:'start'});
+        errorSummary.innerHTML =
+          '<strong>Please fix the following:</strong><ul><li>' +
+          errors.join('</li><li>') + '</li></ul>';
+        errorSummary.scrollIntoView({ behavior:'smooth', block:'start' });
       } else {
         alert('Please fix:\n- ' + errors.join('\n- '));
       }
@@ -250,9 +270,10 @@ document.querySelectorAll('.panels').forEach((section) => {
 })();
 
 /* ===========================
-   CONFIRM PAGE LOGIC (preserved)
+   CONFIRM PAGE LOGIC
+   Expects #review plus #editBtn, #sendBtn
 =========================== */
-(function(){
+(function () {
   const review = document.getElementById('review');
   if (!review) return;
 
@@ -289,10 +310,13 @@ document.querySelectorAll('.panels').forEach((section) => {
 })();
 
 /* ===========================
-   A4 – Calculator + Plot (preserved)
+   (Optional) Calculator & Plot block
+   Safe no-op if elements don’t exist
 =========================== */
 (function(){
-  // Grab elements
+  const canvas  = document.getElementById("plot");
+  if (!canvas) return; // only on that page
+
   const Vmax = document.getElementById("Vmax");
   const Km   = document.getElementById("Km");
   const I    = document.getElementById("I");
@@ -309,15 +333,10 @@ document.querySelectorAll('.panels').forEach((section) => {
 
   const halfMax = document.getElementById("halfMax");
   const live    = document.getElementById("liveReadout");
-
-  const canvas  = document.getElementById("plot");
-  if (!canvas) return;               // only on calculator page
   const ctx     = canvas.getContext("2d");
-
   const btnPlay = document.getElementById("btnPlay");
   const btnReset= document.getElementById("btnReset");
 
-  // Utils
   const f1 = n => (+n).toFixed(1);
   const f2 = n => (+n).toFixed(2);
   const alpha = () => 1 + (parseFloat(I.value)/parseFloat(Ki.value));
@@ -330,17 +349,12 @@ document.querySelectorAll('.panels').forEach((section) => {
     if (outSmax) outSmax.textContent = Smax.value;
     if (outSpeed)outSpeed.textContent= f1(Speed.value) + "×";
   }
-
   function series(){
     const vmax = +Vmax.value, km = +Km.value, smax = +Smax.value, a = alpha();
-    const step = smax/240; // smooth
-    const pts = [];
-    for(let s=0; s<=smax; s+=step){
-      pts.push({ s, v: (vmax*s)/(a*km + s) });
-    }
+    const step = smax/240; const pts = [];
+    for(let s=0; s<=smax; s+=step){ pts.push({ s, v:(vmax*s)/(a*km + s) }); }
     return pts;
   }
-
   function fitCanvas(){
     const dpr = window.devicePixelRatio || 1;
     const w = canvas.clientWidth, h = canvas.clientHeight;
@@ -348,48 +362,38 @@ document.querySelectorAll('.panels').forEach((section) => {
     canvas.height= Math.max(240, Math.floor(h*dpr));
     ctx.setTransform(dpr,0,0,dpr,0,0);
   }
-
   function drawAll(sMarker){
-    syncOutputs();
-    fitCanvas();
-
+    syncOutputs(); fitCanvas();
     const vmax = +Vmax.value, km = +Km.value, smax = +Smax.value, a = alpha();
     const pts = series();
-
     const ymin = 0, ymax = vmax * 1.15;
-    const padL = 56, padB = 40, padR = 16, padT = 16;
-    const plot = { x: padL, y: padT, w: canvas.clientWidth - padL - padR, h: canvas.clientHeight - padT - padB };
+    const padL=56, padB=40, padR=16, padT=16;
+    const plot = { x:padL, y:padT, w:canvas.clientWidth-padL-padR, h:canvas.clientHeight-padT-padB };
 
     ctx.clearRect(0,0,canvas.width,canvas.height);
-    ctx.strokeStyle = "#888"; ctx.lineWidth = 1;
-    ctx.strokeRect(plot.x, plot.y, plot.w, plot.h);
+    ctx.strokeStyle = "#888"; ctx.lineWidth = 1; ctx.strokeRect(plot.x, plot.y, plot.w, plot.h);
 
-    ctx.font = "12px system-ui, sans-serif";
-    ctx.fillStyle = "#000";
+    ctx.font = "12px system-ui, sans-serif"; ctx.fillStyle = "#000";
     ctx.textAlign="center"; ctx.textBaseline="top";
     const xticks = 6, yticks = 5;
     for(let i=0;i<=xticks;i++){
       const t=i/xticks, s=t*smax, px=plot.x + t*plot.w;
-      ctx.strokeStyle="rgba(0,0,0,.08)"; ctx.beginPath();
-      ctx.moveTo(px, plot.y); ctx.lineTo(px, plot.y+plot.h); ctx.stroke();
+      ctx.strokeStyle="rgba(0,0,0,.08)"; ctx.beginPath(); ctx.moveTo(px, plot.y); ctx.lineTo(px, plot.y+plot.h); ctx.stroke();
       ctx.strokeStyle="#888"; ctx.beginPath(); ctx.moveTo(px, plot.y+plot.h); ctx.lineTo(px, plot.y+plot.h+4); ctx.stroke();
       ctx.fillText(f1(s), px, plot.y+plot.h+6);
     }
     ctx.textAlign="right"; ctx.textBaseline="middle";
     for(let j=0;j<=yticks;j++){
-      const t=j/yticks, v = ymax - t*(ymax-ymin), py = plot.y + t*plot.h;
-      ctx.strokeStyle="rgba(0,0,0,.08)"; ctx.beginPath();
-      ctx.moveTo(plot.x, py); ctx.lineTo(plot.x+plot.w, py); ctx.stroke();
+      const t=j/yticks, v=ymax - t*(ymax-ymin), py=plot.y + t*plot.h;
+      ctx.strokeStyle="rgba(0,0,0,.08)"; ctx.beginPath(); ctx.moveTo(plot.x, py); ctx.lineTo(plot.x+plot.w, py); ctx.stroke();
       ctx.strokeStyle="#888"; ctx.beginPath(); ctx.moveTo(plot.x-4, py); ctx.lineTo(plot.x, py); ctx.stroke();
       ctx.fillText(f1(v), plot.x-6, py);
     }
     ctx.save();
     ctx.textAlign="center"; ctx.textBaseline="bottom";
     ctx.fillText("S (substrate concentration)", plot.x + plot.w/2, plot.y + plot.h + 28);
-    ctx.translate(plot.x - 36, plot.y + plot.h/2);
-    ctx.rotate(-Math.PI/2);
-    ctx.textAlign="center"; ctx.textBaseline="top";
-    ctx.fillText("v (rate)", 0, 0);
+    ctx.translate(plot.x - 36, plot.y + plot.h/2); ctx.rotate(-Math.PI/2);
+    ctx.textAlign="center"; ctx.textBaseline="top"; ctx.fillText("v (rate)", 0, 0);
     ctx.restore();
 
     const X = s => plot.x + (s/smax)*plot.w;
@@ -402,8 +406,7 @@ document.querySelectorAll('.panels').forEach((section) => {
     const sHalf = a*km, vHalf = vmax/2;
     ctx.setLineDash([5,5]); ctx.strokeStyle = "#cc5500"; ctx.lineWidth=1.25;
     ctx.beginPath(); ctx.moveTo(X(sHalf), Y(ymin)); ctx.lineTo(X(sHalf), Y(vHalf)); ctx.lineTo(X(0), Y(vHalf)); ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.fillStyle="#cc5500"; ctx.beginPath(); ctx.arc(X(sHalf), Y(vHalf), 3, 0, Math.PI*2); ctx.fill();
+    ctx.setLineDash([]); ctx.fillStyle="#cc5500"; ctx.beginPath(); ctx.arc(X(sHalf), Y(vHalf), 3, 0, Math.PI*2); ctx.fill();
     if (halfMax) halfMax.innerHTML = `Half-max at S = ${f1(sHalf)} (α = ${f2(a)}) → v = ${f1(vHalf)}`;
 
     const sm = Math.max(0, Math.min(smax, sMarker==null?0:sMarker));
@@ -416,20 +419,16 @@ document.querySelectorAll('.panels').forEach((section) => {
   }
 
   let playing = false, dir = 1, sAnim = 0, lastT = 0;
-
   function step(ts){
     if (!playing){ lastT = ts; return; }
-    const dt = (ts - lastT) / 1000;
-    lastT = ts;
-    const smax = +Smax.value;
-    const speed = +Speed.value;
+    const dt = (ts - lastT) / 1000; lastT = ts;
+    const smax = +Smax.value; const speed = +Speed.value;
     sAnim += dir * (speed * smax * dt);
     if (sAnim > smax){ sAnim = smax; dir = -1; }
     if (sAnim < 0){ sAnim = 0; dir = +1; }
     drawAll(sAnim);
     requestAnimationFrame(step);
   }
-
   function playPause(){
     playing = !playing;
     if (btnPlay) btnPlay.textContent = playing ? "⏸ Pause" : "▶ Play";
