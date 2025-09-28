@@ -1,14 +1,82 @@
 /* ===========================
-   Global: footer year
+   Global: footer year (supports both #year and .js-year)
 =========================== */
-document.querySelectorAll('.js-year')
-  .forEach(n => n.textContent = new Date().getFullYear());
+(function(){
+  const y1 = document.getElementById('year');
+  if (y1) y1.textContent = new Date().getFullYear();
+  document.querySelectorAll('.js-year').forEach(n => n.textContent = new Date().getFullYear());
+})();
 
 /* ===========================
-   CONTACT PAGE LOGIC
+   Mobile Nav + UX
 =========================== */
-const form = document.getElementById('contactForm');
-if (form) {
+(function(){
+  const navToggle = document.getElementById('navToggle');
+  const navMenu   = document.getElementById('navMenu');
+  if (!navToggle || !navMenu) return;
+
+  const setExpanded = (open) => navToggle.setAttribute('aria-expanded', String(open));
+
+  navToggle.addEventListener('click', () => {
+    const open = navMenu.classList.toggle('is-open');
+    setExpanded(open);
+  });
+
+  // Close on link click (mobile)
+  navMenu.addEventListener('click', (e) => {
+    const link = e.target.closest('a');
+    if (!link) return;
+    if (navMenu.classList.contains('is-open')) {
+      navMenu.classList.remove('is-open');
+      setExpanded(false);
+    }
+  });
+
+  // Close with Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && navMenu.classList.contains('is-open')) {
+      navMenu.classList.remove('is-open');
+      setExpanded(false);
+      navToggle.focus();
+    }
+  });
+})();
+
+/* ===========================
+   Smooth Scroll for #anchors
+=========================== */
+document.addEventListener('click', (e) => {
+  const a = e.target.closest('a[href^="#"]');
+  if (!a) return;
+
+  const id = a.getAttribute('href').slice(1);
+  const dest = document.getElementById(id);
+  if (!dest) return;
+
+  e.preventDefault();
+  dest.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+/* ===========================
+   Panels / Drawers (Accordion: one open)
+=========================== */
+document.querySelectorAll('.panels').forEach((section) => {
+  section.addEventListener('click', (e) => {
+    if (e.target.nodeName.toLowerCase() !== 'summary') return;
+    const current = e.target.parentElement; // <details>
+    section.querySelectorAll('details[open]').forEach((d) => {
+      if (d !== current) d.removeAttribute('open');
+    });
+  });
+});
+
+/* ===========================
+   CONTACT PAGE LOGIC (as provided, preserved)
+=========================== */
+(function(){
+  const form = document.getElementById('contactForm');
+  if (!form) return; // only run on contact page
+
   const $ = id => document.getElementById(id);
   const phoneEl        = $('phone');
   const captchaLabel   = $('captchaLabel');
@@ -17,30 +85,34 @@ if (form) {
   const birthdateEl    = $('birthdate');
 
   // Phone input mask -> (000)000-0000
-  phoneEl.addEventListener('input', () => {
-    const d = phoneEl.value.replace(/\D/g,'').slice(0,10);
-    let out = '';
-    if (d.length > 0) out = '(' + d.slice(0,3);
-    if (d.length >= 4) out += ')' + d.slice(3,6);
-    if (d.length >= 7) out += '-' + d.slice(6,10);
-    phoneEl.value = out;
-  });
+  if (phoneEl){
+    phoneEl.addEventListener('input', () => {
+      const d = phoneEl.value.replace(/\D/g,'').slice(0,10);
+      let out = '';
+      if (d.length > 0) out = '(' + d.slice(0,3);
+      if (d.length >= 4) out += ')' + d.slice(3,6);
+      if (d.length >= 7) out += '-' + d.slice(6,10);
+      phoneEl.value = out;
+    });
+  }
 
   // CAPTCHA (simple math)
   const a = Math.floor(Math.random()*8)+2; // 2..9
   const b = Math.floor(Math.random()*8)+1; // 1..8
-  captchaLabel.textContent = `What is ${a}+${b}?`;
-  captchaExpected.value = a + b;
+  if (captchaLabel) captchaLabel.textContent = `What is ${a}+${b}?`;
+  if (captchaExpected) captchaExpected.value = a + b;
 
   // Birthdate limits: not in future, not older than 120 years
-  const today = new Date();
-  const yyyy = today.getFullYear();
-  const mm = String(today.getMonth()+1).padStart(2,'0');
-  const dd = String(today.getDate()).padStart(2,'0');
-  birthdateEl.max = `${yyyy}-${mm}-${dd}`;
-  birthdateEl.min = `${yyyy-120}-${mm}-${dd}`;
+  if (birthdateEl){
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth()+1).padStart(2,'0');
+    const dd = String(today.getDate()).padStart(2,'0');
+    birthdateEl.max = `${yyyy}-${mm}-${dd}`;
+    birthdateEl.min = `${yyyy-120}-${mm}-${dd}`;
+  }
 
-  // If returning from confirm, repopulate from sessionStorage
+  // Repopulate from sessionStorage if returning from confirm
   try {
     const saved = JSON.parse(sessionStorage.getItem('contactFormData') || '{}');
     if (saved && saved.firstName) {
@@ -57,7 +129,6 @@ if (form) {
     }
   } catch {}
 
-  // Submit handler (strict validation)
   form.addEventListener('submit', (e) => {
     e.preventDefault();
 
@@ -89,7 +160,6 @@ if (form) {
     const phoneRe = /^\(\d{3}\)\d{3}-\d{4}$/;
     const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-    // Require all fields
     function req(id, label) {
       const el = $(id);
       if (!el.value.trim()) {
@@ -112,7 +182,6 @@ if (form) {
     req('message','Message');
     req('captcha','Confirmation answer');
 
-    // Format checks (only if not blank)
     if (data.firstName && !nameRe.test(data.firstName)) {
       errors.push('First name looks invalid.');
       $('firstName').classList.add('error-input');
@@ -135,6 +204,7 @@ if (form) {
     }
 
     // Birthdate not in future
+    const today = new Date();
     if (data.birthdate) {
       const b = new Date(data.birthdate);
       if (b > today) {
@@ -177,16 +247,18 @@ if (form) {
     }));
     window.location.href = 'confirm.html';
   });
-}
+})();
 
 /* ===========================
-   CONFIRM PAGE LOGIC
+   CONFIRM PAGE LOGIC (preserved)
 =========================== */
-const review = document.getElementById('review');
-if (review) {
+(function(){
+  const review = document.getElementById('review');
+  if (!review) return;
+
   const raw = sessionStorage.getItem('contactFormData');
-  if (!raw) { window.location.replace('contact.html'); }
-  const d = raw ? JSON.parse(raw) : {};
+  if (!raw) { window.location.replace('contact.html'); return; }
+  const d = JSON.parse(raw || '{}');
 
   review.innerHTML = [
     ['Name', `${d.firstName ?? ''} ${d.lastName ?? ''}`.trim()],
@@ -214,10 +286,11 @@ if (review) {
     );
     window.location.href = `mailto:info@gashitsolutions.com?subject=${subject}&body=${body}`;
   });
-}
+})();
 
-
-/* === A4 – Equation Calculator & Animated Plot (no libraries) ============ */
+/* ===========================
+   A4 – Calculator + Plot (preserved)
+=========================== */
 (function(){
   // Grab elements
   const Vmax = document.getElementById("Vmax");
@@ -238,7 +311,7 @@ if (review) {
   const live    = document.getElementById("liveReadout");
 
   const canvas  = document.getElementById("plot");
-  if (!canvas) return;               // run only on this page
+  if (!canvas) return;               // only on calculator page
   const ctx     = canvas.getContext("2d");
 
   const btnPlay = document.getElementById("btnPlay");
@@ -250,12 +323,12 @@ if (review) {
   const alpha = () => 1 + (parseFloat(I.value)/parseFloat(Ki.value));
 
   function syncOutputs(){
-    outVmax.textContent = Vmax.value;
-    outKm.textContent   = Km.value;
-    outI.textContent    = I.value;
-    outKi.textContent   = Ki.value;
-    outSmax.textContent = Smax.value;
-    outSpeed.textContent= f1(Speed.value) + "×";
+    if (outVmax) outVmax.textContent = Vmax.value;
+    if (outKm)   outKm.textContent   = Km.value;
+    if (outI)    outI.textContent    = I.value;
+    if (outKi)   outKi.textContent   = Ki.value;
+    if (outSmax) outSmax.textContent = Smax.value;
+    if (outSpeed)outSpeed.textContent= f1(Speed.value) + "×";
   }
 
   function series(){
@@ -283,20 +356,16 @@ if (review) {
     const vmax = +Vmax.value, km = +Km.value, smax = +Smax.value, a = alpha();
     const pts = series();
 
-    // y-range with headroom
     const ymin = 0, ymax = vmax * 1.15;
     const padL = 56, padB = 40, padR = 16, padT = 16;
     const plot = { x: padL, y: padT, w: canvas.clientWidth - padL - padR, h: canvas.clientHeight - padT - padB };
 
-    // clear + border
     ctx.clearRect(0,0,canvas.width,canvas.height);
     ctx.strokeStyle = "#888"; ctx.lineWidth = 1;
     ctx.strokeRect(plot.x, plot.y, plot.w, plot.h);
 
-    // grid + ticks
     ctx.font = "12px system-ui, sans-serif";
     ctx.fillStyle = "#000";
-    // X ticks
     ctx.textAlign="center"; ctx.textBaseline="top";
     const xticks = 6, yticks = 5;
     for(let i=0;i<=xticks;i++){
@@ -306,7 +375,6 @@ if (review) {
       ctx.strokeStyle="#888"; ctx.beginPath(); ctx.moveTo(px, plot.y+plot.h); ctx.lineTo(px, plot.y+plot.h+4); ctx.stroke();
       ctx.fillText(f1(s), px, plot.y+plot.h+6);
     }
-    // Y ticks
     ctx.textAlign="right"; ctx.textBaseline="middle";
     for(let j=0;j<=yticks;j++){
       const t=j/yticks, v = ymax - t*(ymax-ymin), py = plot.y + t*plot.h;
@@ -315,7 +383,6 @@ if (review) {
       ctx.strokeStyle="#888"; ctx.beginPath(); ctx.moveTo(plot.x-4, py); ctx.lineTo(plot.x, py); ctx.stroke();
       ctx.fillText(f1(v), plot.x-6, py);
     }
-    // axis labels
     ctx.save();
     ctx.textAlign="center"; ctx.textBaseline="bottom";
     ctx.fillText("S (substrate concentration)", plot.x + plot.w/2, plot.y + plot.h + 28);
@@ -325,44 +392,37 @@ if (review) {
     ctx.fillText("v (rate)", 0, 0);
     ctx.restore();
 
-    // mapping helpers
     const X = s => plot.x + (s/smax)*plot.w;
     const Y = v => plot.y + plot.h - ((v-ymin)/(ymax-ymin))*plot.h;
 
-    // curve
     ctx.strokeStyle = "#0b65d1"; ctx.lineWidth = 2; ctx.beginPath();
     pts.forEach((p,i)=>{ const x=X(p.s), y=Y(p.v); i?ctx.lineTo(x,y):ctx.moveTo(x,y); });
     ctx.stroke();
 
-    // half-max
     const sHalf = a*km, vHalf = vmax/2;
     ctx.setLineDash([5,5]); ctx.strokeStyle = "#cc5500"; ctx.lineWidth=1.25;
     ctx.beginPath(); ctx.moveTo(X(sHalf), Y(ymin)); ctx.lineTo(X(sHalf), Y(vHalf)); ctx.lineTo(X(0), Y(vHalf)); ctx.stroke();
     ctx.setLineDash([]);
     ctx.fillStyle="#cc5500"; ctx.beginPath(); ctx.arc(X(sHalf), Y(vHalf), 3, 0, Math.PI*2); ctx.fill();
-    halfMax.innerHTML = `Half-max at S = ${f1(sHalf)} (α = ${f2(a)}) → v = ${f1(vHalf)}`;
+    if (halfMax) halfMax.innerHTML = `Half-max at S = ${f1(sHalf)} (α = ${f2(a)}) → v = ${f1(vHalf)}`;
 
-    // moving marker
     const sm = Math.max(0, Math.min(smax, sMarker==null?0:sMarker));
     const vm = ( vmax * sm ) / ( a * km + sm );
     ctx.fillStyle="#2a9d8f"; ctx.beginPath(); ctx.arc(X(sm), Y(vm), 4, 0, Math.PI*2); ctx.fill();
-    // crosshair
     ctx.setLineDash([3,3]); ctx.strokeStyle="#2a9d8f";
     ctx.beginPath(); ctx.moveTo(X(sm), Y(0)); ctx.lineTo(X(sm), Y(vm)); ctx.lineTo(X(0), Y(vm)); ctx.stroke();
     ctx.setLineDash([]);
-
-    live.textContent = `S = ${f2(sm)}, v(S) = ${f2(vm)}, α = ${f2(a)}`;
+    if (live) live.textContent = `S = ${f2(sm)}, v(S) = ${f2(vm)}, α = ${f2(a)}`;
   }
 
-  // animation state
   let playing = false, dir = 1, sAnim = 0, lastT = 0;
 
   function step(ts){
     if (!playing){ lastT = ts; return; }
-    const dt = (ts - lastT) / 1000;  // seconds
+    const dt = (ts - lastT) / 1000;
     lastT = ts;
     const smax = +Smax.value;
-    const speed = +Speed.value;      // fraction of Smax per second
+    const speed = +Speed.value;
     sAnim += dir * (speed * smax * dt);
     if (sAnim > smax){ sAnim = smax; dir = -1; }
     if (sAnim < 0){ sAnim = 0; dir = +1; }
@@ -372,20 +432,18 @@ if (review) {
 
   function playPause(){
     playing = !playing;
-    btnPlay.textContent = playing ? "⏸ Pause" : "▶ Play";
+    if (btnPlay) btnPlay.textContent = playing ? "⏸ Pause" : "▶ Play";
     if (playing) requestAnimationFrame((t)=>{ lastT=t; requestAnimationFrame(step); });
   }
   function reset(){
-    playing = false; btnPlay.textContent = "▶ Play";
+    playing = false; if (btnPlay) btnPlay.textContent = "▶ Play";
     dir = 1; sAnim = 0; drawAll(sAnim);
   }
 
-  // wire up
   [Vmax,Km,I,Ki,Smax,Speed].forEach(el => el && el.addEventListener("input", ()=> drawAll(sAnim)));
   btnPlay && btnPlay.addEventListener("click", playPause);
   btnReset && btnReset.addEventListener("click", reset);
   window.addEventListener("resize", ()=> drawAll(sAnim));
 
-  // first paint
   drawAll(0);
 })();
