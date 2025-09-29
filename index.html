@@ -4,10 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>GASH IT Solutions — Smart. Secure. Supportive.</title>
-  <meta name="description" content="Practical IT, websites, and automation with a security-first mindset.">
-  <!-- Root CSS -->
+  <meta name="description" content="Smart IT and AI-driven services: responsive support, security-first networks, and modern websites.">
   <link rel="stylesheet" href="style.css">
-  <!-- Favicons (images live in /assets) -->
+  <!-- Favicons -->
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48x48.png">
@@ -19,7 +18,7 @@
 <body>
   <a class="skip" href="#main">Skip to content</a>
 
-  <!-- Header (white, short; mobile-ready) -->
+  <!-- Header -->
   <header class="site-header">
     <div class="wrap">
       <a class="brand" href="index.html" aria-label="GASH IT Solutions home">
@@ -44,7 +43,11 @@
       <div class="wrap hero__inner">
         <div class="hero__content">
           <h1 class="gradient-text">Smart. Secure. Supportive.</h1>
-          <p>Practical IT, websites, and automation that feel modern, safe, and human. We help you run smoother and grow with confidence.</p>
+          <p>
+            We specialize in <strong>smart IT and AI-driven technologies</strong> that help businesses run efficiently,
+            stay secure, and grow with confidence. From <strong>responsive technical support</strong> and network protection
+            to smart-home integration and digital transformation, our mission is to make technology simpler, faster, and smarter for you.
+          </p>
           <div class="btn-row">
             <a class="btn btn--accent" href="#request">Request a Quote</a>
             <a class="btn btn--ghost" href="services.html">See Services</a>
@@ -64,13 +67,13 @@
         </figure>
         <div class="feature__content">
           <h2 class="h-underline">Security-first IT</h2>
-          <p>Proactive monitoring, hardening, and recovery so risks are reduced before they become incidents.</p>
+          <p>Reduce risk before it becomes downtime. We harden endpoints and networks, monitor proactively, and keep verified backups ready.</p>
           <ul class="checklist">
             <li>Endpoint protection &amp; patching</li>
-            <li>Network segmentation &amp; VPN</li>
-            <li>Backup &amp; disaster recovery</li>
+            <li>Network segmentation, VPN, MFA</li>
+            <li>Backup &amp; disaster recovery testing</li>
           </ul>
-          <p class="callout" style="margin-top:1rem">Typical onboarding in 1–2 weeks depending on environment size.</p>
+          <p class="callout" style="margin-top:1rem">Typical onboarding in 1–2 weeks, depending on environment size.</p>
         </div>
       </div>
     </section>
@@ -80,11 +83,11 @@
       <div class="wrap feature__grid">
         <div class="feature__content">
           <h2 class="h-underline">Websites that work</h2>
-          <p>Fast, accessible, and easy to update. ADA &amp; W3C best practices built in from day one.</p>
+          <p>Fast, accessible, and easy to update. We build modern sites that look sharp, score well, and convert.</p>
           <ul class="checklist">
             <li>Clean information architecture</li>
-            <li>Mobile-first performance</li>
-            <li>Simple editing &amp; updates</li>
+            <li>Mobile-first performance &amp; SEO</li>
+            <li>Simple editing and clear documentation</li>
           </ul>
           <div class="btn-row" style="margin-top:.5rem">
             <a class="btn btn--primary" href="services.html">Web &amp; Design Services</a>
@@ -96,49 +99,28 @@
       </div>
     </section>
 
-    <!-- PANELS / DRAWERS -->
+    <!-- PANELS -->
     <section class="panels" aria-label="How we work">
       <div class="wrap">
         <h2>How we work</h2>
         <div class="panels__list">
           <details open>
             <summary>Discovery &amp; Fit</summary>
-            <p>Short call to clarify goals, budget, and timeline so we propose only what you need.</p>
+            <p>We clarify goals, constraints, and timelines so you only pay for what you need—nothing bloated.</p>
           </details>
           <details>
             <summary>Design &amp; Build</summary>
-            <p>We iterate quickly with checkpoints. You’ll see progress early and often.</p>
+            <p>Short iterations with checkpoints. You see real progress early, and we adjust quickly with feedback.</p>
           </details>
           <details>
             <summary>Launch &amp; Support</summary>
-            <p>We handle rollout, training, and ongoing support to keep things running smoothly.</p>
+            <p>Structured rollout, training, and ongoing care so your systems stay reliable and your team confident.</p>
           </details>
         </div>
       </div>
     </section>
 
-    <!-- REVIEWS -->
-    <section class="reviews" aria-label="Client reviews">
-      <div class="wrap">
-        <h2 class="h-underline">What clients say</h2>
-        <div class="cards">
-          <article class="card review">
-            <p>“Professional, proactive, and patient — our environment is more stable than it’s ever been.”</p>
-            <footer>— Operations Director</footer>
-          </article>
-          <article class="card review">
-            <p>“They made our website fast and accessible, and trained our team to keep it updated.”</p>
-            <footer>— Communications Lead</footer>
-          </article>
-          <article class="card review">
-            <p>“Clear plans, on-time delivery, and great follow-through.”</p>
-            <footer>— Small Business Owner</footer>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- REQUEST FORM -->
+    <!-- REQUEST (emails you directly; JS builds a mailto:) -->
     <section id="request" class="request" aria-label="Request a quote">
       <div class="wrap request__grid">
         <div class="request__content">
@@ -151,7 +133,8 @@
           </ul>
         </div>
 
-        <form class="form form--grid" action="contact.html" method="get" aria-describedby="requestNote">
+        <!-- IMPORTANT: IDs match script.js (requestForm handler) -->
+        <form id="requestForm" class="form form--grid" aria-describedby="requestNote" novalidate>
           <div class="form__row">
             <label for="rq-name">Name *</label>
             <input id="rq-name" name="name" type="text" required autocomplete="name" placeholder="Your name">
@@ -178,7 +161,7 @@
             <label for="rq-msg">Brief description *</label>
             <textarea id="rq-msg" name="message" rows="5" required placeholder="How can we help?"></textarea>
           </div>
-          <p id="requestNote" class="form__note span-2">Submitting takes you to the Contact page (no data stored here).</p>
+          <p id="requestNote" class="form__note span-2">We’ll prepare a quick response with next steps. No data is stored on this site.</p>
           <button class="btn btn--primary span-2" type="submit">Send Request</button>
         </form>
       </div>
@@ -195,7 +178,6 @@
     </div>
   </footer>
 
-  <!-- Root JS -->
   <script src="script.js"></script>
 </body>
 </html>
