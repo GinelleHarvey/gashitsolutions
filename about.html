@@ -1,116 +1,163 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>About — GASH IT Solutions</title>
-  <meta name="description" content="About GASH IT Solutions — our story, values, and mission.">
-  <link rel="stylesheet" href="assets/style.css?v=6">
-  <!-- Favicon -->
-<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48x48.png">
-<link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64x64.png">
-<link rel="icon" type="image/png" sizes="128x128" href="assets/favicon-128x128.png">
-<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-
+  <meta name="description" content="About GASH IT Solutions — our story, values, and how we work.">
+  <link rel="stylesheet" href="style.css">
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48x48.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64x64.png">
+  <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon-128x128.png">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 </head>
+
 <body>
+  <a class="skip" href="#main">Skip to content</a>
+
   <!-- Header -->
-  <header class="header">
+  <header class="site-header">
     <div class="wrap">
-      <div class="brand">
-        <img src="assets/logo.svg" alt="GASH IT Solutions logo" width="48" height="48">
-        <a href="index.html">GASH IT Solutions</a>
-      </div>
-      <nav class="nav">
-        <a href="index.html">Home</a>
-        <a aria-current="page" href="about.html">About</a>
-        <a href="purpose.html">Purpose & Assignments</a>
-        <a href="services.html">Services</a>
-        <a href="contact.html">Contact</a>
+      <a class="brand" href="index.html" aria-label="GASH IT Solutions home">
+        <img src="assets/logo.svg" alt="GASH IT Solutions logo" width="56" height="56">
+      </a>
+      <nav aria-label="Primary">
+        <button id="navToggle" class="nav__toggle" aria-expanded="false" aria-controls="navMenu">Menu</button>
+        <ul id="navMenu" class="nav__menu">
+          <li><a href="index.html">Home</a></li>
+          <li><a aria-current="page" href="about.html">About</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="purpose.html">Purpose &amp; Assignments</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
       </nav>
     </div>
   </header>
 
-  <!-- About -->
-  <main class="wrap">
-    <section class="card">
-      <h1>About GASH IT Solutions</h1>
-      <p>
-        Hi — I’m <strong>Ginelle A. S. Harvey</strong>. I love my family, I love technology, and I’m building a business
-        that blends both: <strong>reliable, human-centered IT</strong> with practical, real-world results.
-      </p>
+  <main id="main">
+    <!-- HERO -->
+    <section class="hero" role="region" aria-label="About intro">
+      <div class="wrap hero__inner">
+        <div class="hero__content">
+          <h1 class="gradient-text">People-first IT—reliable, secure, practical</h1>
+          <p>
+            Hi, I’m <strong>Ginelle A. S. Harvey</strong>. GASH IT Solutions blends a love for family and technology
+            into <strong>human-centered IT</strong>: clear communication, right-sized solutions, and work we’re proud to stand behind.
+          </p>
+          <div class="btn-row">
+            <a class="btn btn--primary" href="contact.html">Work with us</a>
+            <a class="btn btn--ghost" href="services.html">See what we do</a>
+          </div>
+        </div>
+        <figure class="hero__media">
+          <img class="img-accent" src="assets/about.jpg" alt="Technician working in a secure server environment">
+        </figure>
+      </div>
+    </section>
 
-      <div class="grid-3" style="margin-top:1rem;">
-        <div class="card" style="background:rgba(255,255,255,.86);">
-          <h3>Family First</h3>
+    <!-- WHO WE ARE (alt layout) -->
+    <section class="feature feature--alt">
+      <div class="wrap feature__grid">
+        <div class="feature__content">
+          <h2 class="h-underline">Who we are</h2>
           <p>
-            Family is my compass. It keeps me grounded, focused, and driven to deliver work I’m proud of.
-            I bring that same care and commitment to every client relationship.
+            We believe technology should <em>help</em>—not get in the way. From networks to websites and automation,
+            our approach is to simplify, secure, and accelerate what you already do well.
           </p>
+          <ul class="checklist">
+            <li>Plain-language guidance (no jargon)</li>
+            <li>Security-first mindset</li>
+            <li>Measurable, useful outcomes</li>
+          </ul>
         </div>
-        <div class="card" style="background:rgba(255,255,255,.86);">
-          <h3>Tech that Helps</h3>
-          <p>
-            I believe technology should <em>work for people</em> — not the other way around. From networks to AI,
-            my approach is to simplify, secure, and accelerate what you already do well.
-          </p>
-        </div>
-        <div class="card" style="background:rgba(255,255,255,.86);">
-          <h3>Building a Business</h3>
-          <p>
-            GASH IT Solutions is growing — ethically, sustainably, and client-first. My goal is to earn trust through
-            clear communication, consistent delivery, and measurable outcomes.
-          </p>
+        <figure class="feature__media">
+          <img class="img-accent" src="assets/about1.jpg.jpg" alt="One-on-one coaching at a computer">
+        </figure>
+      </div>
+    </section>
+
+    <!-- VALUES (cards) -->
+    <section class="feature">
+      <div class="wrap">
+        <h2 class="h-underline">What we value</h2>
+        <div class="cards" style="margin-top:1rem">
+          <article class="card">
+            <h3>Integrity</h3>
+            <p>Clear pricing, honest timelines, and transparent communication—every project, every time.</p>
+          </article>
+          <article class="card">
+            <h3>Reliability</h3>
+            <p>If we say it, we do it—backed by monitoring, backups, and tested recovery plans.</p>
+          </article>
+          <article class="card">
+            <h3>Respect</h3>
+            <p>For people, time, and data. We protect your business as if it were our own.</p>
+          </article>
+          <article class="card">
+            <h3>Learning</h3>
+            <p>Tech moves fast. We invest in staying sharp so you don’t have to.</p>
+          </article>
         </div>
       </div>
+    </section>
 
-      <h2 style="margin-top:1.5rem;">Mission</h2>
-      <p>
-        To provide <strong>smart, secure, and supportive IT services</strong> that help people and businesses thrive —
-        with reliability you can feel and results you can measure.
-      </p>
+    <!-- PANELS / DRAWERS -->
+    <section class="panels" aria-label="How we work">
+      <div class="wrap">
+        <h2>How we work</h2>
+        <div class="panels__list">
+          <details open>
+            <summary>1) Listen</summary>
+            <p>Understand goals, constraints, and what “good” looks like for you.</p>
+          </details>
+          <details>
+            <summary>2) Plan</summary>
+            <p>Recommend a right-sized solution—nothing extra, nothing missing.</p>
+          </details>
+          <details>
+            <summary>3) Deliver</summary>
+            <p>Build, test, and launch with clear checkpoints and updates.</p>
+          </details>
+          <details>
+            <summary>4) Support</summary>
+            <p>Monitor, maintain, and improve as your needs evolve.</p>
+          </details>
+        </div>
+      </div>
+    </section>
 
-      <h2>What I’m Great At</h2>
-      <ul>
-        <li><strong>Responsive Support:</strong> friendly, clear, and timely help — no jargon, just solutions.</li>
-        <li><strong>Secure Setups:</strong> networks, endpoints, backups, and best practices you can trust.</li>
-        <li><strong>Modern Web:</strong> accessible, mobile-friendly sites with clean HTML/CSS/JS.</li>
-        <li><strong>Practical AI:</strong> automation and data tasks that save time and reduce errors.</li>
-      </ul>
-
-      <h2>How I Work</h2>
-      <ol>
-        <li><strong>Listen:</strong> understand your goals, constraints, and what “good” looks like for you.</li>
-        <li><strong>Plan:</strong> recommend a right-sized solution — nothing extra, nothing missing.</li>
-        <li><strong>Deliver:</strong> build, test, and launch with clear checkpoints and updates.</li>
-        <li><strong>Support:</strong> monitor, maintain, and improve as your needs evolve.</li>
-      </ol>
-
-      <h2>Values</h2>
-      <ul>
-        <li><strong>Integrity:</strong> clear pricing, honest timelines, and transparent communication.</li>
-        <li><strong>Reliability:</strong> if I say it, I’ll do it — and I’ll do it right.</li>
-        <li><strong>Respect:</strong> for people, time, and data.</li>
-        <li><strong>Learning:</strong> tech moves fast — I invest in staying sharp so you don’t have to.</li>
-      </ul>
-
-      <div style="margin-top:1.5rem;">
-        <a class="btn" href="contact.html">Work with GASH IT Solutions</a>
+    <!-- CTA -->
+    <section class="request" aria-label="Get in touch">
+      <div class="wrap request__grid">
+        <div>
+          <h2 class="h-underline">Let’s talk</h2>
+          <p>Have a project or a problem to solve? We’ll reply quickly with next steps.</p>
+          <ul class="checklist">
+            <li>Friendly, clear communication</li>
+            <li>No-pressure consultation</li>
+            <li>Simple, transparent pricing</li>
+          </ul>
+        </div>
+        <div>
+          <a class="btn btn--primary" href="contact.html">Contact GASH IT Solutions</a>
+        </div>
       </div>
     </section>
   </main>
 
   <!-- Footer -->
-  <footer class="footer">
-    <div class="wrap" style="text-align:center;">
-      <small><strong>Created by Ginelle Harvey • © <span id="y"></span><a href="contact.html"> GASH IT Solutions</a></strong></small>
+  <footer class="site-footer">
+    <div class="wrap footer__grid">
+      <small><strong>Created by Ginelle Harvey</strong> • <span class="js-year"></span></small>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="services.html">See Services →</a>
+      </nav>
     </div>
   </footer>
 
-  <script>
-    document.getElementById('y').textContent = new Date().getFullYear();
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
