@@ -1,67 +1,201 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>GASH IT Solutions — Smart IT Services</title>
-  <meta name="description" content="GASH IT Solutions — Smart IT & AI-driven services.">
-
-  <!-- Stylesheet -->
-  <link rel="stylesheet" href="assets/style.css?v=5">
-  <!-- Favicon -->
-<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48x48.png">
-<link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64x64.png">
-<link rel="icon" type="image/png" sizes="128x128" href="assets/favicon-128x128.png">
-<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
- 
+  <title>GASH IT Solutions — Smart. Secure. Supportive.</title>
+  <meta name="description" content="Practical IT, websites, and automation with a security-first mindset.">
+  <!-- Root CSS -->
+  <link rel="stylesheet" href="style.css">
+  <!-- Favicons (images live in /assets) -->
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48x48.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64x64.png">
+  <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon-128x128.png">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 </head>
-  
+
 <body>
-  <!-- Header -->
-  <header class="header">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <!-- Header (white, short; mobile-ready) -->
+  <header class="site-header">
     <div class="wrap">
-      <div class="brand">
-        <img src="assets/logo.svg" alt="GASH IT Solutions logo" width="48" height="48">
-        <a href="index.html">GASH IT Solutions</a>
-      </div>
-      <nav class="nav">
-        <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="purpose.html">Purpose & Assignments</a>
-        <a href="services.html">Services</a>
-        <a href="contact.html">Contact</a>
+      <a class="brand" href="index.html" aria-label="GASH IT Solutions home">
+        <img src="assets/logo.svg" alt="GASH IT Solutions logo" width="56" height="56">
+      </a>
+      <nav aria-label="Primary">
+        <button id="navToggle" class="nav__toggle" aria-expanded="false" aria-controls="navMenu">Menu</button>
+        <ul id="navMenu" class="nav__menu">
+          <li><a aria-current="page" href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="purpose.html">Purpose &amp; Assignments</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
       </nav>
     </div>
   </header>
 
-  <!-- Main content -->
-  <main class="wrap">
-    <section class="card">
-      <h2>Welcome to GASH IT Solutions</h2>
-      <p>
-        We specialize in <strong>smart IT and AI-driven technologies</strong> that help businesses run efficiently,
-        stay secure, and grow with confidence. From <strong>responsive technical support</strong> and network protection 
-        to smart-home integration and digital transformation, our mission is to make technology simpler, faster, and smarter for you.
-      </p>
-      <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop" alt="Abstract technology banner">
-      <p>
-        <a class="btn" href="services.html">Explore Our Services</a>
-      </p>
+  <main id="main">
+    <!-- HERO -->
+    <section class="hero" role="region" aria-label="Intro">
+      <div class="wrap hero__inner">
+        <div class="hero__content">
+          <h1 class="gradient-text">Smart. Secure. Supportive.</h1>
+          <p>Practical IT, websites, and automation that feel modern, safe, and human. We help you run smoother and grow with confidence.</p>
+          <div class="btn-row">
+            <a class="btn btn--accent" href="#request">Request a Quote</a>
+            <a class="btn btn--ghost" href="services.html">See Services</a>
+          </div>
+        </div>
+        <figure class="hero__media">
+          <img class="img-accent" src="assets/hero.jpg.jpg" alt="Developer working at dual monitors in a modern office">
+        </figure>
+      </div>
+    </section>
+
+    <!-- FEATURE 1 -->
+    <section class="feature">
+      <div class="wrap feature__grid">
+        <figure class="feature__media">
+          <img class="img-accent" src="assets/sec-1.jpg" alt="Technician managing cabling in a server rack">
+        </figure>
+        <div class="feature__content">
+          <h2 class="h-underline">Security-first IT</h2>
+          <p>Proactive monitoring, hardening, and recovery so risks are reduced before they become incidents.</p>
+          <ul class="checklist">
+            <li>Endpoint protection &amp; patching</li>
+            <li>Network segmentation &amp; VPN</li>
+            <li>Backup &amp; disaster recovery</li>
+          </ul>
+          <p class="callout" style="margin-top:1rem">Typical onboarding in 1–2 weeks depending on environment size.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURE 2 (alternate layout) -->
+    <section class="feature feature--alt">
+      <div class="wrap feature__grid">
+        <div class="feature__content">
+          <h2 class="h-underline">Websites that work</h2>
+          <p>Fast, accessible, and easy to update. ADA &amp; W3C best practices built in from day one.</p>
+          <ul class="checklist">
+            <li>Clean information architecture</li>
+            <li>Mobile-first performance</li>
+            <li>Simple editing &amp; updates</li>
+          </ul>
+          <div class="btn-row" style="margin-top:.5rem">
+            <a class="btn btn--primary" href="services.html">Web &amp; Design Services</a>
+          </div>
+        </div>
+        <figure class="feature__media">
+          <img class="img-accent" src="assets/sec-2.jpg.jpg" alt="Team planning website wireframes at a desk">
+        </figure>
+      </div>
+    </section>
+
+    <!-- PANELS / DRAWERS -->
+    <section class="panels" aria-label="How we work">
+      <div class="wrap">
+        <h2>How we work</h2>
+        <div class="panels__list">
+          <details open>
+            <summary>Discovery &amp; Fit</summary>
+            <p>Short call to clarify goals, budget, and timeline so we propose only what you need.</p>
+          </details>
+          <details>
+            <summary>Design &amp; Build</summary>
+            <p>We iterate quickly with checkpoints. You’ll see progress early and often.</p>
+          </details>
+          <details>
+            <summary>Launch &amp; Support</summary>
+            <p>We handle rollout, training, and ongoing support to keep things running smoothly.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- REVIEWS -->
+    <section class="reviews" aria-label="Client reviews">
+      <div class="wrap">
+        <h2 class="h-underline">What clients say</h2>
+        <div class="cards">
+          <article class="card review">
+            <p>“Professional, proactive, and patient — our environment is more stable than it’s ever been.”</p>
+            <footer>— Operations Director</footer>
+          </article>
+          <article class="card review">
+            <p>“They made our website fast and accessible, and trained our team to keep it updated.”</p>
+            <footer>— Communications Lead</footer>
+          </article>
+          <article class="card review">
+            <p>“Clear plans, on-time delivery, and great follow-through.”</p>
+            <footer>— Small Business Owner</footer>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- REQUEST FORM -->
+    <section id="request" class="request" aria-label="Request a quote">
+      <div class="wrap request__grid">
+        <div class="request__content">
+          <h2 class="h-underline">Request a quote</h2>
+          <p>Tell us a bit about your project and we’ll reply quickly with next steps.</p>
+          <ul class="checklist">
+            <li>Typical reply within 1 business day</li>
+            <li>No-pressure consultation</li>
+            <li>Clear, simple pricing</li>
+          </ul>
+        </div>
+
+        <form class="form form--grid" action="contact.html" method="get" aria-describedby="requestNote">
+          <div class="form__row">
+            <label for="rq-name">Name *</label>
+            <input id="rq-name" name="name" type="text" required autocomplete="name" placeholder="Your name">
+          </div>
+          <div class="form__row">
+            <label for="rq-email">Email *</label>
+            <input id="rq-email" name="email" type="email" required autocomplete="email" placeholder="you@company.com">
+          </div>
+          <div class="form__row">
+            <label for="rq-service">Service *</label>
+            <select id="rq-service" name="service" required>
+              <option value="" disabled selected>Choose one</option>
+              <option>Managed IT</option>
+              <option>Website Design</option>
+              <option>AI/Automation</option>
+              <option>Consulting</option>
+            </select>
+          </div>
+          <div class="form__row">
+            <label for="rq-phone">Phone</label>
+            <input id="rq-phone" name="phone" type="tel" autocomplete="tel" placeholder="(000)000-0000">
+          </div>
+          <div class="form__row span-2">
+            <label for="rq-msg">Brief description *</label>
+            <textarea id="rq-msg" name="message" rows="5" required placeholder="How can we help?"></textarea>
+          </div>
+          <p id="requestNote" class="form__note span-2">Submitting takes you to the Contact page (no data stored here).</p>
+          <button class="btn btn--primary span-2" type="submit">Send Request</button>
+        </form>
+      </div>
     </section>
   </main>
 
   <!-- Footer -->
-  <footer class="footer">
-    <div class="wrap" style="text-align:center;">
-      <small><strong>Created by Ginelle Harvey • © <span id="y"></span><a href="contact.html"> GASH IT Solutions</a></strong></small>
+  <footer class="site-footer">
+    <div class="wrap footer__grid">
+      <small><strong>Created by Ginelle Harvey</strong> • <span class="js-year"></span></small>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="purpose.html">← Back to Purpose &amp; Assignments</a>
+      </nav>
     </div>
   </footer>
 
-  <!-- Script for year -->
-  <script>
-    document.getElementById('y').textContent = new Date().getFullYear();
-  </script>
+  <!-- Root JS -->
+  <script src="script.js"></script>
 </body>
 </html>
