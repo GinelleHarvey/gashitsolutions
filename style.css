@@ -411,3 +411,13 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);border-c
 
 /* Icon helpers if you use dark PNGs */
 .svc-icon--invert{ filter: brightness(0) invert(1); }
+
+/* Make dark PNG icons pop on dark cards (services + anywhere) */
+.icon.icon--invert{
+  filter: brightness(0) invert(1) contrast(1.25) saturate(1.05);
+  opacity: .95;
+}
+.card.service:hover .icon.icon--invert{
+  opacity: 1;
+}
+
