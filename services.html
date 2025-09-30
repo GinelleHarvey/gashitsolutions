@@ -38,23 +38,35 @@
   </header>
 
   <main id="main">
-    <!-- HERO -->
-    <section class="hero" role="region" aria-label="Services intro">
-      <div class="wrap hero__inner">
-        <div class="hero__content">
-          <h1 class="gradient-text">Our Services</h1>
-          <p>Smart, secure, and supportive IT solutions — designed to make technology simpler, faster, and smarter for you.</p>
-          <div class="btn-row">
-            <a class="btn btn--primary" href="contact.html">Let’s get started</a>
-            <a class="btn btn--ghost" href="about.html">How we work</a>
-          </div>
-        </div>
-        <figure class="hero__media">
-          <!-- Your repo has services.jpg.jpg (double extension) -->
-          <img class="img-accent" src="assets/services.jpg.jpg" alt="Icons representing IT services">
-        </figure>
+    
+<!-- HERO (drop-in replacement) -->
+<section class="hero" role="region" aria-label="Services intro">
+  <div class="wrap hero__inner">
+    <div class="hero__content">
+      <h1 class="gradient-text">Our Services</h1>
+      <p>Smart, secure, and supportive IT solutions — designed to make technology simpler, faster, and smarter for you.</p>
+
+      <!-- quick highlights to reduce the “dry” feel -->
+      <ul class="checklist" style="margin:.75rem 0 0">
+        <li>Right-sized plans for small teams</li>
+        <li>Security &amp; backups baked in</li>
+        <li>Clear, human support</li>
+      </ul>
+
+      <div class="btn-row" style="margin-top:1rem">
+        <a class="btn btn--primary" href="contact.html">Let’s get started</a>
+        <a class="btn btn--ghost" href="about.html">How we work</a>
       </div>
-    </section>
+    </div>
+
+    <figure class="hero__media">
+      <!-- Use the actual filename in your repo -->
+      <img class="img-accent" src="assets/services.jpg.jpg" alt="Icons representing IT services">
+      <figcaption class="form__note" style="margin-top:.5rem">Support • Security • Web • Automation</figcaption>
+    </figure>
+  </div>
+</section>
+
 
     <!-- SERVICES GRID (8 cards) -->
     <section class="feature">
