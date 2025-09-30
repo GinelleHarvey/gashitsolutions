@@ -470,3 +470,37 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);border-c
 /* Override global img rounding that was dulling the icons */
 .cards .service img{ border-radius:12px } /* just the tile, not the image pixels */
 
+/* === FIX: show the actual PNG glyphs (no white squares) === */
+.cards .service img.icon{
+  /* remove the tile/background/padding we added earlier */
+  background: none !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+
+  width: 64px; height: 64px;
+  /* make dark/colored PNGs read as bright white, with soft glow */
+  filter:
+    brightness(0)
+    invert(1)
+    contrast(1.9)
+    saturate(1.15)
+    drop-shadow(0 3px 10px rgba(0,0,0,.55));
+  opacity: 1;
+  transition: transform .15s ease, filter .2s ease;
+}
+
+.card.service:hover img.icon{
+  transform: translateY(-1px);
+  filter:
+    brightness(0)
+    invert(1)
+    contrast(2.1)
+    saturate(1.2)
+    drop-shadow(0 6px 14px rgba(0,0,0,.6));
+}
+
+/* just in case the global img rounding leaks in anywhere else */
+.cards .service img{ border-radius: 0 !important; }
+
+
