@@ -54,7 +54,7 @@
           </div>
         </div>
         <figure class="hero__media">
-          <!-- uses your repo filename with double extension -->
+          <!-- your repo uses double extension here -->
           <img class="img-accent" src="assets/hero.jpg.jpg" alt="Developer working at dual monitors in a modern office">
         </figure>
       </div>
@@ -84,7 +84,7 @@
       <div class="wrap feature__grid">
         <div class="feature__content">
           <h2 class="h-underline">Websites that work</h2>
-          <p>Fast, accessible, and easy to update. We build modern sites that look sharp, deliver a professional image, keep users engaged, and support your business goals.</p>
+        <p>Fast, accessible, and easy to update. We build modern sites that look sharp, deliver a professional image, keep users engaged, and support your business goals.</p>
           <ul class="checklist">
             <li>Clean information architecture</li>
             <li>Mobile-first performance &amp; SEO</li>
@@ -121,7 +121,7 @@
       </div>
     </section>
 
-    <!-- REQUEST -->
+    <!-- REQUEST (full form; opens email directly) -->
     <section id="request" class="request" aria-label="Request a quote">
       <div class="wrap request__grid">
         <div class="request__content">
@@ -134,7 +134,6 @@
           </ul>
         </div>
 
-        <!-- Unified request form (hooks into script.js confirm flow) -->
         <form id="requestForm" class="form form--grid" aria-describedby="requestNote" novalidate>
           <div class="form__row">
             <label for="reqName">Full name *</label>
@@ -146,17 +145,33 @@
             <input id="reqEmail" name="email" type="email" required autocomplete="email" placeholder="you@company.com">
           </div>
 
+          <div class="form__row">
+            <label for="rq-service">Service *</label>
+            <select id="rq-service" name="service" required>
+              <option value="" disabled selected>Choose one</option>
+              <option>Managed IT</option>
+              <option>Website Design</option>
+              <option>AI/Automation</option>
+              <option>Consulting</option>
+            </select>
+          </div>
+
+          <div class="form__row">
+            <label for="rq-phone">Phone</label>
+            <input id="rq-phone" name="phone" type="tel" autocomplete="tel" placeholder="(000)000-0000">
+          </div>
+
           <div class="form__row span-2">
             <label for="reqMessage">What can we help with? *</label>
             <textarea id="reqMessage" name="message" rows="4" required placeholder="Brief description"></textarea>
           </div>
 
           <p id="requestNote" class="form__note span-2">
-            We’ll show a quick review screen before opening your email app. No data is stored on this site.
+            Submitting will open your email app with your request pre-filled. No data is stored on this site.
           </p>
 
           <div class="btn-row span-2">
-            <button class="btn btn--primary" type="submit">Review your request</button>
+            <button class="btn btn--primary" type="submit">Send email</button>
           </div>
         </form>
       </div>
@@ -172,6 +187,64 @@
       </nav>
     </div>
   </footer>
+
+  <!-- Minimal inline JS to open email directly (no confirm page) -->
+  <script>
+    (function(){
+      // mobile nav toggle (keeps existing behavior)
+      const navToggle = document.getElementById('navToggle');
+      const navMenu = document.getElementById('navMenu');
+      if (navToggle && navMenu){
+        navToggle.addEventListener('click', ()=>{
+          const open = navMenu.classList.toggle('is-open');
+          navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+      }
+
+      // Year
+      const y = document.querySelector('.js-year'); if (y) y.textContent = new Date().getFullYear();
+
+      // Request form -> mailto:
+      const form = document.getElementById('requestForm');
+      if (!form) return;
+
+      form.addEventListener('submit', function(e){
+        e.preventDefault();
+
+        // basic HTML5 validity
+        const bad = form.querySelector(':invalid');
+        if (bad){ bad.focus(); return; }
+
+        // collect values
+        const data = Object.fromEntries(new FormData(form).entries());
+
+        // --- CHANGE THIS TO YOUR REAL EMAIL ADDRESS ---
+        const TO = 'info@example.com';
+
+        const subject = `Quote request — ${data.name || 'Website visitor'}`;
+        const lines = [
+          `Name: ${data.name || ''}`,
+          `Email: ${data.email || ''}`,
+          `Service: ${data.service || ''}`,
+          `Phone: ${data.phone || ''}`,
+          '',
+          'Message:',
+          (data.message || '')
+        ];
+
+        const body = lines.join('\\n');
+        const mailto = \`mailto:\${encodeURIComponent(TO)}?subject=\${encodeURIComponent(subject)}&body=\${encodeURIComponent(body)}\`;
+
+        // open user’s email client
+        window.location.href = mailto;
+
+        // optional: brief UX nudge if mail app blocked popups
+        setTimeout(()=>{
+          // You can show a small note or toast here if you like.
+        }, 400);
+      });
+    })();
+  </script>
 
   <script src="script.js"></script>
 </body>
