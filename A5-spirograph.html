@@ -21,17 +21,22 @@
     .wrap { max-width: 980px; margin: 0 auto; padding: 1rem; }
     .page-banner { text-align: center; padding: .9rem 0 .6rem; }
     .page-banner .crumb a { text-decoration: none; }
-    .controls { margin: .5rem 0 1rem; display: grid; gap: .6rem; }
-    .controls label { display: block; font-size: .95rem; }
+
+    .controls { margin: .75rem 0 1rem; display: grid; gap: .6rem; }
+    .controls .grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(210px,1fr)); gap: .6rem .9rem; }
     .row { display: flex; gap: .7rem; align-items: center; flex-wrap: wrap; }
     .btn { padding: .45rem .8rem; }
-    canvas { width: 100%; height: 520px; border: 1px solid #ccc; background: #fff; display: block; }
+    .presets { display:flex; gap:.5rem; flex-wrap:wrap; margin-top:.25rem }
+    .presets button{ padding:.35rem .6rem; font-size:.9rem }
+
+    canvas { width: 100%; height: 520px; display:block; border:1px solid #ccc; background:#fff; border-radius:12px }
     .note { color: #888; font-size: .95rem; text-align: center; margin-top: .25rem; }
     input[type="number"]{ width: 100%; max-width: 220px; }
+    .hidden{ display:none; }
   </style>
 </head>
 <body>
-  <!-- Header (same as A4) -->
+  <!-- Header (same as site) -->
   <header class="site-header">
     <div class="wrap">
       <a class="brand" href="index.html" aria-label="GASH IT Solutions home">
@@ -63,34 +68,87 @@
     <section class="controls" aria-labelledby="paramsTitle">
       <h2 id="paramsTitle" class="visually-hidden">Parameters</h2>
 
-      <label for="R">R (outer radius, 60–240)</label>
-      <input id="R" type="number" min="60" max="240" step="1" value="180" inputmode="numeric">
+      <div class="grid">
+        <label>Curve type
+          <select id="curveType">
+            <option value="epitrochoid">Epitrochoid (outside)</option>
+            <option value="hypotrochoid">Hypotrochoid (inside)</option>
+          </select>
+        </label>
 
-      <label for="r">r (inner radius, 10–160, must be ≤ R)</label>
-      <input id="r" type="number" min="10" max="160" step="1" value="75" inputmode="numeric">
+        <label>R (fixed radius, 60–240)
+          <input id="R" type="number" min="60" max="240" step="1" value="180" inputmode="numeric">
+        </label>
 
-      <label for="O">O (pen offset, 0–160)</label>
-      <input id="O" type="number" min="0" max="160" step="1" value="40" inputmode="numeric">
+        <label>r (rolling radius, 10–160, ≤ R)
+          <input id="r" type="number" min="10" max="160" step="1" value="75" inputmode="numeric">
+        </label>
+
+        <label>O (pen offset, 0–160)
+          <input id="O" type="number" min="0" max="160" step="1" value="40" inputmode="numeric">
+        </label>
+
+        <label>Quality (step size 0.01–0.08)
+          <input id="dt" type="range" min="0.01" max="0.08" step="0.005" value="0.035">
+        </label>
+
+        <label>Line width (1–4)
+          <input id="lw" type="range" min="1" max="4" step="0.5" value="1.5">
+        </label>
+
+        <label>Colors
+          <select id="colorMode">
+            <option value="rainbow">Rainbow</option>
+            <option value="pulses">Random pulses</option>
+            <option value="solid">Solid</option>
+          </select>
+        </label>
+
+        <label id="solidColorWrap" class="hidden">Pick color
+          <input id="solidColor" type="color" value="#2563eb">
+        </label>
+
+        <label>Canvas theme
+          <select id="theme">
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+        </label>
+      </div>
 
       <div class="row">
         <label class="row" for="randomize"><input id="randomize" type="checkbox"> Randomize R, r, O</label>
         <label class="row" for="drunk"><input id="drunk" type="checkbox"> “Drunk” mode</label>
-        <label class="row" for="colorShift"><input id="colorShift" type="checkbox" checked> Color shift</label>
       </div>
 
       <div class="row">
         <button id="startBtn" class="btn" aria-pressed="false">Start Spirograph</button>
         <button id="clearBtn" class="btn" type="button">Clear</button>
+        <button id="saveBtn" class="btn" type="button">Save PNG</button>
       </div>
 
-      <p class="note">Equation: x = (R+r)·cos(t) − (r+O)·cos(((R+r)/r)·t), y = (R+r)·sin(t) − (r+O)·sin(((R+r)/r)·t)</p>
+      <div class="presets" aria-label="Gallery presets">
+        <button type="button" data-preset="daisy">Daisy</button>
+        <button type="button" data-preset="star">Star</button>
+        <button type="button" data-preset="sunburst">Sunburst</button>
+        <button type="button" data-preset="flower">Flower</button>
+        <button type="button" data-preset="gear">Tight Gear</button>
+        <button type="button" data-preset="ring">Loopy Ring</button>
+      </div>
+
+      <p class="note">Equations: 
+        <em>Epitrochoid</em> → x=(R+r)cos t − (r+O)cos((R+r)/r·t), 
+        y=(R+r)sin t − (r+O)sin((R+r)/r·t). 
+        <em>Hypotrochoid</em> → x=(R−r)cos t + O·cos((R−r)/r·t), 
+        y=(R−r)sin t − O·sin((R−r)/r·t).
+      </p>
     </section>
 
     <!-- Canvas -->
     <canvas id="c" aria-label="Spirograph drawing canvas"></canvas>
   </main>
 
-  <!-- Footer (same as A4) -->
+  <!-- Footer -->
   <footer class="site-footer">
     <div class="wrap footer__grid">
       <small><strong>Created by Ginelle Harvey</strong> • <span id="year"></span></small>
@@ -102,7 +160,7 @@
 
   <!-- Year -->
   <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
-  <!-- Site script (for nav/menu etc.) -->
+  <!-- Site script (nav, etc.) -->
   <script src="script.js"></script>
   <!-- A5 logic -->
   <script src="A5-spirograph.js"></script>
