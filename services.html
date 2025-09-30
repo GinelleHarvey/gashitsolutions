@@ -1,12 +1,11 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Services — GASH IT Solutions</title>
   <meta name="description" content="GASH IT Solutions services: support, security, web, and practical AI for business.">
-  <link rel="stylesheet" href="style.css?v=8">
-
+  <link rel="stylesheet" href="style.css">
   <!-- Favicons -->
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
@@ -15,170 +14,82 @@
   <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon-128x128.png">
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 </head>
+
 <body>
-  <!-- Header -->
-  <header class="header">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <!-- Header (matches About) -->
+  <header class="site-header">
     <div class="wrap">
-      <div class="brand">
-        <img src="assets/logo.svg" alt="GASH IT Solutions logo" width="48" height="48">
-        <a href="index.html">GASH IT Solutions</a>
-      </div>
-      <nav class="nav" aria-label="Primary">
-        <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="purpose.html">Purpose & Assignments</a>
-        <a aria-current="page" href="services.html">Services</a>
-        <a href="contact.html">Contact</a>
+      <a class="brand" href="index.html" aria-label="GASH IT Solutions home">
+        <img src="assets/logo.svg" alt="GASH IT Solutions logo" width="56" height="56">
+      </a>
+      <nav aria-label="Primary">
+        <button id="navToggle" class="nav__toggle" aria-expanded="false" aria-controls="navMenu">Menu</button>
+        <ul id="navMenu" class="nav__menu">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a aria-current="page" href="services.html">Services</a></li>
+          <li><a href="purpose.html">Purpose &amp; Assignments</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
       </nav>
     </div>
   </header>
 
-  <!-- Services -->
-  <main class="wrap">
-    <section class="card">
-      <h1>Our Services</h1>
-      <p>Smart, secure, and supportive IT solutions — designed to make technology simpler, faster, and smarter for you.</p>
-
-      <div class="cards">
-        <!-- Responsive IT Support -->
-        <div class="card service">
-          <img src="assets/technical-support.png" class="icon icon--invert" alt="Technical support icon" width="64" height="64">
-          <h3>Responsive IT Support</h3>
-          <p><strong>Our most requested service.</strong> Clear, friendly help when you need it — remote or onsite. Troubleshooting, setup, and ongoing care.</p>
-          <ul>
-            <li>Device setup &amp; tune-ups</li>
-            <li>Backups &amp; recovery</li>
-            <li>Email &amp; productivity tools</li>
-          </ul>
+  <main id="main">
+    <!-- HERO (simple intro like About) -->
+    <section class="hero" role="region" aria-label="Services intro">
+      <div class="wrap hero__inner">
+        <div class="hero__content">
+          <h1 class="gradient-text">Our Services</h1>
+          <p>Smart, secure, and supportive IT solutions — designed to make technology simpler, faster, and smarter for you.</p>
+          <div class="btn-row">
+            <a class="btn btn--primary" href="contact.html">Let’s get started</a>
+            <a class="btn btn--ghost" href="about.html">How we work</a>
+          </div>
         </div>
-
-        <!-- Network & Security -->
-        <div class="card service">
-          <img src="assets/icon-security.png" class="icon icon--invert" alt="Security icon" width="64" height="64">
-          <h3>Network &amp; Security</h3>
-          <p>Protect what matters most with practical security sized to your business.</p>
-          <ul>
-            <li>Wi-Fi &amp; wired networks</li>
-            <li>Firewalls &amp; endpoint protection</li>
-            <li>Policies, backups, &amp; best practices</li>
-          </ul>
-        </div>
-
-        <!-- Modern Websites -->
-        <div class="card service">
-          <img src="assets/world-wide-web.png" class="icon icon--invert" alt="Web icon" width="64" height="64">
-          <h3>Modern Websites</h3>
-          <p>Fast, accessible sites with clean HTML/CSS/JS — built to last and easy to update.</p>
-          <ul>
-            <li>Landing pages &amp; portfolios</li>
-            <li>Small business sites</li>
-            <li>Performance &amp; SEO basics</li>
-          </ul>
-        </div>
-
-        <!-- Automation & AI -->
-        <div class="card service">
-          <img src="assets/artificial-intelligence.png" class="icon icon--invert" alt="Artificial intelligence icon" width="64" height="64">
-          <h3>Automation &amp; AI</h3>
-          <p>Save time and reduce errors with practical automations and AI-assisted workflows.</p>
-          <ul>
-            <li>Data cleanup &amp; reporting</li>
-            <li>Email &amp; form automations</li>
-            <li>Content &amp; Q&amp;A assistants</li>
-          </ul>
-        </div>
-
-        <!-- Smart Home & Office -->
-        <div class="card service">
-          <img src="assets/software-application.png" class="icon icon--invert" alt="Smart home and office icon" width="64" height="64">
-          <h3>Smart Home &amp; Office</h3>
-          <p>Make spaces safer and more efficient — cameras, sensors, voice, and energy controls.</p>
-          <ul>
-            <li>Smart security &amp; lighting</li>
-            <li>Home office setups</li>
-            <li>Network optimization</li>
-          </ul>
-        </div>
-
-        <!-- Training & Onboarding -->
-        <div class="card service">
-          <img src="assets/global-network.png" class="icon icon--invert" alt="Training and onboarding icon" width="64" height="64">
-          <h3>Training &amp; Onboarding</h3>
-          <p>Focused trainings to help your team use technology confidently and securely.</p>
-          <ul>
-            <li>New-hire setups</li>
-            <li>Security awareness</li>
-            <li>Tool walk-throughs</li>
-          </ul>
-        </div>
-
-        <!-- 7 Priority Support (NEW) -->
-        <div class="card service">
-          <img src="assets/icon-support.png" class="icon icon--invert" alt="Priority support icon" width="64" height="64">
-          <h3>Priority Support</h3>
-          <p>Fast-track help with defined response times and a named point of contact.</p>
-          <ul>
-            <li>Urgent troubleshooting</li>
-            <li>Preferred scheduling</li>
-            <li>SLA-based responses</li>
-          </ul>
-        </div>
-
-        <!-- 8 Cloud & Email (NEW) -->
-        <div class="card service">
-          <img src="assets/icon-web.png" class="icon icon--invert" alt="Cloud and email icon" width="64" height="64">
-          <h3>Cloud &amp; Email</h3>
-          <p>Reliable cloud services and secure email setups tailored to small teams.</p>
-          <ul>
-            <li>Microsoft 365 / Google Workspace</li>
-            <li>Migrations &amp; backups</li>
-            <li>Security &amp; access controls</li>
-          </ul>
-        </div>
-      </div>
-
-      <h2 style="margin-top:2rem;">Why Choose GASH IT Solutions</h2>
-      <ul>
-        <li><strong>Human-centered:</strong> clear communication, no jargon.</li>
-        <li><strong>Right-sized:</strong> solutions that fit your goals and budget.</li>
-        <li><strong>Reliable:</strong> we show up, follow through, and document.</li>
-        <li><strong>Secure by default:</strong> backups, updates, and best practices baked in.</li>
-      </ul>
-
-      <div style="margin-top:1rem;">
-        <a class="btn" href="contact.html" aria-label="Contact GASH IT Solutions">Let’s get started</a>
+        <figure class="hero__media">
+          <img class="img-accent" src="assets/services.jpg.jpg" alt="Service icons and IT tools">
+        </figure>
       </div>
     </section>
 
-    <!-- Testimonials -->
-    <section class="reviews">
-      <h2>What Our Clients Say</h2>
-      <div class="cards">
-        <div class="card review">
-          <p>“Ginelle and GASH IT Solutions saved our business after a major network outage. Fast, calm, and effective!”</p>
-          <footer>— J. Martinez, Small Business Owner</footer>
-        </div>
-        <div class="card review">
-          <p>“Our new website loads in seconds and customers love it. The support was friendly and professional.”</p>
-          <footer>— S. Patel, Entrepreneur</footer>
-        </div>
-        <div class="card review">
-          <p>“The AI automation Ginelle built reduced our reporting work by 70%. Game-changing support.”</p>
-          <footer>— D. Nguyen, Operations Manager</footer>
-        </div>
-      </div>
-    </section>
-  </main>
+    <!-- SERVICE CARDS (now 8) -->
+    <section class="feature" aria-label="Service catalog">
+      <div class="wrap">
+        <h2 class="h-underline">What we do</h2>
+        <div class="cards" style="margin-top:1rem">
+          <!-- 1 Responsive IT Support -->
+          <article class="card service">
+            <img src="assets/icon-support.png" class="icon icon--invert" alt="Support icon" width="64" height="64">
+            <h3>Responsive IT Support</h3>
+            <p><strong>Our most requested service.</strong> Clear, friendly help when you need it — remote or onsite.</p>
+            <ul>
+              <li>Device setup &amp; tune-ups</li>
+              <li>Backups &amp; recovery</li>
+              <li>Email &amp; productivity tools</li>
+            </ul>
+          </article>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="wrap" style="text-align:center;">
-      <small><strong>Created by Ginelle Harvey • © <span id="y"></span><a href="contact.html"> GASH IT Solutions</a></strong></small>
-    </div>
-  </footer>
+          <!-- 2 Network & Security -->
+          <article class="card service">
+            <img src="assets/icon-security.png" class="icon icon--invert" alt="Security icon" width="64" height="64">
+            <h3>Network &amp; Security</h3>
+            <p>Protect what matters most with practical security sized to your business.</p>
+            <ul>
+              <li>Wi-Fi &amp; wired networks</li>
+              <li>Firewalls &amp; endpoint protection</li>
+              <li>Policies, backups, &amp; best practices</li>
+            </ul>
+          </article>
 
-  <script>
-    document.getElementById('y').textContent = new Date().getFullYear();
-  </script>
-</body>
-</html>
+          <!-- 3 Modern Websites -->
+          <article class="card service">
+            <img src="assets/icon-web.png" class="icon icon--invert" alt="Web icon" width="64" height="64">
+            <h3>Modern Websites</h3>
+            <p>Fast, accessible sites with clean HTML/CSS/JS — built to last and easy to update.</p>
+            <ul>
+              <li>Landing pages &amp; portfolios</li>
+              <li>Small business sites</li>
+             
