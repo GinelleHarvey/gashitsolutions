@@ -503,25 +503,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);border-c
 /* just in case the global img rounding leaks in anywhere else */
 .cards .service img{ border-radius: 0 !important; }
 
-/* === Services icons: remove bottom shadow, keep soft glow === */
-.cards .service img.icon{
-  /* same brightening, but shadow is centered (no vertical offset) */
-  filter:
-    brightness(0)
-    invert(1)
-    contrast(1.9)
-    saturate(1.15)
-    drop-shadow(0 0 10px rgba(0,0,0,.38))             /* neutral halo, no “under” shadow */
-    drop-shadow(0 0 14px rgba(120,144,255,.18));      /* subtle cool glow */
-}
+.cards .service img.icon{ filter: brightness(0) invert(1) contrast(1.9) saturate(1.15); }
+.card.service:hover img.icon{ filter: brightness(0) invert(1) contrast(2.05) saturate(1.2); }
 
-.card.service:hover img.icon{
-  filter:
-    brightness(0)
-    invert(1)
-    contrast(2.05)
-    saturate(1.2)
-    drop-shadow(0 0 12px rgba(0,0,0,.42))
-    drop-shadow(0 0 18px rgba(120,144,255,.22));
-}
 
