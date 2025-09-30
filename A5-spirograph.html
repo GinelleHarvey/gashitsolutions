@@ -1,69 +1,110 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>A5 — Spirograph (HTML5 Canvas)</title>
-  <meta name="description" content="HTML5 canvas Spirograph for COP 4813 Assignment 5." />
+  <meta name="description" content="Assignment 5: Spirograph drawing using the HTML5 Canvas.">
+
+  <!-- Main site CSS -->
   <link rel="stylesheet" href="style.css">
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48x48.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64x64.png">
+  <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon-128x128.png">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+
   <style>
-    /* page-scoped helpers; keeps your global style.css untouched */
-    .wrap{max-width:1100px;margin-inline:auto;padding:1.25rem;}
-    .panel{display:grid;gap:.75rem;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));align-items:end}
-    .controls{background:#111827;border:1px solid #1f2937;border-radius:12px;padding:1rem}
-    .controls label{display:block;font-size:.9rem;margin:.25rem 0}
-    .controls input{width:100%;padding:.45rem;border-radius:8px;border:1px solid #374151;background:#0b1220;color:#e5e7eb}
-    .row{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
-    .btn{padding:.6rem 1rem;border-radius:9999px;border:0;background:#2563eb;color:white;font-weight:600;cursor:pointer}
-    .btn.secondary{background:#374151}
-    canvas{display:block;width:100%;height:520px;background:#050a16;border:1px solid #1f2937;border-radius:16px}
-    .note{font-size:.9rem;color:#9ca3af}
+    /* page-specific helpers; your site handles the rest */
+    .wrap { max-width: 980px; margin: 0 auto; padding: 1rem; }
+    .page-banner { text-align: center; padding: .9rem 0 .6rem; }
+    .page-banner .crumb a { text-decoration: none; }
+    .controls { margin: .5rem 0 1rem; display: grid; gap: .6rem; }
+    .controls label { display: block; font-size: .95rem; }
+    .row { display: flex; gap: .7rem; align-items: center; flex-wrap: wrap; }
+    .btn { padding: .45rem .8rem; }
+    canvas { width: 100%; height: 520px; border: 1px solid #ccc; background: #fff; display: block; }
+    .note { color: #888; font-size: .95rem; text-align: center; margin-top: .25rem; }
+    input[type="number"]{ width: 100%; max-width: 220px; }
   </style>
 </head>
 <body>
-  <header class="wrap">
-    <h1>Assignment 5 — Drawing on a Canvas: Spirograph</h1>
-    <p class="note">Enter values or use “Randomize”. <strong>Requirement:</strong> a single button starts the drawing.</p>
+  <!-- Header (same as A4) -->
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="GASH IT Solutions home">
+        <img src="assets/logo.svg" alt="GASH IT Solutions logo" width="56" height="56">
+      </a>
+      <nav aria-label="Primary">
+        <button id="navToggle" class="nav__toggle" aria-expanded="false" aria-controls="navMenu">Menu</button>
+        <ul id="navMenu" class="nav__menu">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="purpose.html">Purpose &amp; Assignments</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
   </header>
 
+  <!-- Page banner -->
+  <section class="page-banner">
+    <div class="wrap">
+      <p class="crumb"><a href="purpose.html">← Back to Purpose &amp; Assignments</a></p>
+      <h1 class="gradient-text">A5 — Spirograph (Canvas)</h1>
+    </div>
+  </section>
+
   <main class="wrap">
-    <section class="panel">
-      <div class="controls" aria-labelledby="paramsTitle">
-        <h2 id="paramsTitle">Parameters</h2>
-        <label for="R">R (outer radius, 60–240)</label>
-        <input id="R" type="number" min="60" max="240" step="1" value="180" inputmode="numeric">
+    <!-- Controls -->
+    <section class="controls" aria-labelledby="paramsTitle">
+      <h2 id="paramsTitle" class="visually-hidden">Parameters</h2>
 
-        <label for="r">r (inner radius, 10–160, must be ≤ R)</label>
-        <input id="r" type="number" min="10" max="160" step="1" value="75" inputmode="numeric">
+      <label for="R">R (outer radius, 60–240)</label>
+      <input id="R" type="number" min="60" max="240" step="1" value="180" inputmode="numeric">
 
-        <label for="O">O (pen offset, 0–160)</label>
-        <input id="O" type="number" min="0" max="160" step="1" value="40" inputmode="numeric">
+      <label for="r">r (inner radius, 10–160, must be ≤ R)</label>
+      <input id="r" type="number" min="10" max="160" step="1" value="75" inputmode="numeric">
 
-        <div class="row" style="margin-top:.5rem">
-          <label class="row" for="randomize" style="gap:.4rem">
-            <input id="randomize" type="checkbox"> Randomize R, r, O
-          </label>
-          <label class="row" for="drunk" style="gap:.4rem">
-            <input id="drunk" type="checkbox"> “Drunk” mode (R/r wobble)
-          </label>
-          <label class="row" for="colorShift" style="gap:.4rem">
-            <input id="colorShift" type="checkbox" checked> Color shift
-          </label>
-        </div>
+      <label for="O">O (pen offset, 0–160)</label>
+      <input id="O" type="number" min="0" max="160" step="1" value="40" inputmode="numeric">
 
-        <div class="row" style="margin-top:.75rem">
-          <button id="startBtn" class="btn" aria-pressed="false">Start Spirograph</button>
-          <button id="clearBtn" class="btn secondary" type="button">Clear</button>
-        </div>
+      <div class="row">
+        <label class="row" for="randomize"><input id="randomize" type="checkbox"> Randomize R, r, O</label>
+        <label class="row" for="drunk"><input id="drunk" type="checkbox"> “Drunk” mode</label>
+        <label class="row" for="colorShift"><input id="colorShift" type="checkbox" checked> Color shift</label>
       </div>
 
-      <div>
-        <canvas id="c" width="1100" height="520" aria-label="Spirograph drawing canvas"></canvas>
-        <p class="note">Equation (given): x = (R+r)·cos(t) − (r+O)·cos(((R+r)/r)·t), y = (R+r)·sin(t) − (r+O)·sin(((R+r)/r)·t)</p>
+      <div class="row">
+        <button id="startBtn" class="btn" aria-pressed="false">Start Spirograph</button>
+        <button id="clearBtn" class="btn" type="button">Clear</button>
       </div>
+
+      <p class="note">Equation: x = (R+r)·cos(t) − (r+O)·cos(((R+r)/r)·t), y = (R+r)·sin(t) − (r+O)·sin(((R+r)/r)·t)</p>
     </section>
+
+    <!-- Canvas -->
+    <canvas id="c" aria-label="Spirograph drawing canvas"></canvas>
   </main>
 
+  <!-- Footer (same as A4) -->
+  <footer class="site-footer">
+    <div class="wrap footer__grid">
+      <small><strong>Created by Ginelle Harvey</strong> • <span id="year"></span></small>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="purpose.html">← Back to Purpose &amp; Assignments</a>
+      </nav>
+    </div>
+  </footer>
+
+  <!-- Year -->
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <!-- Site script (for nav/menu etc.) -->
+  <script src="script.js"></script>
+  <!-- A5 logic -->
   <script src="A5-spirograph.js"></script>
 </body>
 </html>
