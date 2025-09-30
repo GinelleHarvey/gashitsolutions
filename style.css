@@ -424,3 +424,49 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);border-c
 /* Fix service card icons: remove global rounding + make white & crisp */
 .cards .service img{ border-radius:0 }             /* stops the weird corner artifact */
 .icon.icon--invert{ filter:brightness(0) invert(1) contrast(1.3) saturate(1.1) }
+
+
+
+/* === SERVICES ICON ENHANCEMENTS (safe, scoped to cards) === */
+
+/* Remove rounded corners from tiny icons and give them a subtle tile */
+.cards .service img.icon{
+  width:64px;height:64px;           /* keep them crisp */
+  padding:8px;                      /* room for the halo */
+  border-radius:12px;               /* tile shape (not the image pixels) */
+  background:
+    radial-gradient(160px 120px at 0% 0%, rgba(59,130,246,.18), transparent 60%),
+    radial-gradient(160px 120px at 100% 0%, rgba(168,85,247,.16), transparent 60%),
+    var(--surface-2);
+  border:1px solid #203042;
+  box-shadow:
+    0 0 0 1px rgba(120,144,255,.10) inset,
+    0 10px 24px rgba(0,0,0,.35);
+}
+
+/* Re-color dark PNGs to bright white with a little glow */
+.icon.icon--invert{
+  filter:
+    brightness(0)
+    invert(1)
+    contrast(1.65)
+    saturate(1.15)
+    drop-shadow(0 2px 6px rgba(0,0,0,.5));
+  opacity: 1;
+  transition: transform .15s ease, filter .2s ease, box-shadow .2s ease;
+}
+
+/* A tiny hover lift and brighter glow */
+.card.service:hover .icon.icon--invert{
+  transform: translateY(-1px);
+  filter:
+    brightness(0)
+    invert(1)
+    contrast(1.85)
+    saturate(1.2)
+    drop-shadow(0 4px 10px rgba(0,0,0,.55));
+}
+
+/* Override global img rounding that was dulling the icons */
+.cards .service img{ border-radius:12px } /* just the tile, not the image pixels */
+
