@@ -4,7 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Contact — GASH IT Solutions</title>
-  <link rel="stylesheet" href="style.css?v=12">
+  <meta name="description" content="Contact GASH IT Solutions — reach out for support, services, or project inquiries." />
+
+  <!-- Site-wide CSS -->
+  <link rel="stylesheet" href="style.css">
 
   <!-- Favicons -->
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
@@ -15,23 +18,26 @@
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 </head>
 <body>
-  <header class="header">
+  <!-- Header -->
+  <header class="site-header">
     <div class="wrap">
-      <div class="brand">
-        <img src="assets/logo.svg" alt="Logo" width="48" height="48">
-        <a href="index.html">GASH IT Solutions</a>
-      </div>
-      <nav class="nav">
-        <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="purpose.html">Purpose & Assignments</a>
-        <a href="services.html">Services</a>
-        <a aria-current="page" href="contact.html">Contact</a>
+      <a class="brand" href="index.html" aria-label="GASH IT Solutions home">
+        <img src="assets/logo.svg" alt="GASH IT Solutions logo" width="56" height="56">
+      </a>
+      <nav aria-label="Primary">
+        <button id="navToggle" class="nav__toggle" aria-expanded="false" aria-controls="navMenu">Menu</button>
+        <ul id="navMenu" class="nav__menu">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="purpose.html">Purpose &amp; Assignments</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a aria-current="page" href="contact.html">Contact</a></li>
+        </ul>
       </nav>
     </div>
   </header>
 
-  <main class="wrap">
+  <main id="main" class="wrap">
     <section class="card">
       <h1>Contact</h1>
       <p>Please fill in all fields below. On the next page, you’ll confirm your details before sending.</p>
@@ -65,6 +71,7 @@
             <label for="state">State</label>
             <select id="state" name="state" required>
               <option value="">Select…</option>
+              <!-- State list unchanged -->
               <option>AL</option><option>AK</option><option>AZ</option><option>AR</option><option>CA</option>
               <option>CO</option><option>CT</option><option>DE</option><option>FL</option><option>GA</option>
               <option>HI</option><option>ID</option><option>IL</option><option>IN</option><option>IA</option>
@@ -112,7 +119,7 @@
         <div class="field">
           <label id="captchaLabel">What is 1+2?</label>
           <input id="captcha" name="captcha" type="text" required>
-          <input id="captchaExpected" type="hidden">
+          <input id="captchaExpected" type="hidden" value="3">
         </div>
 
         <button class="btn" type="submit">Review Your Info</button>
@@ -120,12 +127,20 @@
     </section>
   </main>
 
- <!-- Footer -->
-  <footer class="footer">
-    <div class="wrap" style="text-align:center;">
-      <small><strong>Created by Ginelle Harvey • © <span id="y"></span><a href="index.html"> GASH IT Solutions</a></strong></small>
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="wrap footer__grid">
+      <small><strong>Created by Ginelle Harvey</strong> • <span id="year"></span></small>
+      <nav class="footer-nav">
+        <a href="index.html">Home →</a>
+      </nav>
     </div>
   </footer>
+
+  <!-- Script for year -->
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
 
   <!-- External JS -->
   <script src="script.js"></script>
