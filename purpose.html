@@ -1,14 +1,14 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Purpose & Assignments — GASH IT Solutions</title>
-  <meta name="description" content="Purpose of GASH IT Solutions site and links to assignments." />
+  <meta name="description" content="Purpose of GASH IT Solutions site and links to assignments.">
 
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="assets/style.css?v=5">
-  <!-- Favicon -->
+  <link rel="stylesheet" href="style.css">
+  <!-- Favicons -->
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48x48.png">
@@ -16,89 +16,104 @@
   <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon-128x128.png">
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 </head>
+
 <body>
+  <a class="skip" href="#main">Skip to content</a>
+
   <!-- Header -->
-  <header class="header">
+  <header class="site-header">
     <div class="wrap">
-      <div class="brand">
-        <img src="assets/logo.svg" alt="GASH IT Solutions logo" width="48" height="48">
-        <a href="index.html">GASH IT Solutions</a>
-      </div>
-      <nav class="nav">
-        <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="purpose.html" aria-current="page">Purpose & Assignments</a>
-        <a href="services.html">Services</a>
-        <a href="contact.html">Contact</a>
+      <a class="brand" href="index.html" aria-label="GASH IT Solutions home">
+        <img src="assets/logo.svg" alt="GASH IT Solutions logo" width="56" height="56">
+      </a>
+      <nav aria-label="Primary">
+        <button id="navToggle" class="nav__toggle" aria-expanded="false" aria-controls="navMenu">Menu</button>
+        <ul id="navMenu" class="nav__menu">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a aria-current="page" href="purpose.html">Purpose &amp; Assignments</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
       </nav>
     </div>
   </header>
 
-  <!-- Purpose & Assignments -->
-  <main class="wrap">
+  <!-- Main Content -->
+  <main id="main" class="wrap">
     <section class="card">
-      <h1>Welcome to the Purpose & Assignments Page</h1>
+      <h1 class="gradient-text">Purpose &amp; Assignments</h1>
       <p>
-        This page serves to showcase my assignments for the COP 4813 course, where I demonstrate my skills in web development. 
-        It's a place to view my progress throughout the semester, and will be updated as I complete each new project.
+        This page showcases my assignments for <strong>COP 4813 Web Systems I</strong>.  
+        It’s where I demonstrate my progress throughout the semester as I practice and refine my web development skills.
       </p>
 
-     <h2>Current Assignments</h2>
-<ul>
-  <li><a href="https://roneaglin.online/cop4813/home/assignments/assignment-1/" target="_blank">Assignment 1: Web Hosting - Hello World</a></li>
-  <li><a href="https://roneaglin.online/cop4813/home/assignments/assignment-2/" target="_blank">Assignment 2: Website Creation</a></li>
-  <li><a href="https://roneaglin.online/cop4813/home/assignments/assignment-3/" target="_blank">Assignment 3: Form Validation with JavaScript</a></li>
+      <!-- Assignments as cards -->
+      <h2 class="h-underline">Current Assignments</h2>
+      <div class="cards" style="margin-top:1rem">
+        <article class="card">
+          <h3><a href="https://roneaglin.online/cop4813/home/assignments/assignment-1/" target="_blank">Assignment 1: Web Hosting – Hello World</a></h3>
+          <p>Introduction to web hosting and publishing a first webpage.</p>
+        </article>
 
-  <!-- Parent item -->
-  <li>
-    <a href="https://roneaglin.online/cop4813/home/assignments/assignment-4/" target="_blank">
-      Assignment 4: JavaScript Calculator and Plotting
-    </a>
-    <!-- Nested sub-list -->
-    <ul>
-      <li>
-        <a href="A4-mm-plotting-calculator.html">
-          A4 — Equation Calculator &amp; Animated Plot
-        </a>
-      </li>
-    </ul>
-  </li>
-</ul>
+        <article class="card">
+          <h3><a href="https://roneaglin.online/cop4813/home/assignments/assignment-2/" target="_blank">Assignment 2: Website Creation</a></h3>
+          <p>Building a personal multipage website with consistent style and navigation.</p>
+        </article>
 
+        <article class="card">
+          <h3><a href="https://roneaglin.online/cop4813/home/assignments/assignment-3/" target="_blank">Assignment 3: Form Validation with JavaScript</a></h3>
+          <p>Creating forms with validation rules and confirmation messages.</p>
+        </article>
 
-      <h2>What's Next</h2>
+        <article class="card">
+          <h3><a href="https://roneaglin.online/cop4813/home/assignments/assignment-4/" target="_blank">Assignment 4: JavaScript Calculator and Plotting</a></h3>
+          <p>Interactive calculator with plotting capability.</p>
+          <ul>
+            <li><a href="A4-mm-plotting-calculator.html">A4 — Equation Calculator &amp; Animated Plot</a></li>
+          </ul>
+        </article>
+      </div>
+
+      <h2 class="h-underline">What’s Next</h2>
       <p>
-        Stay tuned for more updates as I continue building my web development skills. This page will continue to evolve as I add future assignments and projects, showcasing my growth in IT and web systems.
+        Stay tuned for updates as I continue to build my portfolio. This page will grow with new assignments and projects,
+        showcasing both my technical skills and my progress toward mastering IT and web systems.
       </p>
 
-      <h2>Representing IT & Education</h2>
-      <p>As a student at Daytona State College, my journey in IT and web development is one of continuous learning and growth. 
-         Through my coursework, I'm building the skills needed to excel in the IT industry and contribute to innovative solutions. 
-         This journey reflects my passion for technology and education, and serves as a reminder of my commitment to mastering IT and web development as I work toward achieving my goals at DSC.</p>
-   
-        <p> <img src="assets/education-technology-img.jpg" alt="Education and Technology" style="width: 100%; margin-top: 1rem;"> </p>
+      <h2 class="h-underline">Representing IT &amp; Education</h2>
+      <p>
+        As a student at Daytona State College, my journey in IT and web development is one of continuous learning and growth.  
+        Through coursework, I’m building the skills needed to excel in the IT industry and contribute to innovative solutions.  
+        This journey reflects my passion for technology and education as I work toward my goals at DSC.
+      </p>
 
-         <p>
-        Learn more about **Daytona State College**: 
+      <figure style="margin-top:1rem">
+        <img src="assets/education-technology-img.jpg" alt="Education and Technology" style="width:100%; border-radius:12px;">
+      </figure>
+
+      <p style="margin-top:1rem">
+        Learn more about <strong>Daytona State College</strong>:  
         <a href="https://www.daytonastate.edu" target="_blank">Visit DSC Website</a>
       </p>
 
       <div style="margin-top:1.5rem;">
-        <a class="btn" href="contact.html">Contact Me</a>
+        <a class="btn btn--primary" href="contact.html">Contact Me</a>
       </div>
     </section>
   </main>
 
   <!-- Footer -->
-  <footer class="footer">
-    <div class="wrap" style="text-align:center;">
-      <small><strong>Created by Ginelle Harvey • © <span id="y"></span><a href="contact.html"> GASH IT Solutions</a></strong></small>
+  <footer class="site-footer">
+    <div class="wrap footer__grid">
+      <small><strong>Created by Ginelle Harvey</strong> • <span class="js-year"></span></small>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="services.html">See Services →</a>
+      </nav>
     </div>
   </footer>
 
-  <!-- Script for year -->
-  <script>
-    document.getElementById('y').textContent = new Date().getFullYear();
-  </script>
+  <!-- Script for dynamic year -->
+  <script src="script.js"></script>
 </body>
 </html>
