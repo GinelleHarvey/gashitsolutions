@@ -134,46 +134,85 @@
           </ul>
         </div>
 
-        <form id="requestForm" class="form form--grid" aria-describedby="requestNote" novalidate>
-          <div class="form__row">
-            <label for="reqName">Full name *</label>
-            <input id="reqName" name="name" type="text" required autocomplete="name" placeholder="Your name">
-          </div>
+  <form id="homeRequestForm" class="form form--grid" aria-describedby="requestNote" novalidate>
+  <div class="form__row">
+    <label for="reqName">Full name *</label>
+    <input id="reqName" name="name" type="text" required autocomplete="name" placeholder="Your name">
+  </div>
 
-          <div class="form__row">
-            <label for="reqEmail">Email *</label>
-            <input id="reqEmail" name="email" type="email" required autocomplete="email" placeholder="you@company.com">
-          </div>
+  <div class="form__row">
+    <label for="reqEmail">Email *</label>
+    <input id="reqEmail" name="email" type="email" required autocomplete="email" placeholder="you@company.com">
+  </div>
 
-          <div class="form__row">
-            <label for="rq-service">Service *</label>
-            <select id="rq-service" name="service" required>
-              <option value="" disabled selected>Choose one</option>
-              <option>Managed IT</option>
-              <option>Website Design</option>
-              <option>AI/Automation</option>
-              <option>Consulting</option>
-            </select>
-          </div>
+  <div class="form__row">
+    <label for="rq-service">Service *</label>
+    <select id="rq-service" name="service" required>
+      <option value="" disabled selected>Choose one</option>
+      <option>Managed IT</option>
+      <option>Website Design</option>
+      <option>AI/Automation</option>
+      <option>Consulting</option>
+    </select>
+  </div>
 
-          <div class="form__row">
-            <label for="rq-phone">Phone</label>
-            <input id="rq-phone" name="phone" type="tel" autocomplete="tel" placeholder="(000)000-0000">
-          </div>
+  <div class="form__row">
+    <label for="rq-phone">Phone</label>
+    <input id="rq-phone" name="phone" type="tel" autocomplete="tel" placeholder="(000)000-0000">
+  </div>
 
-          <div class="form__row span-2">
-            <label for="reqMessage">What can we help with? *</label>
-            <textarea id="reqMessage" name="message" rows="4" required placeholder="Brief description"></textarea>
-          </div>
+  <div class="form__row span-2">
+    <label for="reqMessage">What can we help with? *</label>
+    <textarea id="reqMessage" name="message" rows="4" required placeholder="Brief description"></textarea>
+  </div>
 
-          <p id="requestNote" class="form__note span-2">
-            Submitting will open your email app with your request pre-filled. No data is stored on this site.
-          </p>
+  <p id="requestNote" class="form__note span-2">
+    Submitting will open your email app with your request pre-filled. No data is stored on this site.
+  </p>
 
-          <div class="btn-row span-2">
-            <button class="btn btn--primary" type="submit">Send email</button>
-          </div>
-        </form>
+  <div class="btn-row span-2">
+    <button class="btn btn--primary" type="submit">Send email</button>
+  </div>
+</form>
+
+<script>
+  // Open email client directly (no confirm page)
+  (function () {
+    const form = document.getElementById('homeRequestForm');
+    if (!form) return;
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      // Basic HTML5 validity
+      const bad = form.querySelector(':invalid');
+      if (bad) { bad.focus(); return; }
+
+      const data = Object.fromEntries(new FormData(form).entries());
+
+      // TODO: CHANGE THIS to your real email address
+      const TO = 'info@example.com';
+
+      const subject = `Quote request — ${data.name || 'Website visitor'}`;
+      const lines = [
+        `Name: ${data.name || ''}`,
+        `Email: ${data.email || ''}`,
+        `Service: ${data.service || ''}`,
+        `Phone: ${data.phone || ''}`,
+        '',
+        'Message:',
+        (data.message || '')
+      ];
+      const body = lines.join('\n');
+
+      const mailto = `mailto:${encodeURIComponent(TO)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+      // Trigger the user's email client
+      window.location.href = mailto;
+    });
+  })();
+</script>
+
       </div>
     </section>
   </main>
