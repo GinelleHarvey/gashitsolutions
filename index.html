@@ -54,6 +54,7 @@
           </div>
         </div>
         <figure class="hero__media">
+          <!-- uses your repo filename with double extension -->
           <img class="img-accent" src="assets/hero.jpg.jpg" alt="Developer working at dual monitors in a modern office">
         </figure>
       </div>
@@ -120,7 +121,7 @@
       </div>
     </section>
 
-    <!-- REQUEST (emails you directly; JS builds a mailto:) -->
+    <!-- REQUEST -->
     <section id="request" class="request" aria-label="Request a quote">
       <div class="wrap request__grid">
         <div class="request__content">
@@ -133,36 +134,30 @@
           </ul>
         </div>
 
-        <!-- IMPORTANT: IDs match script.js (requestForm handler) -->
+        <!-- Unified request form (hooks into script.js confirm flow) -->
         <form id="requestForm" class="form form--grid" aria-describedby="requestNote" novalidate>
           <div class="form__row">
-            <label for="rq-name">Name *</label>
-            <input id="rq-name" name="name" type="text" required autocomplete="name" placeholder="Your name">
+            <label for="reqName">Full name *</label>
+            <input id="reqName" name="name" type="text" required autocomplete="name" placeholder="Your name">
           </div>
+
           <div class="form__row">
-            <label for="rq-email">Email *</label>
-            <input id="rq-email" name="email" type="email" required autocomplete="email" placeholder="you@company.com">
+            <label for="reqEmail">Email *</label>
+            <input id="reqEmail" name="email" type="email" required autocomplete="email" placeholder="you@company.com">
           </div>
-          <div class="form__row">
-            <label for="rq-service">Service *</label>
-            <select id="rq-service" name="service" required>
-              <option value="" disabled selected>Choose one</option>
-              <option>Managed IT</option>
-              <option>Website Design</option>
-              <option>AI/Automation</option>
-              <option>Consulting</option>
-            </select>
-          </div>
-          <div class="form__row">
-            <label for="rq-phone">Phone</label>
-            <input id="rq-phone" name="phone" type="tel" autocomplete="tel" placeholder="(000)000-0000">
-          </div>
+
           <div class="form__row span-2">
-            <label for="rq-msg">Brief description *</label>
-            <textarea id="rq-msg" name="message" rows="5" required placeholder="How can we help?"></textarea>
+            <label for="reqMessage">What can we help with? *</label>
+            <textarea id="reqMessage" name="message" rows="4" required placeholder="Brief description"></textarea>
           </div>
-          <p id="requestNote" class="form__note span-2">We’ll prepare a quick response with next steps. No data is stored on this site.</p>
-          <button class="btn btn--primary span-2" type="submit">Send Request</button>
+
+          <p id="requestNote" class="form__note span-2">
+            We’ll show a quick review screen before opening your email app. No data is stored on this site.
+          </p>
+
+          <div class="btn-row span-2">
+            <button class="btn btn--primary" type="submit">Review your request</button>
+          </div>
         </form>
       </div>
     </section>
@@ -173,7 +168,7 @@
     <div class="wrap footer__grid">
       <small><strong>Created by Ginelle Harvey</strong> • <span class="js-year"></span></small>
       <nav class="footer-nav" aria-label="Footer">
-        <a href="purpose.html">← Back to Purpose &amp; Assignments</a>
+        <a href="services.html">See Services →</a>
       </nav>
     </div>
   </footer>
