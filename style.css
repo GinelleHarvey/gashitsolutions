@@ -228,3 +228,186 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);border-c
   .form--grid{grid-template-columns:1fr}
   .span-2{grid-column:auto}
 }
+
+/* =======================================================================
+   ADD-ON: Card glow for Home cards (non-breaking, targets .cards .card)
+   Paste stayed at end so it overrides earlier card rules only on hover.
+======================================================================== */
+.cards .card{
+  position: relative;
+  overflow: hidden;
+  transition: transform .16s ease,
+              box-shadow .3s ease,
+              border-color .3s ease,
+              background .3s ease;
+}
+.cards .card::after{
+  content:"";
+  position:absolute;
+  inset:-2px;
+  border-radius: var(--radius);
+  background: radial-gradient(120% 120% at 50% -10%,
+              rgba(59,130,246,.25), transparent 55%),
+              radial-gradient(120% 120% at 110% 10%,
+              rgba(168,85,247,.22), transparent 60%);
+  filter: blur(14px);
+  opacity: 0;
+  pointer-events:none;
+  transition: opacity .28s ease;
+  z-index: 0;
+}
+.cards .card:hover,
+.cards .card:focus-within{
+  transform: translateY(-4px);
+  border-color: rgba(120,144,255,.45);
+  box-shadow:
+    0 10px 30px rgba(59,130,246,.18),
+    0 20px 60px rgba(168,85,247,.15);
+}
+.cards .card:hover::after,
+.cards .card:focus-within::after{
+  opacity: .85;
+}
+.cards .card > *{
+  position: relative;
+  z-index: 1;
+}
+@media (prefers-reduced-motion: reduce){
+  .cards .card{ transition: none; }
+  .cards .card:hover,
+  .cards .card:focus-within{ transform: none; }
+}
+
+/* =======================================================================
+   SERVICES PAGE – add-only styles (scoped to .svc-*)
+   Use these classes on services.html to avoid impacting other pages.
+======================================================================== */
+
+/* Header Area (optional) */
+.svc-hero{
+  padding:56px 0 22px;
+  background: linear-gradient(180deg,#0b1220 0%, #0b0f14 100%);
+}
+.svc-hero h1{margin:.25rem 0 .5rem;font-size:clamp(1.8rem,3.2vw,2.4rem)}
+.svc-hero p{color:var(--muted);max-width:70ch}
+
+/* Service catalog wrapper */
+.svc{
+  padding: 42px 0 56px;
+}
+
+/* 8-up grid, responsive down to 1 column */
+.svc-grid{
+  display:grid;
+  gap: 22px;
+  grid-template-columns: repeat(4,1fr);
+}
+@media (max-width:1100px){ .svc-grid{ grid-template-columns: repeat(3,1fr); } }
+@media (max-width:820px){  .svc-grid{ grid-template-columns: repeat(2,1fr); } }
+@media (max-width:460px){  .svc-grid{ grid-template-columns: 1fr; } }
+
+/* Service card */
+.svc-card{
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  gap: 8px;
+  transition: transform .16s ease, box-shadow .32s ease, border-color .32s ease, background .32s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Icon tile – works with PNG or SVG */
+.svc-card__icon{
+  width: 48px; height: 48px;
+  display:grid;place-items:center;
+  border-radius: 12px;
+  background:
+    radial-gradient(240px 160px at -10% -10%, rgba(59,130,246,.18), transparent 60%),
+    radial-gradient(240px 160px at 120% 0%, rgba(168,85,247,.14), transparent 65%),
+    var(--surface-2);
+  border: 1px solid #203042;
+}
+.svc-card__icon img,
+.svc-card__icon svg{ width:26px;height:26px; display:block; }
+
+/* Title + text */
+.svc-card h3{ margin: 6px 0 2px; font-size: 1.05rem; }
+.svc-card p{ margin: 0; color: var(--muted); }
+
+/* Hover / focus effects (subtle neon) */
+.svc-card::after{
+  content:"";
+  position:absolute; inset:-3px; border-radius: calc(var(--radius) + 2px);
+  background:
+    radial-gradient(120% 120% at 50% -10%, rgba(59,130,246,.23), transparent 55%),
+    radial-gradient(120% 120% at 110% 10%, rgba(168,85,247,.20), transparent 60%);
+  filter: blur(16px);
+  opacity: 0;
+  transition: opacity .28s ease;
+  z-index: 0;
+}
+.svc-card:hover,
+.svc-card:focus-within{
+  transform: translateY(-3px);
+  border-color: rgba(120,144,255,.45);
+  box-shadow:
+    0 10px 28px rgba(59,130,246,.16),
+    0 18px 52px rgba(168,85,247,.14);
+}
+.svc-card:hover::after,
+.svc-card:focus-within::after{ opacity: .85; }
+
+/* Keep content above glow */
+.svc-card > *{ position: relative; z-index: 1; }
+
+/* Alternating sections specific to Services (optional) */
+.svc-alt{
+  margin: 40px 0;
+  border:1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 22px;
+}
+.svc-alt__grid{
+  display:grid; gap: 24px; grid-template-columns: 1.15fr .85fr; align-items: center;
+}
+.svc-alt h2{ margin:.25rem 0 .5rem; font-size: clamp(1.3rem,2.2vw,1.8rem); }
+.svc-alt p{ color: var(--muted); }
+.svc-alt__media img{ border-radius: 12px; }
+.svc-alt--reverse .svc-alt__grid{ grid-template-columns: .85fr 1.15fr; }
+.svc-alt--reverse .svc-alt__text{ order:2; }
+.svc-alt--reverse .svc-alt__media{ order:1; }
+@media (max-width:920px){
+  .svc-alt__grid,
+  .svc-alt--reverse .svc-alt__grid{ grid-template-columns: 1fr; }
+  .svc-alt--reverse .svc-alt__text,
+  .svc-alt--reverse .svc-alt__media{ order: initial; }
+}
+
+/* CTA footer on Services */
+.svc-cta{
+  margin: 44px 0 64px;
+  padding: 22px;
+  border:1px solid var(--border);
+  border-radius: var(--radius);
+  background:
+    radial-gradient(1200px 800px at 0% 0%, rgba(59,130,246,.10), transparent 60%),
+    radial-gradient(1200px 800px at 100% 0%, rgba(168,85,247,.10), transparent 60%),
+    var(--surface);
+}
+.svc-cta h2{ margin: 0 0 8px; }
+.svc-cta p{ margin: 0 0 12px; color: var(--muted); }
+
+/* Focus ring utility */
+:where(.svc-card, .svc-cta, .svc-alt) :is(a,button,input,select,textarea):focus{
+  outline:2px solid var(--accent);
+  outline-offset:2px;
+  border-radius:8px;
+}
+
+/* Icon helpers if you use dark PNGs */
+.svc-icon--invert{ filter: brightness(0) invert(1); }
