@@ -446,3 +446,29 @@ document.querySelectorAll('.panels').forEach(section => {
 
   drawAll(0);
 })();
+
+// Back-to-top button (auto-injected)
+(function(){
+  const btn = document.createElement('button');
+  btn.id = 'toTop';
+  btn.type = 'button';
+  btn.setAttribute('aria-label', 'Back to top');
+  btn.title = 'Back to top';
+  btn.innerHTML = '↑'; // simple, crisp arrow
+  document.addEventListener('DOMContentLoaded', () => document.body.appendChild(btn));
+
+  const prefersReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const showAfter = 300; // px scrolled before showing
+
+  function onScroll(){
+    if (window.scrollY > showAfter) btn.classList.add('is-visible');
+    else btn.classList.remove('is-visible');
+  }
+  window.addEventListener('scroll', () => requestAnimationFrame(onScroll), { passive: true });
+  onScroll();
+
+  btn.addEventListener('click', () => {
+    const behavior = prefersReduce ? 'auto' : 'smooth';
+    window.scrollTo({ top: 0, behavior });
+  });
+})();
