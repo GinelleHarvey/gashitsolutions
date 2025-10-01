@@ -657,3 +657,28 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);border-c
     grid-template-columns: 1fr;
   }
 }
+
+/* === Mobile nav fix: match desktop (dark panel + readable links) === */
+@media (max-width:860px){
+  .nav__menu{
+    background: var(--bg) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 12px !important;
+  }
+  .nav__menu a{
+    color: var(--text) !important;          /* white-ish on dark */
+    text-decoration: none;
+    padding: 10px 8px;                       /* nicer tap targets */
+  }
+  .nav__menu a:hover{
+    color: #fff !important;
+    text-decoration: underline;
+    text-decoration-color: var(--brand-2);
+  }
+  /* keep the hamburger white */
+  .nav__toggle{
+    color:#fff !important;
+    background: transparent !important;
+    border:1px solid rgba(255,255,255,.75) !important;
+  }
+}
