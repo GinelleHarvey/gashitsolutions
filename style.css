@@ -682,3 +682,41 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);border-c
     border:1px solid rgba(255,255,255,.75) !important;
   }
 }
+
+
+/* Back-to-top button */
+#toTop{
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 1000;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  background: var(--grad-accent);
+  color: #fff;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+
+  /* hidden by default */
+  opacity: 0;
+  transform: translateY(8px) scale(.98);
+  pointer-events: none;
+  transition: opacity .2s ease, transform .2s ease, filter .2s ease;
+}
+#toTop.is-visible{
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+#toTop:hover{ filter: brightness(1.08); }
+#toTop:focus{ outline: 2px solid var(--brand-2); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce){
+  #toTop{ transition: none; }
+}
+
