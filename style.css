@@ -2,16 +2,24 @@
    DESIGN TOKENS
 ============================== */
 :root{
+  /* Brand family */
   --brand-1:#7c3aed;      /* violet */
   --brand-2:#3b82f6;      /* blue */
+
+  /* Site surfaces & text */
   --bg:#0d1026;           /* page background */
   --surface:#111633;      /* card/section background */
+  --surface-2:#0f1822;    /* inputs / deeper panels */
   --text:#e5e7eb;         /* primary text */
-  --muted:#c7d2fe;        /* light text/accent */
+  --muted:#c7d2fe;        /* light text/accent on dark */
   --border:#1d2550;       /* borders */
-}
 
-  /* Layout */
+  /* Convenience aliases used throughout the CSS */
+  --primary: var(--brand-1);                         /* single-brand color */
+  --accent: #a78bfa;                                 /* link/focus tint (violet-300/400) */
+  --grad-accent: linear-gradient(90deg, var(--brand-1), var(--brand-2));
+
+  /* Layout (unchanged) */
   --wrap:1400px;
   --radius:14px;
   --gap:28px;
@@ -41,27 +49,91 @@ a:hover{text-decoration:underline}
 /* ==============================
    HEADER / NAV (white, short)
 ============================== */
-.site-header{background:#fff;color:#0b0f14;border-bottom:1px solid #e7eef7;position:sticky;top:0;z-index:40}
-.site-header .wrap{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:64px}
-.brand img{height:56px}
-.nav__toggle{display:none;background:#eef4fb;border:1px solid #cfe1f8;border-radius:10px;padding:.55rem .8rem}
-.nav__menu{display:flex;gap:22px;list-style:none;padding:0;margin:0}
-.nav__menu a{color:#0b0f14;text-decoration:none;font-weight:600}
-.nav__menu a[aria-current="page"]{border-bottom:2px solid var(--primary)}
+/* ==============================
+   HEADER / NAV (dark, matches site)
+============================== */
+.site-header{
+  background: var(--bg);
+  color: var(--text);
+  border-bottom:1px solid var(--border);
+  position:sticky; top:0; z-index:40;
+}
+.site-header .wrap{
+  display:flex; align-items:center; justify-content:space-between; gap:20px; min-height:64px;
+}
+.brand img{ height:56px }
+
+/* Hamburger / menu button — white, subtle border */
+.nav__toggle{
+  display:none;
+  background: transparent;
+  color:#fff;
+  border:1px solid rgba(255,255,255,.75);
+  border-radius:10px;
+  padding:.55rem .8rem;
+}
+
+/* Desktop menu */
+.nav__menu{ display:flex; gap:22px; list-style:none; padding:0; margin:0; }
+.nav__menu a{
+  color: var(--text);
+  text-decoration:none;
+  font-weight:600;
+}
+.nav__menu a[aria-current="page"]{
+  border-bottom:2px solid var(--primary);
+}
+
+/* Mobile panel matches site (no white) */
+@media (max-width:860px){
+  .nav__toggle{ display:inline-block; }
+  .nav__menu{
+    display:none;
+    position:absolute; right:20px; top:64px;
+    flex-direction:column;
+    background: var(--bg);
+    padding:12px;
+    border:1px solid var(--border);
+    border-radius:12px;
+  }
+  .nav__menu.is-open{ display:flex; }
+}
 
 /* ==============================
    BUTTONS
 ============================== */
-.btn{display:inline-block;padding:.85rem 1.1rem;border-radius:10px;text-decoration:none;font-weight:700}
-.btn--primary{background:var(--primary);color:#06130b}
-.btn--primary:hover{filter:brightness(.95)}
-.btn--ghost{border:2px solid var(--primary);color:var(--text)}
-.btn--ghost:hover{background:var(--primary);color:#06130b}
-.btn-row{display:flex;gap:12px;flex-wrap:wrap}
+/* ==============================
+   BUTTONS (purple/blue family)
+============================== */
+.btn{
+  display:inline-block;
+  padding:.85rem 1.1rem;
+  border-radius:10px;
+  text-decoration:none;
+  font-weight:700;
+}
+.btn--primary{
+  background: var(--primary);
+  color: #fff;                /* was dark green — now white */
+}
+.btn--primary:hover{ filter:brightness(.95) }
+
+.btn--ghost{
+  border:2px solid var(--primary);
+  color: var(--text);
+}
+.btn--ghost:hover{
+  background: var(--primary);
+  color:#fff;                 /* ensure contrast on hover */
+}
 
 /* Accent / gradient button */
-.btn--accent{background:var(--grad-accent);color:#0b0f14}
-.btn--accent:hover{filter:brightness(.95)}
+.btn--accent{
+  background: var(--grad-accent);
+  color:#fff;                 /* ensure contrast on gradient */
+}
+.btn--accent:hover{ filter:brightness(.95) }
+
 
 /* ==============================
    HERO
