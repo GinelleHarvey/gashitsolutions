@@ -2,22 +2,14 @@
    DESIGN TOKENS
 ============================== */
 :root{
-  /* Brand core */
-  --primary:#16a34a;   /* emerald */
-  --accent:#0ea5e9;    /* focus/link blue */
-
-  /* Extra splash colors */
-  --blue:#3b82f6;      /* vivid blue */
-  --purple:#a855f7;    /* bright purple */
-  --grad-accent: linear-gradient(135deg, var(--blue), var(--purple));
-
-  /* Surfaces & text */
-  --bg:#0b0f14;        /* page background (dark) */
-  --surface:#0e141b;   /* card surface */
-  --surface-2:#0f1822; /* deeper surface */
-  --border:#1a2430;    /* borders */
-  --text:#eaf0f6;      /* main text */
-  --muted:#a7b3c2;     /* secondary text */
+  --brand-1:#7c3aed;      /* violet */
+  --brand-2:#3b82f6;      /* blue */
+  --bg:#0d1026;           /* page background */
+  --surface:#111633;      /* card/section background */
+  --text:#e5e7eb;         /* primary text */
+  --muted:#c7d2fe;        /* light text/accent */
+  --border:#1d2550;       /* borders */
+}
 
   /* Layout */
   --wrap:1400px;
