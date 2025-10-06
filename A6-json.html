@@ -39,6 +39,26 @@
     .pill.bad { background:#ffecec; border-color:#ffc4c4; }
     .note { color:#888; font-size:.95rem; margin-top:.5rem; }
     .visually-hidden{ position:absolute!important; height:1px; width:1px; overflow:hidden; clip:rect(1px,1px,1px,1px); white-space:nowrap; }
+
+    /* Dark mode compatibility for the A6 table only */
+.a6-table th,
+.a6-table td {
+  color: #f4f4f4;
+  border-color: rgba(255,255,255,0.15);
+}
+.a6-table th { background: rgba(255,255,255,0.08); }
+.a6-table td { background: rgba(255,255,255,0.04); }
+
+/* Tags and pills within the A6 table */
+.a6-table .tag {
+  border-color: rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.08);
+  color: #eaeaea;
+}
+.a6-table .pill.ok   { background:#1f7a1f; border-color:#3dd13d; color:#fff; }
+.a6-table .pill.warn { background:#bfa22d; border-color:#ffe19c; color:#000; }
+.a6-table .pill.bad  { background:#a93030; border-color:#ffaaaa; color:#fff; }
+    
   </style>
 </head>
 <body>
