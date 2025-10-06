@@ -55,12 +55,27 @@
   background: rgba(255,255,255,0.08);
   color: #eaeaea;
 }
-.a6-table .pill.ok   { background:#1f7a1f; border-color:#3dd13d; color:#fff; }
-.a6-table .pill.warn { background:#bfa22d; border-color:#ffe19c; color:#000; }
-.a6-table .pill.bad  { background:#a93030; border-color:#ffaaaa; color:#fff; }
+/* Compact stock badge */
+.stock-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width: 2.2ch;         /* fits 2–3 digits */
+  padding:.15rem .45rem;
+  border-radius:8px;
+  font-weight:600;
+  font-size:.9rem;
+  line-height:1.1;
+  border:1px solid;
+}
+.stock-ok   { background:#153d1a; color:#bff4bf; border-color:#2d8a35; }
+.stock-warn { background:#4a3b0e; color:#ffe7a3; border-color:#bfa22d; }
+.stock-bad  { background:#4a1212; color:#ffd0d0; border-color:#a93030; }
     
-  </style>
+</style>
 </head>
+
+  
 <body>
   <a class="skip" href="#main">Skip to content</a>
 
