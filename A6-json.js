@@ -9,9 +9,9 @@
   const searchBox = document.getElementById('searchBox');
   const exportCsvBtn = document.getElementById('exportCsvBtn');
 
-  let raw = [];          // original items (array)
-  let view = [];         // filtered & sorted items (array)
-  let sortState = { key: null, dir: 1 }; // dir: 1 asc, -1 desc
+  let raw = [];
+  let view = [];
+  let sortState = { key: null, dir: 1 }; // 1 asc, -1 desc
 
   async function load(url){
     statusEl.textContent = `Loading ${url}…`;
@@ -35,14 +35,12 @@
   }
 
   function buildFilterOptions(items){
-    // Build unique Category and Status options from data
     const cats = new Set();
     const stats = new Set();
     items.forEach(i => {
       if (i.category) cats.add(String(i.category));
       if (i.status) stats.add(String(i.status));
     });
-
     setOptions(filterCategory, ['All', ...[...cats].sort()]);
     setOptions(filterStatus, ['All', ...[...stats].sort()]);
   }
@@ -56,7 +54,6 @@
       opt.textContent = v;
       select.appendChild(opt);
     });
-    // preserve previous selection if possible
     const match = [...select.options].some(o => o.value === current);
     if (match) select.value = current;
   }
@@ -79,7 +76,6 @@
       return true;
     });
 
-    // Apply sort if any
     if (sortState.key){
       const { key, dir } = sortState;
       const colType = columnTypes[key] || 'string';
@@ -89,20 +85,21 @@
     renderTable(view);
   }
 
+  // Columns (Margin included)
   const columnMap = [
-    { key: 'sku', label: 'SKU', type: 'string' },
-    { key: 'name', label: 'Product', type: 'string' },
-    { key: 'category', label: 'Category', type: 'string' },
-    { key: 'price', label: 'Price', type: 'number' },
-    { key: 'cost', label: 'Cost', type: 'number' },
-    { key: 'margin', label: 'Margin', type: 'number' }, // computed
-    { key: 'stock', label: 'Stock', type: 'number' },
-    { key: 'reorderLevel', label: 'Reorder', type: 'number' },
-    { key: 'status', label: 'Status', type: 'string' },
-    { key: 'supplier', label: 'Supplier', type: 'string' },
-    { key: 'addedDate', label: 'Added', type: 'string' },
-    { key: 'lastUpdated', label: 'Updated', type: 'string' },
-    { key: 'tags', label: 'Tags', type: 'string' } // array displayed as chips
+    { key: 'sku',          label: 'SKU',      type: 'string' },
+    { key: 'name',         label: 'Product',  type: 'string' },
+    { key: 'category',     label: 'Category', type: 'string' },
+    { key: 'price',        label: 'Price',    type: 'number' },
+    { key: 'cost',         label: 'Cost',     type: 'number' },
+    { key: 'margin',       label: 'Margin',   type: 'number' }, // computed
+    { key: 'stock',        label: 'Stock',    type: 'number' },
+    { key: 'reorderLevel', label: 'Reorder',  type: 'number' },
+    { key: 'status',       label: 'Status',   type: 'string' },
+    { key: 'supplier',     label: 'Supplier', type: 'string' },
+    { key: 'addedDate',    label: 'Added',    type: 'string' },
+    { key: 'lastUpdated',  label: 'Updated',  type: 'string' },
+    { key: 'tags',         label: 'Tags',     type: 'string' }
   ];
   const columnTypes = Object.fromEntries(columnMap.map(c => [c.key, c.type]));
 
@@ -123,13 +120,10 @@
       th.dataset.key = col.key;
       th.setAttribute('role', 'columnheader');
       th.setAttribute('aria-sort', sortState.key === col.key ? (sortState.dir === 1 ? 'ascending' : 'descending') : 'none');
-
-      // Click & keyboard to sort
       th.addEventListener('click', () => toggleSort(col.key));
       th.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleSort(col.key); }
       });
-
       hdrRow.appendChild(th);
     });
     thead.appendChild(hdrRow);
@@ -138,24 +132,25 @@
     const tbody = document.createElement('tbody');
     items.forEach(i => {
       const tr = document.createElement('tr');
-      const margin = num(i.price) - num(i.cost);
-      const stockClass = i.stock <= 0 ? 'bad' : (i.stock <= i.reorderLevel ? 'warn' : 'ok');
-      const stockLabel = i.stock <= 0 ? 'Out' : (i.stock <= i.reorderLevel ? 'Low' : 'In Stock');
+
+      const qty = int(i.stock);
+      const stockClass = qty <= 0 ? 'stock-bad' : (qty <= int(i.reorderLevel) ? 'stock-warn' : 'stock-ok');
+      const stockTitle = qty <= 0 ? 'Out of stock' : (qty <= int(i.reorderLevel) ? 'Low stock' : 'In stock');
 
       const cells = {
-        sku: escapeHtml(i.sku ?? ''),
-        name: escapeHtml(i.name ?? ''),
-        category: escapeHtml(i.category ?? ''),
-        price: fmtCurrency(num(i.price)),
-        cost: fmtCurrency(num(i.cost)),
-        margin: fmtCurrency(margin),
-        stock: `<span class="pill ${stockClass}">${int(i.stock)} • ${stockLabel}</span>`,
+        sku:         escapeHtml(i.sku ?? ''),
+        name:        escapeHtml(i.name ?? ''),
+        category:    escapeHtml(i.category ?? ''),
+        price:       fmtCurrency(num(i.price)),
+        cost:        fmtCurrency(num(i.cost)),
+        margin:      fmtCurrency(num(i.price) - num(i.cost)),
+        stock:       `<span class="stock-badge ${stockClass}" title="${stockTitle}">${qty}</span>`,
         reorderLevel: int(i.reorderLevel),
-        status: escapeHtml(i.status ?? ''),
-        supplier: escapeHtml(i.supplier ?? ''),
-        addedDate: escapeHtml(i.addedDate ?? ''),
+        status:      escapeHtml(i.status ?? ''),
+        supplier:    escapeHtml(i.supplier ?? ''),
+        addedDate:   escapeHtml(i.addedDate ?? ''),
         lastUpdated: escapeHtml(i.lastUpdated ?? ''),
-        tags: (Array.isArray(i.tags) ? i.tags : []).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('')
+        tags:        (Array.isArray(i.tags) ? i.tags : []).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('')
       };
 
       columnMap.forEach(col => {
@@ -174,7 +169,6 @@
 
   function toggleSort(key){
     if (sortState.key === key){
-      // toggle dir or clear if already descending
       sortState.dir = sortState.dir === 1 ? -1 : 1;
     } else {
       sortState.key = key;
@@ -189,14 +183,13 @@
       const nb = Number(b) || 0;
       return na === nb ? 0 : na < nb ? -1 : 1;
     }
-    // string/other
     const sa = (a ?? '').toString().toLowerCase();
     const sb = (b ?? '').toString().toLowerCase();
     return sa === sb ? 0 : sa < sb ? -1 : 1;
   }
 
   function exportCSV(){
-    // Export the *currently viewed* rows
+    // Export the current view (Margin included)
     const rows = view.map(i => ({
       SKU: i.sku ?? '',
       Product: i.name ?? '',
