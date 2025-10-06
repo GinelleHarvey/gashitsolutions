@@ -156,6 +156,7 @@
       columnMap.forEach(col => {
         const td = document.createElement('td');
         td.innerHTML = cells[col.key] ?? '';
+        td.setAttribute('data-label', col.label); // important for mobile layout
         tr.appendChild(td);
       });
 
@@ -189,7 +190,6 @@
   }
 
   function exportCSV(){
-    // Export the current view (Margin included)
     const rows = view.map(i => ({
       SKU: i.sku ?? '',
       Product: i.name ?? '',
