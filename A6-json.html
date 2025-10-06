@@ -24,11 +24,14 @@
     .page-banner .crumb a { text-decoration: none; }
 
     .a6-toolbar { display:flex; gap:.6rem; align-items:center; flex-wrap:wrap; margin:.75rem 0 1rem; }
+    .a6-toolbar .grow { flex: 1 1 220px; }
     .a6-status { font-size:.95rem; opacity:.85; }
     .table-wrap { overflow:auto; }
     table.a6-table { width:100%; border-collapse: collapse; }
     .a6-table th, .a6-table td { border:1px solid #ccc; padding:.6rem .7rem; text-align:left; vertical-align:top; }
-    .a6-table th { background:#f7f7f8; }
+    .a6-table th { background:#f7f7f8; cursor:pointer; user-select:none; }
+    .a6-table th[aria-sort="ascending"]::after { content:" ▲"; }
+    .a6-table th[aria-sort="descending"]::after { content:" ▼"; }
     .tag { display:inline-block; padding:.15rem .5rem; border:1px solid #ddd; border-radius:999px; font-size:.85rem; margin:.1rem .25rem 0 0 }
     .pill { padding:.15rem .45rem; border-radius:999px; border:1px solid #ddd; font-size:.85rem; }
     .pill.ok { background:#e9fbe9; border-color:#c6efc6; }
@@ -75,10 +78,22 @@
 
       <div class="a6-toolbar">
         <label for="dataSrc">Data file:</label>
-        <select id="dataSrc" aria-label="Choose JSON file to load">
+        <select id="dataSrc">
           <option value="A6-inventory.json" selected>A6-inventory.json</option>
         </select>
+
+        <label for="filterCategory">Category:</label>
+        <select id="filterCategory"><option value="">All</option></select>
+
+        <label for="filterStatus">Status:</label>
+        <select id="filterStatus"><option value="">All</option></select>
+
+        <input id="searchBox" class="grow" type="search" placeholder="Search SKU / Name / Tags" aria-label="Search inventory">
+
         <button id="reloadBtn" class="btn" type="button">Reload</button>
+        <button id="clearFiltersBtn" class="btn" type="button">Clear Filters</button>
+        <button id="exportCsvBtn" class="btn" type="button">Export CSV</button>
+
         <span id="status" class="a6-status" role="status" aria-live="polite"></span>
       </div>
 
@@ -110,4 +125,3 @@
   <script src="A6-json.js"></script>
 </body>
 </html>
-
