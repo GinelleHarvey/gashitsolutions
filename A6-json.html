@@ -71,6 +71,75 @@
 .stock-warn{ background:#4a3b0e; color:#ffe7a3; border-color:#bfa22d; }
 .stock-bad{  background:#4a1212; color:#ffd0d0; border-color:#a93030; }
 
+/* Ensure table fits desktop width without scrolling */
+.a6-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  word-wrap: break-word;
+}
+
+/* Table cells */
+.a6-table th,
+.a6-table td {
+  padding: .55rem .7rem;
+  text-align: left;
+  font-size: .95rem;
+}
+
+/* Make Product column wider */
+.a6-table th:nth-child(2),
+.a6-table td:nth-child(2) {
+  width: 22%;
+}
+
+/* Remove unnecessary overflow from wrapper */
+#tableWrap {
+  overflow-x: visible !important;
+}
+
+/* ---------- MOBILE VIEW (no horizontal scroll) ---------- */
+@media (max-width: 768px) {
+  .a6-table,
+  .a6-table thead,
+  .a6-table tbody,
+  .a6-table th,
+  .a6-table td,
+  .a6-table tr {
+    display: block;
+    width: 100%;
+  }
+
+  /* Hide table header */
+  .a6-table thead {
+    display: none;
+  }
+
+  /* Each row becomes a card */
+  .a6-table tr {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    padding: .6rem;
+  }
+
+  .a6-table td {
+    border: none;
+    display: flex;
+    justify-content: space-between;
+    padding: .35rem 0;
+  }
+
+  /* Add data labels before each value */
+  .a6-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #9dc1ff;
+  }
+}
+
+
     
 </style>
 </head>
