@@ -98,6 +98,64 @@
   .note--swipe{ display:none; }
 }
 
+
+   /* === FORCE HIGH-CONTRAST THEME FOR A6 TABLE (works on light or dark pages) === */
+:root{
+  --a6-th-bg:#1f283a;
+  --a6-td-bg:#121826;
+  --a6-border:rgba(255,255,255,.14);
+  --a6-text:#f5f7ff;
+  --a6-muted:#c7d2fe;
+}
+
+#tableWrap{
+  background:var(--a6-td-bg);
+  border:1px solid var(--a6-border);
+  border-radius:12px;
+}
+
+/* Cell text + borders */
+.a6-table th,
+.a6-table td{
+  color:var(--a6-text) !important;
+  border-color:var(--a6-border) !important;
+  white-space:nowrap; /* keep clean rows; horizontal scroll handles overflow */
+}
+
+/* Headers and cells backgrounds */
+.a6-table th{ background:var(--a6-th-bg) !important; }
+.a6-table td{ background:var(--a6-td-bg) !important; }
+
+/* Chips */
+.a6-table .tag{
+  background:rgba(255,255,255,.10) !important;
+  border-color:rgba(255,255,255,.24) !important;
+  color:#eaf0ff !important;
+}
+
+/* Note text below the table */
+.note{ color:var(--a6-muted) !important; }
+
+/* Keep our compact stock badges readable */
+.stock-badge{ border:1px solid; }
+.stock-ok{   background:#153d1a; color:#bff4bf; border-color:#2d8a35; }
+.stock-warn{ background:#4a3b0e; color:#ffe7a3; border-color:#bfa22d; }
+.stock-bad{  background:#4a1212; color:#ffd0d0; border-color:#a93030; }
+
+/* Mobile scroll polish (kept) */
+@media (max-width:768px){
+  .table-wrap{
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    padding-bottom:10px;
+    margin-bottom:.25rem;
+    scroll-behavior:smooth;
+  }
+  .a6-table{ min-width:980px; }
+  .table-wrap::-webkit-scrollbar{ height:8px; }
+  .table-wrap::-webkit-scrollbar-thumb{ background:rgba(255,255,255,.25); border-radius:999px; }
+  .table-wrap{ scrollbar-width:thin; }
+}
     
 </style>
 </head>
