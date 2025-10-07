@@ -7,168 +7,96 @@
   <meta name="description" content="Assignment 6: Fetch and display external JSON product inventory in a formatted table.">
 
   <!-- Main site CSS -->
-  <link rel="stylesheet" href="style.css">
-  <!-- Favicons -->
-  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48x48.png">
-  <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64x64.png">
-  <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon-128x128.png">
-  <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon-512.png">
-  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+ <style>
+  /* page-specific helpers; your site handles the rest */
+  .wrap { max-width: 980px; margin: 0 auto; padding: 1rem; }
+  .page-banner { text-align: center; padding: .9rem 0 .6rem; }
+  .page-banner .crumb a { text-decoration: none; }
 
-  <style>
-    /* page-specific helpers; your site handles the rest */
-    .wrap { max-width: 980px; margin: 0 auto; padding: 1rem; }
-    .page-banner { text-align: center; padding: .9rem 0 .6rem; }
-    .page-banner .crumb a { text-decoration: none; }
+  /* Toolbar */
+  .a6-toolbar { display:flex; gap:.6rem; align-items:center; flex-wrap:wrap; margin:.75rem 0 1rem; }
+  .a6-toolbar .grow { flex: 1 1 220px; }
+  .a6-status { font-size:.95rem; opacity:.85; }
 
-    .a6-toolbar { display:flex; gap:.6rem; align-items:center; flex-wrap:wrap; margin:.75rem 0 1rem; }
-    .a6-toolbar .grow { flex: 1 1 220px; }
-    .a6-status { font-size:.95rem; opacity:.85; }
-    .table-wrap { overflow:auto; }
-    table.a6-table { width:100%; border-collapse: collapse; }
-    .a6-table th, .a6-table td { border:1px solid #ccc; padding:.6rem .7rem; text-align:left; vertical-align:top; }
-    .a6-table th { background:#f7f7f8; cursor:pointer; user-select:none; }
-    .a6-table th[aria-sort="ascending"]::after { content:" ▲"; }
-    .a6-table th[aria-sort="descending"]::after { content:" ▼"; }
-    .tag { display:inline-block; padding:.15rem .5rem; border:1px solid #ddd; border-radius:999px; font-size:.85rem; margin:.1rem .25rem 0 0 }
-    .pill { padding:.15rem .45rem; border-radius:999px; border:1px solid #ddd; font-size:.85rem; }
-    .pill.ok { background:#e9fbe9; border-color:#c6efc6; }
-    .pill.warn { background:#fff6da; border-color:#ffe19c; }
-    .pill.bad { background:#ffecec; border-color:#ffc4c4; }
-    .note { color:#888; font-size:.95rem; margin-top:.5rem; }
-    .visually-hidden{ position:absolute!important; height:1px; width:1px; overflow:hidden; clip:rect(1px,1px,1px,1px); white-space:nowrap; }
+  /* Table: ORIGINAL behavior (scroll when necessary) */
+  .table-wrap { overflow:auto; }                     /* enable horizontal scroll when needed */
+  table.a6-table { width:100%; border-collapse: collapse; }
+  .a6-table th, .a6-table td {
+    border:1px solid #ccc; padding:.6rem .7rem; text-align:left; vertical-align:top;
+    white-space: nowrap;                             /* keep cells on one line (prevents silly wrapping) */
+  }
+  .a6-table th { background:#f7f7f8; cursor:pointer; user-select:none; }
+  .a6-table th[aria-sort="ascending"]::after { content:" ▲"; }
+  .a6-table th[aria-sort="descending"]::after { content:" ▼"; }
 
-    /* Dark mode compatibility for the A6 table only */
-.a6-table th,
-.a6-table td {
-  color: #f4f4f4;
-  border-color: rgba(255,255,255,0.15);
-}
-.a6-table th { background: rgba(255,255,255,0.08); }
-.a6-table td { background: rgba(255,255,255,0.04); }
+  /* Chips */
+  .tag { display:inline-block; padding:.15rem .5rem; border:1px solid #ddd; border-radius:999px; font-size:.85rem; margin:.1rem .25rem 0 0 }
 
-/* Tags and pills within the A6 table */
-.a6-table .tag {
-  border-color: rgba(255,255,255,0.25);
-  background: rgba(255,255,255,0.08);
-  color: #eaeaea;
-}
-    
-/* compact stock badge for dark theme */
-.stock-badge{
-  display:inline-block;
-  padding:.15rem .5rem;
-  border-radius:999px;
-  font-weight:600;
-  font-size:.9rem;
-  line-height:1;
-  border:1px solid;
-  white-space:nowrap;
-}
-.stock-ok{   background:#153d1a; color:#bff4bf; border-color:#2d8a35; }
-.stock-warn{ background:#4a3b0e; color:#ffe7a3; border-color:#bfa22d; }
-.stock-bad{  background:#4a1212; color:#ffd0d0; border-color:#a93030; }
+  /* Note text under table */
+  .note { color:#888; font-size:.95rem; margin-top:.5rem; }
 
-/* Ensure table fits desktop width without scrolling */
-.a6-table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
-  word-wrap: break-word;
+  .visually-hidden{ position:absolute!important; height:1px; width:1px; overflow:hidden; clip:rect(1px,1px,1px,1px); white-space:nowrap; }
+
+  /* --- Dark theme adjustments (keep text readable) --- */
+  .a6-table th, .a6-table td { color:#f4f4f4; border-color:rgba(255,255,255,0.15); }
+  .a6-table th { background:rgba(255,255,255,0.08); }
+  .a6-table td { background:rgba(255,255,255,0.04); }
+  .a6-table .tag { border-color:rgba(255,255,255,0.25); background:rgba(255,255,255,0.08); color:#eaeaea; }
+
+  /* Stock badge (compact) */
+  .stock-badge{
+    display:inline-block; padding:.15rem .5rem; border-radius:999px;
+    font-weight:600; font-size:.9rem; line-height:1; border:1px solid; white-space:nowrap;
+  }
+  .stock-ok{   background:#153d1a; color:#bff4bf; border-color:#2d8a35; }
+  .stock-warn{ background:#4a3b0e; color:#ffe7a3; border-color:#bfa22d; }
+  .stock-bad{  background:#4a1212; color:#ffd0d0; border-color:#a93030; }
+
+/* Mobile scroll polish for the inventory table */
+@media (max-width: 768px){
+  .table-wrap{
+    overflow-x: auto;                 /* keep horizontal scroll on phones */
+    -webkit-overflow-scrolling: touch;/* smooth, momentum scrolling on iOS */
+    padding-bottom: 10px;             /* breathing room so scrollbar doesn't overlap content */
+    margin-bottom: .25rem;
+    scroll-behavior: smooth;
+  }
+  /* Make sure there's something to scroll (prevents odd wrapping) */
+  .a6-table{ min-width: 980px; }
+
+  /* Nice, unobtrusive scrollbar */
+  .table-wrap::-webkit-scrollbar{ height: 8px; }
+  .table-wrap::-webkit-scrollbar-track{ background: transparent; }
+  .table-wrap::-webkit-scrollbar-thumb{
+    background: rgba(255,255,255,0.25);
+    border-radius: 999px;
+  }
+  /* Firefox */
+  .table-wrap{ scrollbar-width: thin; }
 }
 
-/* Table cells */
-.a6-table th,
-.a6-table td {
-  padding: .55rem .7rem;
-  text-align: left;
-  font-size: .95rem;
+/* Optional: soft right-edge fade hint (desktop & mobile) */
+@media (max-width: 768px){
+  .table-wrap{
+    position: relative;
+  }
+  .table-wrap::after{
+    content:"";
+    position:absolute;
+    top:0; right:0; width:22px; height:100%;
+    pointer-events:none;
+    /* subtle fade to match dark theme; tweak if your bg is different */
+    background: linear-gradient(to left, rgba(0,0,0,0.35), rgba(0,0,0,0));
+  }
 }
 
-/* Make Product column wider */
-.a6-table th:nth-child(2),
-.a6-table td:nth-child(2) {
-  width: 22%;
+/* Mobile-only swipe hint text */
+@media (max-width: 768px){
+  .note--swipe{ display:block; color:#9dc1ff; opacity:.85; font-size:.9rem; margin-top:.35rem; }
 }
-
-/* === Desktop containment & tidy wrapping === */
-
-/* keep table inside the .wrap container */
-#tableWrap { overflow-x: hidden; }
-
-/* fixed layout + allow wrapping everywhere */
-.a6-table { table-layout: fixed; width: 100%; }
-.a6-table th, .a6-table td {
-  word-break: break-word;      /* wrap long words */
-  overflow-wrap: anywhere;     /* wrap hyphen-less strings */
-  white-space: normal;         /* allow wrapping */
-  padding: .55rem .7rem;
-  font-size: .95rem;
-}
-
-/* sensible widths (desktop) */
 @media (min-width: 769px){
-  /* Product gets more room */
-  .a6-table th:nth-child(2), .a6-table td:nth-child(2) { width: 22%; }
-
-  /* SKU and Supplier narrower */
-  .a6-table th:nth-child(1), .a6-table td:nth-child(1) { width: 8%;  }
-  .a6-table th:nth-child(10), .a6-table td:nth-child(10){ width: 12%; }
-
-  /* Tags column wraps nicely into rows of chips */
-  .a6-table td[data-key="tags"]{
-    white-space: normal;
-  }
-  .a6-table td[data-key="tags"] .tag{
-    display: inline-block;
-    margin: .12rem .25rem .12rem 0;
-    white-space: nowrap;       /* each tag stays intact, but multiple lines are allowed */
-  }
+  .note--swipe{ display:none; }
 }
-
-/* ---------- MOBILE VIEW (no horizontal scroll) ---------- */
-@media (max-width: 768px) {
-  .a6-table,
-  .a6-table thead,
-  .a6-table tbody,
-  .a6-table th,
-  .a6-table td,
-  .a6-table tr {
-    display: block;
-    width: 100%;
-  }
-
-  /* Hide table header */
-  .a6-table thead {
-    display: none;
-  }
-
-  /* Each row becomes a card */
-  .a6-table tr {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 10px;
-    margin-bottom: 1rem;
-    padding: .6rem;
-  }
-
-  .a6-table td {
-    border: none;
-    display: flex;
-    justify-content: space-between;
-    padding: .35rem 0;
-  }
-
-  /* Add data labels before each value */
-  .a6-table td::before {
-    content: attr(data-label);
-    font-weight: 600;
-    color: #9dc1ff;
-  }
-}
-
 
     
 </style>
