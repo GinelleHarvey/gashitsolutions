@@ -93,9 +93,39 @@
   width: 22%;
 }
 
-/* Remove unnecessary overflow from wrapper */
-#tableWrap {
-  overflow-x: visible !important;
+/* === Desktop containment & tidy wrapping === */
+
+/* keep table inside the .wrap container */
+#tableWrap { overflow-x: hidden; }
+
+/* fixed layout + allow wrapping everywhere */
+.a6-table { table-layout: fixed; width: 100%; }
+.a6-table th, .a6-table td {
+  word-break: break-word;      /* wrap long words */
+  overflow-wrap: anywhere;     /* wrap hyphen-less strings */
+  white-space: normal;         /* allow wrapping */
+  padding: .55rem .7rem;
+  font-size: .95rem;
+}
+
+/* sensible widths (desktop) */
+@media (min-width: 769px){
+  /* Product gets more room */
+  .a6-table th:nth-child(2), .a6-table td:nth-child(2) { width: 22%; }
+
+  /* SKU and Supplier narrower */
+  .a6-table th:nth-child(1), .a6-table td:nth-child(1) { width: 8%;  }
+  .a6-table th:nth-child(10), .a6-table td:nth-child(10){ width: 12%; }
+
+  /* Tags column wraps nicely into rows of chips */
+  .a6-table td[data-key="tags"]{
+    white-space: normal;
+  }
+  .a6-table td[data-key="tags"] .tag{
+    display: inline-block;
+    margin: .12rem .25rem .12rem 0;
+    white-space: nowrap;       /* each tag stays intact, but multiple lines are allowed */
+  }
 }
 
 /* ---------- MOBILE VIEW (no horizontal scroll) ---------- */
