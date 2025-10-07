@@ -6,161 +6,101 @@
   <title>A6 — JSON (Product Inventory)</title>
   <meta name="description" content="Assignment 6: Fetch and display external JSON product inventory in a formatted table.">
 
-  <!-- Main site CSS -->
- <style>
-  /* page-specific helpers; your site handles the rest */
-  .wrap { max-width: 980px; margin: 0 auto; padding: 1rem; }
-  .page-banner { text-align: center; padding: .9rem 0 .6rem; }
-  .page-banner .crumb a { text-decoration: none; }
+  <!-- Main site CSS (bring back your site theme) -->
+  <link rel="stylesheet" href="style.css">
 
-  /* Toolbar */
-  .a6-toolbar { display:flex; gap:.6rem; align-items:center; flex-wrap:wrap; margin:.75rem 0 1rem; }
-  .a6-toolbar .grow { flex: 1 1 220px; }
-  .a6-status { font-size:.95rem; opacity:.85; }
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48x48.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64x64.png">
+  <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon-128x128.png">
+  <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon-512.png">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 
-  /* Table: ORIGINAL behavior (scroll when necessary) */
-  .table-wrap { overflow:auto; }                     /* enable horizontal scroll when needed */
-  table.a6-table { width:100%; border-collapse: collapse; }
-  .a6-table th, .a6-table td {
-    border:1px solid #ccc; padding:.6rem .7rem; text-align:left; vertical-align:top;
-    white-space: nowrap;                             /* keep cells on one line (prevents silly wrapping) */
-  }
-  .a6-table th { background:#f7f7f8; cursor:pointer; user-select:none; }
-  .a6-table th[aria-sort="ascending"]::after { content:" ▲"; }
-  .a6-table th[aria-sort="descending"]::after { content:" ▼"; }
+  <style>
+    /* Page helpers (your site handles the rest) */
+    .wrap { max-width: 980px; margin: 0 auto; padding: 1rem; }
+    .page-banner { text-align: center; padding: .9rem 0 .6rem; }
+    .page-banner .crumb a { text-decoration: none; }
 
-  /* Chips */
-  .tag { display:inline-block; padding:.15rem .5rem; border:1px solid #ddd; border-radius:999px; font-size:.85rem; margin:.1rem .25rem 0 0 }
+    /* Toolbar */
+    .a6-toolbar { display:flex; gap:.6rem; align-items:center; flex-wrap:wrap; margin:.75rem 0 1rem; }
+    .a6-toolbar .grow { flex: 1 1 220px; }
+    .a6-status { font-size:.95rem; opacity:.85; }
 
-  /* Note text under table */
-  .note { color:#888; font-size:.95rem; margin-top:.5rem; }
+    /* Table: desktop stays classic; scroll only if needed */
+    .table-wrap { overflow:auto; }
+    table.a6-table { width:100%; border-collapse: collapse; }
+    .a6-table th, .a6-table td {
+      border:1px solid #ccc; padding:.6rem .7rem; text-align:left; vertical-align:top;
+      white-space: nowrap; /* keep single-line cells on desktop */
+    }
+    .a6-table th { background:#f7f7f8; cursor:pointer; user-select:none; }
+    .a6-table th[aria-sort="ascending"]::after  { content:" ▲"; }
+    .a6-table th[aria-sort="descending"]::after { content:" ▼"; }
 
-  .visually-hidden{ position:absolute!important; height:1px; width:1px; overflow:hidden; clip:rect(1px,1px,1px,1px); white-space:nowrap; }
+    /* Dark-mode compatible, high-contrast palette for the table only */
+    :root{
+      --a6-th-bg:#1f283a;
+      --a6-td-bg:#121826;
+      --a6-border:rgba(255,255,255,.14);
+      --a6-text:#f5f7ff;
+      --a6-muted:#c7d2fe;
+    }
+    #tableWrap{
+      background:var(--a6-td-bg);
+      border:1px solid var(--a6-border);
+      border-radius:12px;
+    }
+    .a6-table th, .a6-table td { color:var(--a6-text); border-color:var(--a6-border); }
+    .a6-table th { background:var(--a6-th-bg); }
+    .a6-table td { background:var(--a6-td-bg); }
 
-  /* --- Dark theme adjustments (keep text readable) --- */
-  .a6-table th, .a6-table td { color:#f4f4f4; border-color:rgba(255,255,255,0.15); }
-  .a6-table th { background:rgba(255,255,255,0.08); }
-  .a6-table td { background:rgba(255,255,255,0.04); }
-  .a6-table .tag { border-color:rgba(255,255,255,0.25); background:rgba(255,255,255,0.08); color:#eaeaea; }
+    /* Chips & stock badges */
+    .tag { display:inline-block; padding:.15rem .5rem; border:1px solid rgba(255,255,255,.24); border-radius:999px; font-size:.85rem; margin:.1rem .25rem 0 0; background:rgba(255,255,255,.10); color:#eaf0ff; }
+    .stock-badge{
+      display:inline-block; padding:.15rem .5rem; border-radius:999px;
+      font-weight:600; font-size:.9rem; line-height:1; border:1px solid; white-space:nowrap;
+    }
+    .stock-ok{   background:#153d1a; color:#bff4bf; border-color:#2d8a35; }
+    .stock-warn{ background:#4a3b0e; color:#ffe7a3; border-color:#bfa22d; }
+    .stock-bad{  background:#4a1212; color:#ffd0d0; border-color:#a93030; }
 
-  /* Stock badge (compact) */
-  .stock-badge{
-    display:inline-block; padding:.15rem .5rem; border-radius:999px;
-    font-weight:600; font-size:.9rem; line-height:1; border:1px solid; white-space:nowrap;
-  }
-  .stock-ok{   background:#153d1a; color:#bff4bf; border-color:#2d8a35; }
-  .stock-warn{ background:#4a3b0e; color:#ffe7a3; border-color:#bfa22d; }
-  .stock-bad{  background:#4a1212; color:#ffd0d0; border-color:#a93030; }
+    .note { color:var(--a6-muted); font-size:.95rem; margin-top:.5rem; }
+    .visually-hidden{ position:absolute!important; height:1px; width:1px; overflow:hidden; clip:rect(1px,1px,1px,1px); white-space:nowrap; }
 
-/* Mobile scroll polish for the inventory table */
-@media (max-width: 768px){
-  .table-wrap{
-    overflow-x: auto;                 /* keep horizontal scroll on phones */
-    -webkit-overflow-scrolling: touch;/* smooth, momentum scrolling on iOS */
-    padding-bottom: 10px;             /* breathing room so scrollbar doesn't overlap content */
-    margin-bottom: .25rem;
-    scroll-behavior: smooth;
-  }
-  /* Make sure there's something to scroll (prevents odd wrapping) */
-  .a6-table{ min-width: 980px; }
-
-  /* Nice, unobtrusive scrollbar */
-  .table-wrap::-webkit-scrollbar{ height: 8px; }
-  .table-wrap::-webkit-scrollbar-track{ background: transparent; }
-  .table-wrap::-webkit-scrollbar-thumb{
-    background: rgba(255,255,255,0.25);
-    border-radius: 999px;
-  }
-  /* Firefox */
-  .table-wrap{ scrollbar-width: thin; }
-}
-
-/* Optional: soft right-edge fade hint (desktop & mobile) */
-@media (max-width: 768px){
-  .table-wrap{
-    position: relative;
-  }
-  .table-wrap::after{
-    content:"";
-    position:absolute;
-    top:0; right:0; width:22px; height:100%;
-    pointer-events:none;
-    /* subtle fade to match dark theme; tweak if your bg is different */
-    background: linear-gradient(to left, rgba(0,0,0,0.35), rgba(0,0,0,0));
-  }
-}
-
-/* Mobile-only swipe hint text */
-@media (max-width: 768px){
-  .note--swipe{ display:block; color:#9dc1ff; opacity:.85; font-size:.9rem; margin-top:.35rem; }
-}
-@media (min-width: 769px){
-  .note--swipe{ display:none; }
-}
-
-
-   /* === FORCE HIGH-CONTRAST THEME FOR A6 TABLE (works on light or dark pages) === */
-:root{
-  --a6-th-bg:#1f283a;
-  --a6-td-bg:#121826;
-  --a6-border:rgba(255,255,255,.14);
-  --a6-text:#f5f7ff;
-  --a6-muted:#c7d2fe;
-}
-
-#tableWrap{
-  background:var(--a6-td-bg);
-  border:1px solid var(--a6-border);
-  border-radius:12px;
-}
-
-/* Cell text + borders */
-.a6-table th,
-.a6-table td{
-  color:var(--a6-text) !important;
-  border-color:var(--a6-border) !important;
-  white-space:nowrap; /* keep clean rows; horizontal scroll handles overflow */
-}
-
-/* Headers and cells backgrounds */
-.a6-table th{ background:var(--a6-th-bg) !important; }
-.a6-table td{ background:var(--a6-td-bg) !important; }
-
-/* Chips */
-.a6-table .tag{
-  background:rgba(255,255,255,.10) !important;
-  border-color:rgba(255,255,255,.24) !important;
-  color:#eaf0ff !important;
-}
-
-/* Note text below the table */
-.note{ color:var(--a6-muted) !important; }
-
-/* Keep our compact stock badges readable */
-.stock-badge{ border:1px solid; }
-.stock-ok{   background:#153d1a; color:#bff4bf; border-color:#2d8a35; }
-.stock-warn{ background:#4a3b0e; color:#ffe7a3; border-color:#bfa22d; }
-.stock-bad{  background:#4a1212; color:#ffd0d0; border-color:#a93030; }
-
-/* Mobile scroll polish (kept) */
-@media (max-width:768px){
-  .table-wrap{
-    overflow-x:auto;
-    -webkit-overflow-scrolling:touch;
-    padding-bottom:10px;
-    margin-bottom:.25rem;
-    scroll-behavior:smooth;
-  }
-  .a6-table{ min-width:980px; }
-  .table-wrap::-webkit-scrollbar{ height:8px; }
-  .table-wrap::-webkit-scrollbar-thumb{ background:rgba(255,255,255,.25); border-radius:999px; }
-  .table-wrap{ scrollbar-width:thin; }
-}
-    
-</style>
+    /* ---------- Mobile: switch to card layout (no horizontal scroll) ---------- */
+    @media (max-width: 768px){
+      .table-wrap{ overflow:visible; background:transparent; border:none; }
+      /* turn table into cards */
+      .a6-table, .a6-table thead, .a6-table tbody, .a6-table th, .a6-table td, .a6-table tr { display:block; width:100%; }
+      .a6-table thead{ display:none; }
+      .a6-table tr{
+        background: var(--a6-td-bg);
+        border:1px solid var(--a6-border);
+        border-radius:12px;
+        margin-bottom:1rem;
+        padding:.6rem .7rem;
+      }
+      .a6-table td{
+        border:none;
+        display:flex;
+        justify-content:space-between;
+        gap:.75rem;
+        padding:.35rem 0;
+        white-space:normal; /* allow wrapping inside the card rows */
+      }
+      .a6-table td::before{
+        content: attr(data-label);
+        font-weight:600;
+        color:#9dc1ff;
+        padding-right:.75rem;
+      }
+    }
+  </style>
 </head>
 
-  
 <body>
   <a class="skip" href="#main">Skip to content</a>
 
@@ -219,7 +159,7 @@
 
       <div class="table-wrap" id="tableWrap"><!-- table renders here --></div>
 
-     <p class="note">This table reads <code>A6-inventory.json</code>. Margin reflects per-item gross (Price − Cost) for GASH IT Solutions products.</p>
+      <p class="note">This table reads <code>A6-inventory.json</code>. “Margin” shows per-item gross (Price − Cost).</p>
     </section>
   </main>
 
