@@ -45,6 +45,10 @@
     .card-tile:active{ transform:scale(.98); }
     .card-tile img{ width:100%; height:100%; object-fit:cover; display:block; }
 
+    /* miniature look when card is inside a stack zone */
+    .card-tile.mini { width:70px; aspect-ratio:3/4; }
+    .card-tile.mini img { width:100%; height:100%; object-fit:cover; }
+
     .zones{ display:grid; grid-template-columns:1fr 1fr; gap:.75rem; margin-top:1rem; }
     .dropzone{
       border:2px dashed var(--accent, #5ee37b);
@@ -54,7 +58,6 @@
     }
     .dropzone.highlight{ outline:3px solid var(--accent, #5ee37b); }
     .stack{ display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; margin-top:.5rem; }
-    .stack img{ width:70px; aspect-ratio:3/4; border-radius:.4rem; box-shadow:0 4px 8px rgba(0,0,0,.35); }
 
     @media (max-width:768px){ .zones{ grid-template-columns:1fr; } }
   </style>
@@ -97,25 +100,26 @@
 
       <div class="a7-toolbar">
         <button id="dealBtn" class="btn">Deal</button>
+        <button id="drawBtn" class="btn">Draw 1</button>
         <button id="resetBtn" class="btn">Reset</button>
         <span id="status" class="a7-status" role="status" aria-live="polite"></span>
         <div id="liveRegion" class="sr" aria-live="polite" aria-atomic="true"></div>
       </div>
 
-      <div id="table" class="board" aria-label="Dealt cards"></div>
+      <div id="table" class="board" aria-label="Card table (drag within to re-order)"></div>
 
       <div class="zones">
         <section class="dropzone" id="deckZone" aria-label="Deck zone">
           <div>
-            <p><strong>Deck</strong> — drop a card here</p>
-            <div class="stack" id="deckPreview"></div>
+            <p><strong>Deck zone</strong> — drop a card here</p>
+            <div class="stack" id="deckStack"></div>
           </div>
         </section>
 
         <section class="dropzone" id="discardZone" aria-label="Discard pile">
           <div>
-            <p><strong>Discard</strong> — drop a card here (event fires)</p>
-            <div class="stack" id="discardPreview"></div>
+            <p><strong>Discard pile</strong> — drop a card here (event fires)</p>
+            <div class="stack" id="discardStack"></div>
           </div>
         </section>
       </div>
