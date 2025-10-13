@@ -19,48 +19,44 @@
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 
   <style>
-    /* Page helpers; your site CSS handles layout, colors, header/footer, etc. */
+    /* Page helpers (your global CSS handles the theme) */
     .wrap { max-width: 980px; margin: 0 auto; padding: 1rem; }
     .page-banner { text-align: center; padding: .9rem 0 .6rem; }
     .page-banner .crumb a { text-decoration: none; }
+    .sr { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
 
-    /* A7 controls and board */
+    /* A7 UI */
     .a7-toolbar { display:flex; gap:.6rem; align-items:center; flex-wrap:wrap; margin:.75rem 0 1rem; }
-    .a7-toolbar .btn { cursor: pointer; }
     .a7-status { font-size:.95rem; opacity:.85; }
 
-    .board { 
-      display:grid; 
-      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    .board{
+      display:grid; grid-template-columns:repeat(auto-fill,minmax(110px,1fr));
       gap:.75rem; padding:1rem; border-radius:12px;
-      background: var(--panel-bg, #121826); 
+      background: var(--panel-bg, #121826);
       border: 1px solid var(--panel-border, rgba(255,255,255,.14));
       min-height:220px;
     }
-
-    .card-tile { 
-      width:100%; aspect-ratio:3/4; border-radius:.6rem; overflow:hidden; 
-      display:block; background: #0d1329; 
-      box-shadow: 0 8px 16px rgba(0,0,0,.35);
-      transition: transform .15s ease;
+    .card-tile{
+      width:100%; aspect-ratio:3/4; border-radius:.6rem; overflow:hidden;
+      display:block; background:#0d1329;
+      box-shadow:0 8px 16px rgba(0,0,0,.35);
+      transition:transform .15s ease;
     }
-    .card-tile:active { transform: scale(.98); }
-    .card-tile img { width:100%; height:100%; object-fit:cover; display:block; }
+    .card-tile:active{ transform:scale(.98); }
+    .card-tile img{ width:100%; height:100%; object-fit:cover; display:block; }
 
-    .zones { display:grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin-top: 1rem; }
-    .dropzone {
-      border: 2px dashed var(--accent, #5ee37b);
-      border-radius: 12px; min-height: 160px; padding: 1rem;
+    .zones{ display:grid; grid-template-columns:1fr 1fr; gap:.75rem; margin-top:1rem; }
+    .dropzone{
+      border:2px dashed var(--accent, #5ee37b);
+      border-radius:12px; min-height:160px; padding:1rem;
       background: var(--panel-bg, #0f1531);
       display:flex; align-items:center; justify-content:center; text-align:center;
     }
-    .dropzone.highlight { outline: 3px solid var(--accent, #5ee37b); }
-    .stack { display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; margin-top:.5rem; }
-    .stack img { width:70px; aspect-ratio:3/4; border-radius:.4rem; box-shadow:0 4px 8px rgba(0,0,0,.35); }
+    .dropzone.highlight{ outline:3px solid var(--accent, #5ee37b); }
+    .stack{ display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; margin-top:.5rem; }
+    .stack img{ width:70px; aspect-ratio:3/4; border-radius:.4rem; box-shadow:0 4px 8px rgba(0,0,0,.35); }
 
-    .sr { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
-
-    @media (max-width: 768px) { .zones { grid-template-columns: 1fr; } }
+    @media (max-width:768px){ .zones{ grid-template-columns:1fr; } }
   </style>
 </head>
 
@@ -106,7 +102,7 @@
         <div id="liveRegion" class="sr" aria-live="polite" aria-atomic="true"></div>
       </div>
 
-      <div id="table" class="board" aria-label="Dealt cards will appear here"></div>
+      <div id="table" class="board" aria-label="Dealt cards"></div>
 
       <div class="zones">
         <section class="dropzone" id="deckZone" aria-label="Deck zone">
@@ -115,6 +111,7 @@
             <div class="stack" id="deckPreview"></div>
           </div>
         </section>
+
         <section class="dropzone" id="discardZone" aria-label="Discard pile">
           <div>
             <p><strong>Discard</strong> — drop a card here (event fires)</p>
