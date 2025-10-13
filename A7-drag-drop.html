@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>A7 — Drag & Drop (Cards)</title>
+  <meta name="description" content="Assignment 7: Deal a deck and drag cards to drop zones with event capture.">
+
+  <!-- Main site CSS -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48x48.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64x64.png">
+  <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon-128x128.png">
+  <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon-512.png">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+
+  <style>
+    /* Page helpers; your site CSS handles layout, colors, header/footer, etc. */
+    .wrap { max-width: 980px; margin: 0 auto; padding: 1rem; }
+    .page-banner { text-align: center; padding: .9rem 0 .6rem; }
+    .page-banner .crumb a { text-decoration: none; }
+
+    /* A7 controls and board */
+    .a7-toolbar { display:flex; gap:.6rem; align-items:center; flex-wrap:wrap; margin:.75rem 0 1rem; }
+    .a7-toolbar .btn { cursor: pointer; }
+    .a7-status { font-size:.95rem; opacity:.85; }
+
+    .board { 
+      display:grid; 
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap:.75rem; padding:1rem; border-radius:12px;
+      background: var(--panel-bg, #121826); 
+      border: 1px solid var(--panel-border, rgba(255,255,255,.14));
+      min-height:220px;
+    }
+
+    .card-tile { 
+      width:100%; aspect-ratio:3/4; border-radius:.6rem; overflow:hidden; 
+      display:block; background: #0d1329; 
+      box-shadow: 0 8px 16px rgba(0,0,0,.35);
+      transition: transform .15s ease;
+    }
+    .card-tile:active { transform: scale(.98); }
+    .card-tile img { width:100%; height:100%; object-fit:cover; display:block; }
+
+    .zones { display:grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin-top: 1rem; }
+    .dropzone {
+      border: 2px dashed var(--accent, #5ee37b);
+      border-radius: 12px; min-height: 160px; padding: 1rem;
+      background: var(--panel-bg, #0f1531);
+      display:flex; align-items:center; justify-content:center; text-align:center;
+    }
+    .dropzone.highlight { outline: 3px solid var(--accent, #5ee37b); }
+    .stack { display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; margin-top:.5rem; }
+    .stack img { width:70px; aspect-ratio:3/4; border-radius:.4rem; box-shadow:0 4px 8px rgba(0,0,0,.35); }
+
+    .sr { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
+
+    @media (max-width: 768px) { .zones { grid-template-columns: 1fr; } }
+  </style>
+</head>
+
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <!-- Header (same as site) -->
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="GASH IT Solutions home">
+        <img src="assets/logo.svg" alt="GASH IT Solutions logo" width="56" height="56">
+      </a>
+      <nav aria-label="Primary">
+        <button id="navToggle" class="nav__toggle" aria-expanded="false" aria-controls="navMenu">Menu</button>
+        <ul id="navMenu" class="nav__menu">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="purpose.html">Purpose &amp; Assignments</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Page banner -->
+  <section class="page-banner">
+    <div class="wrap">
+      <p class="crumb"><a href="purpose.html">← Back to Purpose &amp; Assignments</a></p>
+      <h1 class="gradient-text">A7 — Drag &amp; Drop (Cards)</h1>
+    </div>
+  </section>
+
+  <!-- Main -->
+  <main id="main" class="wrap">
+    <section aria-labelledby="a7Title">
+      <h2 id="a7Title" class="sr">Card Table</h2>
+
+      <div class="a7-toolbar">
+        <button id="dealBtn" class="btn">Deal</button>
+        <button id="resetBtn" class="btn">Reset</button>
+        <span id="status" class="a7-status" role="status" aria-live="polite"></span>
+        <div id="liveRegion" class="sr" aria-live="polite" aria-atomic="true"></div>
+      </div>
+
+      <div id="table" class="board" aria-label="Dealt cards will appear here"></div>
+
+      <div class="zones">
+        <section class="dropzone" id="deckZone" aria-label="Deck zone">
+          <div>
+            <p><strong>Deck</strong> — drop a card here</p>
+            <div class="stack" id="deckPreview"></div>
+          </div>
+        </section>
+        <section class="dropzone" id="discardZone" aria-label="Discard pile">
+          <div>
+            <p><strong>Discard</strong> — drop a card here (event fires)</p>
+            <div class="stack" id="discardPreview"></div>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="wrap footer__grid">
+      <small>
+        <strong>Created by Ginelle Harvey</strong> • <span class="js-year"></span><br>
+        Got a project or question? Say hello at:
+        <a href="mailto:info@gashitsolutions.com">info@gashitsolutions.com</a>
+      </small>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="purpose.html">← Back to Purpose &amp; Assignments</a>
+      </nav>
+    </div>
+  </footer>
+
+  <!-- Site script (nav, year, etc.) -->
+  <script src="script.js"></script>
+  <!-- A7 logic -->
+  <script src="A7-dragdrop.js"></script>
+</body>
+</html>
