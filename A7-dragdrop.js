@@ -1,21 +1,12 @@
-/* A7-dragdrop.js — HTML5 drag & drop solitaire demo (scoped to your page structure)
-   Requires:
-   - #tableau with .pile[data-role="tableau"] children
-   - Foundations: #fS, #fH, #fD, #fC  (each .pile[data-role="foundation"][data-suit])
-   - Utility stacks: #deckZone #deckStack, #discardZone #discardStack
-   - Optional buttons: #dealBtn #drawBtn #resetBtn #autoAllBtn #autoMoveBtn #autoOneBtn #autoSomeBtn #sendRunsBtn
-   - Optional win banner: <div id="winBanner" hidden>…<button id="playAgainBtn">Play again</button></div>
-*/
+/* A7-dragdrop.js — HTML5 drag & drop solitaire demo (scoped to your page structure) */
 
-/////////////////////// Paths & constants ///////////////////////
 const IMG_BASE = 'assets';
 const SUITS = ['S','H','D','C'];
-const RANKS = Array.from({length:13}, (_,i)=> i+1); // 1..13
+const RANKS = Array.from({length:13}, (_,i)=> i+1);
 
 const suitName = { S:'spades', H:'hearts', D:'diamonds', C:'clubs' };
 const rankName = { 1:'ace', 11:'jack', 12:'queen', 13:'king' };
 
-/////////////////////// DOM refs ///////////////////////
 const el = id => document.getElementById(id);
 const tableau = el('tableau');
 const tPiles = tableau ? Array.from(tableau.querySelectorAll('.pile[data-role="tableau"]')) : [];
@@ -23,24 +14,15 @@ const fPiles = ['fS','fH','fD','fC'].map(id => el(id)).filter(Boolean);
 const deckZone = el('deckZone'), deckStack = el('deckStack');
 const discardZone = el('discardZone'), discardStack = el('discardStack');
 
-// Optional controls
-const dealBtn = el('dealBtn');
-const drawBtn = el('drawBtn');
-const resetBtn = el('resetBtn');
-const autoAllBtn = el('autoAllBtn');          // Auto-move All Possible
-const autoMoveBtn = el('autoMoveBtn');        // Send Completed Suit
-const autoOneBtn = el('autoOneBtn');          // Auto-move 1
-const autoSomeBtn = el('autoSomeBtn');        // Auto-move 5
-const sendRunsBtn = el('sendRunsBtn');        // alias for completed suit
-const playAgainBtn = el('playAgainBtn');      // win banner button
-const winBanner = el('winBanner');            // win banner container
+const dealBtn = el('dealBtn'), drawBtn = el('drawBtn'), resetBtn = el('resetBtn');
+const autoAllBtn = el('autoAllBtn'), autoMoveBtn = el('autoMoveBtn');
+const autoOneBtn = el('autoOneBtn'), autoSomeBtn = el('autoSomeBtn'), sendRunsBtn = el('sendRunsBtn');
+const winBanner = el('winBanner'), playAgainBtn = el('playAgainBtn');
 
-/////////////////////// State ///////////////////////
-let mainDeck = [];              // undealt codes
-let nodes = new Map();          // code -> <a.card-tile>
+let mainDeck = [];
+let nodes = new Map();
 let firstDiscardAlerted = false;
 
-/////////////////////// Helpers ///////////////////////
 const codeToFilename = code => {
   const s = code[0], n = Number(code.slice(1));
   const rank = rankName[n] || n;
@@ -72,7 +54,6 @@ function setStatus(msg){
   const lr = el('liveRegion'); if (lr) lr.textContent = msg;
 }
 
-/////////////////////// Node builder ///////////////////////
 function buildCardNode(code){
   const a = document.createElement('a');
   a.href = '#';
@@ -84,7 +65,7 @@ function buildCardNode(code){
   a.addEventListener('dragstart', onDragStart);
   a.addEventListener('dragover', e => { e.preventDefault(); });
   a.addEventListener('drop', onDropOnCard);
-  a.addEventListener('dblclick', () => tryMoveToFoundation(code)); // dbl-click to send if legal
+  a.addEventListener('dblclick', () => tryMoveToFoundation(code));
 
   const img = document.createElement('img');
   img.src = imgPath(code);
@@ -94,15 +75,12 @@ function buildCardNode(code){
   return a;
 }
 
-/////////////////////// UI actions ///////////////////////
+/* === UI === */
 function dealAll(){
   clearAll();
   mainDeck = freshShuffledDeck();
-
-  // create nodes for all 52
   mainDeck.forEach(code => nodes.set(code, buildCardNode(code)));
 
-  // deal 7,8,9,10,11,12,13 across tableau columns
   const counts = [7,8,9,10,11,12,13];
   counts.forEach((n, i) => {
     for (let k=0; k<n; k++){
@@ -113,7 +91,7 @@ function dealAll(){
   });
 
   setStatus(`Dealt to tableau. ${mainDeck.length} in deck.`);
-  layoutFoundations(); // set labels to Empty
+  layoutFoundations();
 }
 
 function drawOne(){
@@ -139,14 +117,13 @@ function clearAll(){
   setStatus('Table cleared.');
 }
 
-/////////////////////// Drag & Drop core ///////////////////////
+/* === DnD === */
 function onDragStart(ev){
   const code = ev.currentTarget.dataset.code;
   ev.dataTransfer.setData('text/plain', code);
   ev.dataTransfer.effectAllowed = 'move';
 }
 
-// Make a container act as a dropzone
 function makeDropzone(zoneEl, handler){
   zoneEl.addEventListener('dragover', ev => { ev.preventDefault(); zoneEl.classList.add('highlight'); });
   zoneEl.addEventListener('dragleave', () => zoneEl.classList.remove('highlight'));
@@ -158,7 +135,6 @@ function makeDropzone(zoneEl, handler){
   });
 }
 
-// Drop on a card (insert before/after based on cursor Y)
 function onDropOnCard(ev){
   ev.preventDefault();
   const targetCard = ev.currentTarget;
@@ -169,23 +145,20 @@ function onDropOnCard(ev){
 
   const container = targetCard.parentElement;
 
-  // foundation? enforce foundation rules
   if (container.dataset.role === 'foundation'){
     dropToFoundation(code, container);
     return;
   }
-
-  // utility stacks
   if (container === discardStack) { moveToDiscard(code); return; }
   if (container === deckStack)    { moveToDeckZone(code); return; }
 
-  // tableau: insert before/after based on cursor
   if (container.dataset.role === 'tableau'){
     const rect = targetCard.getBoundingClientRect();
     const after = ev.clientY > rect.top + rect.height/2;
     dragNode.classList.remove('mini');
     if (after) container.insertBefore(dragNode, targetCard.nextSibling);
     else       container.insertBefore(dragNode, targetCard);
+    settle(dragNode);
     setStatus(`${human(code)} placed ${after?'after':'before'} ${human(targetCard.dataset.code)}.`);
   }
 
@@ -193,21 +166,21 @@ function onDropOnCard(ev){
   checkWin();
 }
 
-/////////////////////// Zone handlers ///////////////////////
+/* === Zone handlers === */
 function moveToDiscard(code){
   const n = nodes.get(code); if (!n) return;
-  n.classList.add('mini'); discardStack.appendChild(n);
-  if (!firstDiscardAlerted){ 
-    // one-time visible event to satisfy "drop response"
-    alert(`${human(code)} discarded — event captured.`); 
-    firstDiscardAlerted = true; 
-  }
+  n.classList.add('mini');
+  discardStack.appendChild(n);
+  settle(n);
+  if (!firstDiscardAlerted){ alert(`${human(code)} discarded — event captured.`); firstDiscardAlerted = true; }
   setStatus(`${human(code)} moved to discard.`);
 }
 
 function moveToDeckZone(code){
   const n = nodes.get(code); if (!n) return;
-  n.classList.add('mini'); deckStack.appendChild(n);
+  n.classList.add('mini');
+  deckStack.appendChild(n);
+  settle(n);
   setStatus(`${human(code)} moved to deck zone.`);
 }
 
@@ -215,6 +188,7 @@ function moveNodeToPile(node, pile){
   if (!node || !pile) return;
   node.classList.remove('mini');
   pile.appendChild(node);
+  settle(node);
   setStatus(`${human(node.dataset.code)} moved to ${pile.id}.`);
 }
 
@@ -224,7 +198,7 @@ function dropToTableau(code, zone){
 }
 
 function requiredRankForFoundation(zone){
-  return zone.childElementCount + 1; // A=1, so empty wants 1
+  return zone.childElementCount + 1; // A=1
 }
 
 function dropToFoundation(code, zone){
@@ -237,12 +211,12 @@ function dropToFoundation(code, zone){
   const n = nodes.get(code);
   n.classList.remove('mini');
   zone.appendChild(n);
+  settle(n);
   setStatus(`${human(code)} placed on foundation.`);
   layoutFoundations();
   checkWin();
 }
 
-// Double-click helper to send to correct foundation if legal
 function tryMoveToFoundation(code){
   const suit = suitOf(code);
   const zone = el('f'+suit);
@@ -254,23 +228,23 @@ function tryMoveToFoundation(code){
   }
 }
 
-/////////////////////// Foundation layout ///////////////////////
-// Show ONLY the top card in each foundation and update a right-side label
+/* small settle animation */
+function settle(n){
+  n.classList.add('settle');
+  setTimeout(()=> n.classList.remove('settle'), 200);
+}
+
+/* === Foundation layout (cascade + label) === */
 function layoutFoundations(){
   fPiles.forEach(zone => {
     const cards = Array.from(zone.querySelectorAll('.card-tile'));
-    cards.forEach((c, i) => {
-      c.style.display = (i === cards.length - 1) ? '' : 'none';
-      c.style.top = '0px';
-    });
     const top = cards[cards.length-1];
     zone.dataset.top = top ? `Top: ${human(top.dataset.code)}` : 'Empty';
   });
 }
 
-/////////////////////// Auto-move logic (1 / some / all) ///////////////////////
+/* === Auto-move logic === */
 function findFirstMovableToFoundation(){
-  // scan tableau piles then utility stacks; return first legal move
   const scanAreas = [...tPiles, discardStack, deckStack].filter(Boolean);
   for (const area of scanAreas){
     const cards = Array.from(area.querySelectorAll('.card-tile'));
@@ -297,7 +271,7 @@ async function autoMoveSome(count=5){
   let moved = 0;
   while (moved < count && autoMoveOne()) {
     moved++;
-    await new Promise(r=>setTimeout(r,120)); // tiny pause so movement is visible
+    await new Promise(r=>setTimeout(r,120));
   }
   if (moved === 0) setStatus('No auto-moves available.');
 }
@@ -308,14 +282,14 @@ function autoMoveAllPossible(){
   if (!moved) setStatus('No more auto-moves available.');
 }
 
-/////////////////////// Auto-move a fully ordered suit ///////////////////////
+/* Completed suit on a single pile (A..K same suit) */
 function autoMoveCompletedSuit(){
   for (const pile of tPiles){
     const codes = Array.from(pile.querySelectorAll('.card-tile')).map(n => n.dataset.code);
     if (codes.length === 13){
       const suit = suitOf(codes[0]);
       const isSameSuit = codes.every(c => suitOf(c) === suit);
-      const isOrdered = codes.every((c, i) => rankOf(c) === i+1); // A..K
+      const isOrdered = codes.every((c, i) => rankOf(c) === i+1);
       if (isSameSuit && isOrdered){
         const foundation = el('f'+suit);
         for (const c of codes){ dropToFoundation(c, foundation); }
@@ -328,13 +302,10 @@ function autoMoveCompletedSuit(){
   setStatus('No completed A..K suit found on a single pile.');
 }
 
-/////////////////////// Win handling ///////////////////////
+/* Win handling */
 function showWin(){
-  if (winBanner){
-    winBanner.hidden = false;
-  } else {
-    alert('🎉 All foundations complete — you win!');
-  }
+  if (winBanner){ winBanner.hidden = false; }
+  else { alert('🎉 All foundations complete — you win!'); }
   setStatus('All foundations complete — you win!');
 }
 
@@ -343,13 +314,12 @@ function checkWin(){
   if (complete) showWin();
 }
 
-/////////////////////// Activate dropzones ///////////////////////
+/* Activate zones & buttons */
 tPiles.forEach(p => makeDropzone(p, (code, zone) => dropToTableau(code, zone)));
 fPiles.forEach(p => makeDropzone(p, (code, zone) => dropToFoundation(code, zone)));
 if (discardZone) makeDropzone(discardZone, (code)=> moveToDiscard(code));
 if (deckZone)    makeDropzone(deckZone,    (code)=> moveToDeckZone(code));
 
-/////////////////////// Wire buttons if present ///////////////////////
 if (dealBtn) dealBtn.addEventListener('click', dealAll);
 if (drawBtn) drawBtn.addEventListener('click', drawOne);
 if (resetBtn) resetBtn.addEventListener('click', clearAll);
@@ -360,5 +330,5 @@ if (autoOneBtn) autoOneBtn.addEventListener('click', autoMoveOne);
 if (autoSomeBtn) autoSomeBtn.addEventListener('click', () => autoMoveSome(5));
 if (playAgainBtn) playAgainBtn.addEventListener('click', () => { if (winBanner) winBanner.hidden = true; clearAll(); dealAll(); });
 
-// Uncomment if you want it to auto-deal on load
+// Optional on-load deal:
 // dealAll();
