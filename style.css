@@ -720,35 +720,35 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);border-c
   #toTop{ transition: none; }
 }
 
-/* ===== A7: pile geometry (fixed height + stacked) ===== */
-#a7 .zone { max-width: var(--wrap); }
-#a7 .slot{
+/* ===== A7: Fixed pile heights + visible cascades (no hanging panels) ===== */
+#a7 .slot.pile{
   position: relative;
-  height: 420px;                 /* fixed height: piles won't grow */
-  min-height: 420px;
-  border-radius: 14px;
-  overflow: auto;                /* scroll INSIDE if a pile gets tall */
+  height: 520px;              /* ALL tableau columns are same height */
+  overflow: hidden;           /* nothing hangs out of the dashed panel */
+  box-sizing: border-box;
 }
 
-/* Cards fill the pile and are absolutely positioned by JS */
-#a7 .card-tile{
+#a7 #tableau .card-tile{
   position: absolute;
-  left: 10px;                    /* keep nice gutters */
-  right: 10px;
-  user-select: none;
-  touch-action: none;
-  will-change: transform, top;
+  left: 12px;
+  right: 12px;
+  width: auto;
+  transition: top .18s ease, transform .18s ease;
 }
 
-/* Card images keep aspect; no squash */
-#a7 .card-tile img{
-  width: 100%;
-  height: auto;
-  display: block;
+/* Foundations: also fixed & cascaded so you can see the stack */
+#a7 .slot[data-role="foundation"]{
+  position: relative;
+  height: 300px;              /* was auto; made fixed so it never grows */
+  overflow: hidden;
+  box-sizing: border-box;
+}
+#a7 .slot[data-role="foundation"] .card-tile{
+  position: absolute;
+  left: 12px;
+  right: 12px;
 }
 
-/* subtle “pop” when a card settles */
-#a7 .card-tile.settle{
-  transform: translateY(-2px);
-  transition: transform .16s ease;
-}
+/* subtle settle pop + tidy images */
+#a7 .card-tile.settle{ transform: scale(1.02); }
+#a7 .card-tile img{ display:block; width:100%; height:auto; border-radius:10px; }
