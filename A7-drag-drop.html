@@ -127,7 +127,44 @@
       #a7{ --slot-w: 160px; --slot-h: 200px; --card-w: 132px; --card-h: 176px; --fan: 16px; --f-fan: 12px; }
       #a7 .row.tableau{ grid-template-columns:repeat(2, minmax(var(--slot-w),1fr)); }
     }
-  </style>
+
+    /* ===== A7: Keep piles from growing; cascade cards inside ===== */
+#a7 .slot.pile {
+  position: relative;          /* allow absolute children */
+  height: 520px;               /* fixed visual height for a column */
+  overflow: hidden;            /* nothing hangs out */
+}
+
+/* cards inside tableau (columns) */
+#a7 #tableau .card-tile {
+  position: absolute;          /* we’ll lay them out with JS */
+  left: 12px;
+  right: 12px;                 /* keeps them neatly inside the dashed border */
+  width: auto;
+  transition: transform .18s ease, top .18s ease; /* smooth moves */
+}
+
+/* cards inside foundations (small cascade) */
+#a7 [data-role="foundation"] .card-tile {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+}
+
+/* subtle “pop” when a card settles */
+#a7 .card-tile.settle {
+  transform: scale(1.02);
+}
+
+/* make sure images themselves don’t overflow */
+#a7 .card-tile img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+    
+</style>
 </head>
 
 <body>
