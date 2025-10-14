@@ -304,3 +304,4 @@ function checkWin(){
     setStatus('All foundations complete — you win!');
   }
 }
+
