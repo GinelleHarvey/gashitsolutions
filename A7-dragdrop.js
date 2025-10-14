@@ -1,9 +1,8 @@
 /* =========================================================
-   A7 — Drag & Drop (Cards) — Polished
-   - auto-compress fans so piles always fit
-   - utilities show mini fanned cards
-   - visible corner labels
-   - images pulled from /assets (numeric + worded fallback)
+   A7 — Drag & Drop (Cards) — compact & fluid
+   - auto-compress fans so piles always fit (with padding)
+   - utilities A/B/C/D all accept and fan mini cards
+   - clear corner labels & suit tags
 ========================================================= */
 (() => {
   // ---------- constants ----------
@@ -16,17 +15,18 @@
   const rankLabel = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
   const suitGlyph = { S:'♠', H:'♥', D:'♦', C:'♣' };
 
-  // preferred spacing (will auto-compress)
-  const PREF_TABLEAU_STEP = 36;
-  const PREF_FOUND_STEP   = 26;
+  // preferred spacing (auto-compress if tall)
+  const PREF_TABLEAU_STEP = 28; // tighter by default
+  const PREF_FOUND_STEP   = 22;
 
   // ---------- dom ----------
   const $ = id => document.getElementById(id);
   const tableau = $('tableau');
   const tPiles = Array.from(tableau.querySelectorAll('.pile[data-role="tableau"]'));
   const fPiles = ['fS','fH','fD','fC'].map(id => $(id));
-  const deckZone = $('deckZone');
-  const discardZone = $('discardZone');
+  const utilIds = ['deckZone','discardZone','uC','uD'];
+  const utilPiles = utilIds.map(id => $(id)).filter(Boolean);
+
   const statusEl = $('status');
   const liveRegion = $('liveRegion');
   const winBanner = $('winBanner');
@@ -73,9 +73,9 @@
     const letter = ({1:'A',11:'J',12:'Q',13:'K'})[r];
     const num    = String(r===1 ? 1 : r);
     return [
-      `assets/${num}_of_${s}.png`,         // 1_of_spades.png … 10_of_*.png
-      `assets/${word}_of_${s}.png`,        // ace_of_spades.png / jack_of_*.png
-      letter ? `assets/${letter}_of_${s}.png` : null // A_of_spades.png
+      `assets/${num}_of_${s}.png`,
+      `assets/${word}_of_${s}.png`,
+      letter ? `assets/${letter}_of_${s}.png` : null
     ].filter(Boolean);
   }
 
@@ -87,7 +87,6 @@
     a.draggable = true;
     a.dataset.code = code;
 
-    // readable corner label “A♠”
     const r = Number(code.slice(1));
     a.dataset.label = `${rankLabel[r-1]}${suitGlyph[code[0]]}`;
 
@@ -112,14 +111,15 @@
     return a;
   }
 
-  // layout helper: compute fan that fits all cards in a zone height
+  // layout helper: compute fan that fits all cards in a zone height (with bottom pad)
   function fitFan(zone, preferred, minStep){
     const cards = zone.querySelectorAll('.card-tile');
     const n = cards.length;
     if (n <= 1) return 0;
-    const imgH = (cards[0].querySelector('img')?.clientHeight) || 200;
-    const h = zone.clientHeight || 300;
-    const maxStep = Math.floor((h - imgH) / (n - 1));
+    const imgH = (cards[0].querySelector('img')?.clientHeight) || 176;
+    const h = zone.clientHeight || 260;
+    const padBottom = 12; // keep breathing room
+    const maxStep = Math.floor((h - imgH - padBottom) / (n - 1));
     return Math.max(minStep, Math.min(preferred, maxStep));
   }
 
@@ -127,8 +127,7 @@
   function clearAll(){
     tPiles.forEach(p => p.innerHTML = '');
     fPiles.forEach(p => { p.innerHTML=''; p.dataset.top=''; });
-    deckZone && (deckZone.innerHTML = '<div id="deckStack"></div>');
-    discardZone && (discardZone.innerHTML = '<div id="discardStack"></div>');
+    utilPiles.forEach(p => p.innerHTML = `<span class="slot-name">${p.querySelector('.slot-name')?.textContent||''}</span>`);
     nodes.clear(); undealt = [];
     winBanner && (winBanner.hidden = true);
     setStatus('Table cleared.');
@@ -190,8 +189,7 @@
     const container = targetCard.parentElement;
 
     if (container.dataset.role === 'foundation'){ dropToFoundation(code, container); layoutAll(); return; }
-    if (container === discardZone){ moveToDiscard(code); layoutAll(); return; }
-    if (container === deckZone){ moveToDeck(code); layoutAll(); return; }
+    if (utilPiles.includes(container)){ moveToUtility(code, container); layoutAll(); return; }
 
     if (container.dataset.role === 'tableau'){
       const rect = targetCard.getBoundingClientRect();
@@ -206,16 +204,10 @@
   }
 
   // ---------- zone helpers ----------
-  function moveToDiscard(code){
-    const n = nodes.get(code); if (!n || !discardZone) return;
-    n.classList.add('mini'); discardZone.appendChild(n); settle(n);
-    setStatus(`${human(code)} moved to discard.`);
-  }
-
-  function moveToDeck(code){
-    const n = nodes.get(code); if (!n || !deckZone) return;
-    n.classList.add('mini'); deckZone.appendChild(n); settle(n);
-    setStatus(`${human(code)} moved to deck area.`);
+  function moveToUtility(code, zone){
+    const n = nodes.get(code); if (!n || !zone) return;
+    n.classList.add('mini'); zone.appendChild(n); settle(n);
+    setStatus(`${human(code)} moved to ${zone.querySelector('.slot-name')?.textContent || 'Utility'}.`);
   }
 
   function moveNodeToPile(node, pile){
@@ -261,7 +253,7 @@
   function layoutTableau(){
     tPiles.forEach(zone => {
       const cards = Array.from(zone.querySelectorAll('.card-tile'));
-      const step = fitFan(zone, PREF_TABLEAU_STEP, 14); // compress if tall
+      const step = fitFan(zone, PREF_TABLEAU_STEP, 12);
       cards.forEach((c,i) => {
         c.style.top = `${i * step}px`;
         c.style.zIndex = String(100 + i);
@@ -272,7 +264,7 @@
   function layoutFoundations(){
     fPiles.forEach(zone => {
       const cards = Array.from(zone.querySelectorAll('.card-tile'));
-      const step = fitFan(zone, PREF_FOUND_STEP, 10);     // compress to show all
+      const step = fitFan(zone, PREF_FOUND_STEP, 9);
       cards.forEach((c,i) => {
         c.style.top = `${i * step}px`;
         c.style.zIndex = String(200 + i);
@@ -283,10 +275,8 @@
   }
 
   function layoutUtilities(){
-    const fan = 18; // horizontal mini fan
-    ['deckZone','discardZone'].forEach(id=>{
-      const zone = document.getElementById(id);
-      if (!zone) return;
+    const fan = 16; // horizontal mini fan
+    utilPiles.forEach(zone=>{
       const cards = Array.from(zone.querySelectorAll('.card-tile'));
       cards.forEach((c,i) => {
         c.style.left = `${10 + i*fan}px`;
@@ -304,7 +294,7 @@
 
   // ---------- auto moves ----------
   function findFirstMovable(){
-    const areas = [...tPiles, discardZone, deckZone].filter(Boolean);
+    const areas = [...tPiles, ...utilPiles].filter(Boolean);
     for (const area of areas){
       const cards = Array.from(area.querySelectorAll('.card-tile'));
       for (const n of cards){
@@ -370,8 +360,7 @@
   // ---------- bind zones ----------
   tPiles.forEach(p => makeDropzone(p, (code, zone) => { dropToTableau(code, zone); }));
   fPiles.forEach(p => makeDropzone(p, (code, zone) => { dropToFoundation(code, zone); }));
-  makeDropzone(discardZone, (code)=> { moveToDiscard(code); layoutAll(); });
-  makeDropzone(deckZone,    (code)=> { moveToDeck(code); layoutAll(); });
+  utilPiles.forEach(p => makeDropzone(p, (code, zone)=> { moveToUtility(code, zone); layoutAll(); }));
 
   // ---------- buttons ----------
   dealBtn?.addEventListener('click', () => { dealAll(); });
@@ -426,8 +415,9 @@
             setStatus(`${human(selectedCode)} moved to ${pile.id}.`);
           }
           checkWin();
-        } else if (pile === discardZone) moveToDiscard(selectedCode);
-        else if (pile === deckZone)     moveToDeck(selectedCode);
+        } else if (utilPiles.includes(pile)) {
+          moveToUtility(selectedCode, pile);
+        }
 
         selectedCode=null; layoutAll(); e.preventDefault();
       }
