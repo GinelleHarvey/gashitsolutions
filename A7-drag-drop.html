@@ -3,175 +3,177 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>A7 — Drag & Drop (Solitaire Demo)</title>
-  <meta name="description" content="Assignment 7: Drag and drop with jQuery UI — cards, piles, foundations, and auto-move options.">
+  <title>A7 — Drag & Drop (Cards)</title>
+  <meta name="description" content="Assignment 7: HTML5 drag-and-drop with cards, foundations, tableau, and utility stacks.">
 
-  <!-- jQuery + jQuery UI (lecture-aligned choice) -->
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-  <link  href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css" rel="stylesheet">
-  <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.min.js" integrity="sha256-9NDGS3n+g6K2yXMx0wNs8YzqK3+6ULv/57k0C2w7RCQ=" crossorigin="anonymous"></script>
+  <!-- Main site CSS (your theme) -->
+  <link rel="stylesheet" href="style.css">
 
+  <!-- Favicons (same set used on A6) -->
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48x48.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64x64.png">
+  <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon-128x128.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon-512.png">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+
+  <!-- A7 SCOPED styles only (won’t touch global layout) -->
   <style>
-    :root{
-      --bg:#0c1224;
-      --panel:#151c33;
-      --muted:#aab3d1;
-      --accent:#7c8cff;
-      --border:#9ea3ff80;
-      --win:#10b981;
-      --fan:22px;         /* vertical fan for tableau */
-      --slot-w:220px;
-      --slot-h:260px;
-      --card-w:180px;
-      --card-h:240px;
-      --radius:16px;
+    #a7{ --slot-w:220px; --slot-h:260px; --fan:22px; --border:#9ea3ff80; }
+    #a7 .game-area{ border:1px solid #ffffff10; border-radius:18px; padding:16px }
+    #a7 .control-bar{ display:flex; flex-wrap:wrap; gap:10px; margin:0 0 10px }
+    #a7 .control-bar button{
+      background: var(--btn-bg, #1f2746);
+      color: inherit; border:1px solid var(--border);
+      padding:8px 12px; border-radius:12px; font-weight:600; cursor:pointer;
     }
-    html,body{height:100%}
-    body{
-      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Helvetica Neue",Arial;
-      background:var(--bg); color:#e6e9ff;
+    #a7 .control-bar button:hover{ filter:brightness(1.1) }
+    #a7 .section{ margin:10px 0 20px }
+    #a7 .section h2{ margin:0 0 8px; font-size:1.05rem }
+    #a7 .section .hint{ font-size:.85rem; opacity:.75; margin-left:.5rem }
+    #a7 .row{ display:grid; gap:14px; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); }
+    #a7 .row.tableau{ grid-template-columns:repeat(7, minmax(220px,1fr)); }
+    @media (max-width:1100px){ #a7 .row.tableau{ grid-template-columns:repeat(4, minmax(220px,1fr)); } }
+    @media (max-width:780px){  #a7 .row.tableau{ grid-template-columns:repeat(2, minmax(200px,1fr)); } }
+    #a7 .slot{ position:relative; min-height:var(--slot-h); border:2px dashed var(--border); border-radius:16px; padding:8px; overflow:hidden }
+    #a7 .slot .slot-name{ position:absolute; top:8px; left:10px; font-size:.85rem; opacity:.85 }
+    #a7 .slot.highlight{ box-shadow:0 0 0 3px #b3b8ff3d inset }
+    #a7 .card-tile{ position:relative; display:inline-block }
+    #a7 .card-tile img{ width:180px; height:240px; object-fit:cover; border-radius:14px; box-shadow:0 8px 20px rgba(0,0,0,.25) }
+    #a7 .card-tile.mini img{ width:96px; height:128px }
+    #a7 .pile[data-role="tableau"] .card-tile{ position:relative; display:block; }
+    #a7 .pile[data-role="tableau"] .card-tile{ margin-top:calc(var(--fan)) }
+    #a7 .pile[data-role="tableau"] .card-tile:first-child{ margin-top:0 }
+    #a7 .pile[data-role="foundation"] .card-tile{ display:none }
+    #a7 .pile[data-role="foundation"] .card-tile:last-child{ display:block; margin:28px auto 0 }
+    #a7 .pile[data-role="foundation"]::after{
+      content: attr(data-top);
+      position:absolute; top:8px; right:10px; font-size:.85rem; opacity:.6;
     }
-    .wrap{max-width:1200px;margin:0 auto;padding:18px}
-    h1{margin:.2rem 0 0.5rem;font-size:1.6rem}
-    .tips{margin:.25rem 0 1rem;color:var(--muted);font-size:.95rem}
-    .game-area{border:1px solid #ffffff10;background:var(--panel);border-radius:18px;padding:16px}
-
-    /* bars */
-    .control-bar{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 10px}
-    .control-bar button{
-      background:#1f2746;border:1px solid var(--border);color:#e6e9ff;
-      padding:8px 12px;border-radius:12px;cursor:pointer;font-weight:600
-    }
-    .control-bar button:hover{background:#26305b}
-
-    /* sections and slots */
-    .section{margin:10px 0 20px}
-    .section h2{font-size:1.05rem;margin:0 0 8px;color:#d6dbff}
-    .section .hint{font-size:.85rem;color:var(--muted);margin-left:.5rem}
-    .row{display:grid;grid-template-columns:repeat(4,1fr); gap:14px}
-    .row.tableau{grid-template-columns:repeat(7,1fr)}
-    .slot{
-      position:relative; min-height:var(--slot-h);
-      border:2px dashed var(--border); border-radius:var(--radius);
-      background:#0e1430; padding:8px; overflow:hidden;
-    }
-    .slot .slot-name{position:absolute; top:8px; left:10px; color:#94a3b8; font-size:.85rem; opacity:.85}
-    .slot .slot-title{position:absolute; top:8px; right:10px; color:#94a3b8; font-size:.85rem; opacity:.55}
-    .ui-droppable-active{outline:0}
-    .ui-droppable-hover{box-shadow:0 0 0 3px #b3b8ff3d inset}
-
-    /* cards */
-    .card{
-      width:var(--card-w); height:var(--card-h);
-      background:#fff; color:#111; border-radius:14px; box-shadow:0 10px 24px rgba(0,0,0,.22);
-      display:flex; align-items:center; justify-content:center; font-size:52px; font-weight:800;
-      position:absolute; /* laid out by piles/tableau */
-      user-select:none; -webkit-user-drag:none;
-      transition:top .15s,left .15s,transform .15s; will-change:top,left,transform;
-    }
-    .card .tiny{
-      position:absolute; left:10px; top:6px; font-size:20px; line-height:1;
-    }
-    .red{ color:#d32f2f }
-    .black{ color:#111 }
-    .ui-draggable-dragging{ transform:scale(1.04); z-index:9999 }
-
-    /* size alignment */
-    .slot{ width:var(--slot-w); height:var(--slot-h) }
-    .tableau .card{ position:absolute }
-    .tableau .card:nth-child(n){ top: calc(var(--fan) * var(--i, 0)); left: 0 }
-
-    /* foundations: only show top card */
-    .foundation .card{ display:none !important }
-    .foundation .card:last-child{ display:block !important; position:relative; margin:28px auto 0; top:0; left:0 }
-
-    /* win banner */
-    #win-banner[hidden]{display:none}
-    #win-banner{
+    #a7 #winBanner[hidden]{ display:none }
+    #a7 #winBanner{
       position:fixed; left:50%; transform:translateX(-50%);
       bottom:24px; padding:14px 18px; border-radius:12px;
-      background:var(--win); color:#031020; font-weight:800;
-      box-shadow:0 10px 30px rgba(0,0,0,.3); z-index:99999
-    }
-
-    /* responsive */
-    @media (max-width:980px){
-      .row{grid-template-columns:repeat(2,1fr)}
-      .row.tableau{grid-template-columns:repeat(3,1fr)}
-      :root{ --slot-w:180px; --slot-h:210px; --card-w:160px; --card-h:210px; --fan:18px }
+      background:#10b981; color:#031020; font-weight:800;
+      box-shadow:0 10px 30px rgba(0,0,0,.3); z-index:9999
     }
   </style>
 </head>
+
 <body>
-  <div class="wrap">
-    <h1>Assignment 7 — Drag & Drop (jQuery UI)</h1>
-    <p class="tips">
-      Drag a card onto a <strong>Foundation</strong> (A→K by suit) or a <strong>Tableau</strong> pile.
-      <br>Use <em>Utility Stacks</em> as temporary parking while you re-order cards.
-    </p>
+  <a class="skip" href="#main">Skip to content</a>
 
-    <div class="game-area">
-      <div class="control-bar">
-        <button id="auto-one" title="Send one eligible card to a foundation">Auto-move 1</button>
-        <button id="auto-some" title="Send a few eligible cards (5)">Auto-move 5</button>
-        <button id="auto-all" title="Keep sending any eligible cards">Auto-move All</button>
-        <button id="send-runs" title="If a tableau pile is a complete A→K run of one suit, move it to its foundation">Send Completed Runs</button>
-        <span id="moves" style="align-self:center;color:#aab3d1">Moves: <strong>0</strong></span>
-      </div>
-
-      <div class="section">
-        <h2>Tableau</h2>
-        <div class="row tableau" id="tableau-row">
-          <div class="slot tableau" id="pile-1"><span class="slot-name">Pile 1</span></div>
-          <div class="slot tableau" id="pile-2"><span class="slot-name">Pile 2</span></div>
-          <div class="slot tableau" id="pile-3"><span class="slot-name">Pile 3</span></div>
-          <div class="slot tableau" id="pile-4"><span class="slot-name">Pile 4</span></div>
-          <div class="slot tableau" id="pile-5"><span class="slot-name">Pile 5</span></div>
-          <div class="slot tableau" id="pile-6"><span class="slot-name">Pile 6</span></div>
-          <div class="slot tableau" id="pile-7"><span class="slot-name">Pile 7</span></div>
-        </div>
-      </div>
-
-      <div class="section">
-        <h2>Foundations <span class="hint">(A→K by suit)</span></h2>
-        <div class="row">
-          <div class="slot foundation" data-suit="S" id="f-S">
-            <span class="slot-name">Foundation — Spades</span>
-            <span class="slot-title">Empty</span>
-          </div>
-          <div class="slot foundation" data-suit="H" id="f-H">
-            <span class="slot-name">Foundation — Hearts</span>
-            <span class="slot-title">Empty</span>
-          </div>
-          <div class="slot foundation" data-suit="D" id="f-D">
-            <span class="slot-name">Foundation — Diamonds</span>
-            <span class="slot-title">Empty</span>
-          </div>
-          <div class="slot foundation" data-suit="C" id="f-C">
-            <span class="slot-name">Foundation — Clubs</span>
-            <span class="slot-title">Empty</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="section">
-        <h2>Utility Stacks <span class="hint">Temporary parking to re-order cards.</span></h2>
-        <div class="row">
-          <div class="slot utility" id="u-1"><span class="slot-name">Utility A</span></div>
-          <div class="slot utility" id="u-2"><span class="slot-name">Utility B</span></div>
-          <div class="slot utility" id="u-3"><span class="slot-name">Utility C</span></div>
-          <div class="slot utility" id="u-4"><span class="slot-name">Utility D</span></div>
-        </div>
-      </div>
+  <!-- Site Header (same structure as A6) -->
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="GASH IT Solutions home">
+        <img src="assets/logo.svg" alt="GASH IT Solutions logo" width="56" height="56">
+      </a>
+      <nav aria-label="Primary">
+        <button id="navToggle" class="nav__toggle" aria-expanded="false" aria-controls="navMenu">Menu</button>
+        <ul id="navMenu" class="nav__menu">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="purpose.html">Purpose &amp; Assignments</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
     </div>
-  </div>
+  </header>
 
-  <!-- Win banner (no popup) -->
-  <div id="win-banner" aria-live="polite" hidden>
-    🎉 You win! All foundations complete.
-    <button id="play-again" style="margin-left:10px">Play again</button>
-  </div>
+  <!-- Page banner -->
+  <section class="page-banner">
+    <div class="wrap">
+      <p class="crumb"><a href="purpose.html">← Back to Purpose &amp; Assignments</a></p>
+      <h1 class="gradient-text">A7 — Drag &amp; Drop (Cards)</h1>
+    </div>
+  </section>
 
-  <script src="game.js"></script>
+  <!-- Main content -->
+  <main id="main" class="wrap">
+    <section id="a7" aria-label="Assignment 7 Drag and Drop Game">
+      <div class="game-area">
+        <div class="control-bar" role="toolbar" aria-label="Game controls">
+          <button id="dealBtn" title="Deal a new game">Deal</button>
+          <button id="drawBtn" title="Draw one to a random pile">Draw 1</button>
+          <button id="resetBtn" title="Clear the table">Reset</button>
+
+          <span style="flex:0 0 12px"></span>
+
+          <button id="autoOneBtn" title="Send one eligible card to its foundation">Auto-move 1</button>
+          <button id="autoSomeBtn" title="Send a few eligible cards (5)">Auto-move 5</button>
+          <button id="autoAllBtn" title="Keep sending any eligible cards">Auto-move All</button>
+          <button id="sendRunsBtn" title="If a tableau pile is a complete A→K run, move it">Send Completed Suit</button>
+
+          <span id="status" style="margin-left:auto;opacity:.8">Ready.</span>
+          <span id="liveRegion" class="sr-only" aria-live="polite"></span>
+        </div>
+
+        <div class="section">
+          <h2>Tableau</h2>
+          <div id="tableau" class="row tableau">
+            <div class="slot pile" data-role="tableau" id="pile-1"><span class="slot-name">Pile 1</span></div>
+            <div class="slot pile" data-role="tableau" id="pile-2"><span class="slot-name">Pile 2</span></div>
+            <div class="slot pile" data-role="tableau" id="pile-3"><span class="slot-name">Pile 3</span></div>
+            <div class="slot pile" data-role="tableau" id="pile-4"><span class="slot-name">Pile 4</span></div>
+            <div class="slot pile" data-role="tableau" id="pile-5"><span class="slot-name">Pile 5</span></div>
+            <div class="slot pile" data-role="tableau" id="pile-6"><span class="slot-name">Pile 6</span></div>
+            <div class="slot pile" data-role="tableau" id="pile-7"><span class="slot-name">Pile 7</span></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>Foundations <span class="hint">(A→K by suit)</span></h2>
+          <div class="row">
+            <div class="slot pile" data-role="foundation" data-suit="S" id="fS"><span class="slot-name">Foundation — Spades</span></div>
+            <div class="slot pile" data-role="foundation" data-suit="H" id="fH"><span class="slot-name">Foundation — Hearts</span></div>
+            <div class="slot pile" data-role="foundation" data-suit="D" id="fD"><span class="slot-name">Foundation — Diamonds</span></div>
+            <div class="slot pile" data-role="foundation" data-suit="C" id="fC"><span class="slot-name">Foundation — Clubs</span></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>Utility Stacks <span class="hint">Temporary parking to re-order cards.</span></h2>
+          <div class="row">
+            <div class="slot" id="deckZone"><span class="slot-name">Utility A</span><div id="deckStack"></div></div>
+            <div class="slot" id="discardZone"><span class="slot-name">Utility B</span><div id="discardStack"></div></div>
+            <div class="slot" id="uC"><span class="slot-name">Utility C</span></div>
+            <div class="slot" id="uD"><span class="slot-name">Utility D</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Win banner (no popup). Shown when all foundations have 13 cards -->
+      <div id="winBanner" hidden>
+        🎉 You win! All foundations complete.
+        <button id="playAgainBtn" style="margin-left:10px">Play again</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer (same as site) -->
+  <footer class="site-footer">
+    <div class="wrap footer__grid">
+      <small>
+        <strong>Created by Ginelle Harvey</strong> • <span class="js-year"></span><br>
+        Got a project or question? Say hello at:
+        <a href="mailto:info@gashitsolutions.com">info@gashitsolutions.com</a>
+      </small>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="purpose.html">← Back to Purpose &amp; Assignments</a>
+      </nav>
+    </div>
+  </footer>
+
+  <!-- Site script (nav toggle, year, etc.) -->
+  <script src="script.js"></script>
+  <!-- A7 logic -->
+  <script src="A7-dragdrop.js"></script>
+  <script>
+    // Optional: auto-deal when the page loads
+    // dealAll();
+  </script>
 </body>
 </html>
