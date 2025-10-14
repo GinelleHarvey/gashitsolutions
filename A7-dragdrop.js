@@ -1,12 +1,12 @@
 /* =========================================================
-   A7 — Drag & Drop (Cards) — FIXED
-   - Visible corner labels on every card (data-label)
-   - Foundations/tableau are fixed height with internal cascade
-   - Tableau wraps on smaller screens (handled by CSS)
-   - No panel growth or hanging columns
-   ========================================================= */
+   A7 — Drag & Drop (Cards) — Polished
+   - auto-compress fans so piles always fit
+   - utilities show mini fanned cards
+   - visible corner labels
+   - images pulled from /assets (numeric + worded fallback)
+========================================================= */
 (() => {
-  // ---------- Constants ----------
+  // ---------- constants ----------
   const SUITS = ['S','H','D','C'];
   const RANKS = Array.from({length:13}, (_,i)=> i+1);
 
@@ -16,11 +16,11 @@
   const rankLabel = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
   const suitGlyph = { S:'♠', H:'♥', D:'♦', C:'♣' };
 
-  // layout offsets (px) — foundation increased so the next card peeks clearly
-  const TABLEAU_OFFSET = 36;
-  const FOUNDATION_OFFSET = 26;
+  // preferred spacing (will auto-compress)
+  const PREF_TABLEAU_STEP = 36;
+  const PREF_FOUND_STEP   = 26;
 
-  // ---------- DOM ----------
+  // ---------- dom ----------
   const $ = id => document.getElementById(id);
   const tableau = $('tableau');
   const tPiles = Array.from(tableau.querySelectorAll('.pile[data-role="tableau"]'));
@@ -32,17 +32,16 @@
   const winBanner = $('winBanner');
   const playAgainBtn = $('playAgainBtn');
 
-  // Buttons
+  // controls
   const dealBtn = $('dealBtn'), drawBtn = $('drawBtn'), resetBtn = $('resetBtn');
   const autoOneBtn = $('autoOneBtn'), autoSomeBtn = $('autoSomeBtn');
   const autoAllBtn = $('autoAllBtn'), sendRunsBtn = $('sendRunsBtn');
 
-  // ---------- State ----------
+  // ---------- state ----------
   let undealt = [];
   const nodes = new Map();
-  let firstDiscardAlerted = false;
 
-  // ---------- Helpers ----------
+  // ---------- helpers ----------
   function human(code){
     const s = suitTitle[code[0]];
     const r = Number(code.slice(1));
@@ -66,18 +65,21 @@
     return all;
   }
 
+  // image candidates: numeric first (your set), fallbacks to worded & lettered
   function imageCandidates(code){
     const s = suitLong[code[0]];
     const r = Number(code.slice(1));
-    const word = rankWord[r] || String(r);
-    const aceNum = (r===1) ? '1' : String(r);
+    const word   = rankWord[r] || String(r);
+    const letter = ({1:'A',11:'J',12:'Q',13:'K'})[r];
+    const num    = String(r===1 ? 1 : r);
     return [
-      `assets/${word}_of_${s}.png`,
-      `assets/${aceNum}_of_${s}.png`
-    ];
+      `assets/${num}_of_${s}.png`,         // 1_of_spades.png … 10_of_*.png
+      `assets/${word}_of_${s}.png`,        // ace_of_spades.png / jack_of_*.png
+      letter ? `assets/${letter}_of_${s}.png` : null // A_of_spades.png
+    ].filter(Boolean);
   }
 
-  // ---------- Node builder ----------
+  // build a card node
   function buildCardNode(code){
     const a = document.createElement('a');
     a.href = '#';
@@ -85,7 +87,7 @@
     a.draggable = true;
     a.dataset.code = code;
 
-    // NEW: short visible label like "A♠"
+    // readable corner label “A♠”
     const r = Number(code.slice(1));
     a.dataset.label = `${rankLabel[r-1]}${suitGlyph[code[0]]}`;
 
@@ -110,15 +112,25 @@
     return a;
   }
 
-  // ---------- Game actions ----------
+  // layout helper: compute fan that fits all cards in a zone height
+  function fitFan(zone, preferred, minStep){
+    const cards = zone.querySelectorAll('.card-tile');
+    const n = cards.length;
+    if (n <= 1) return 0;
+    const imgH = (cards[0].querySelector('img')?.clientHeight) || 200;
+    const h = zone.clientHeight || 300;
+    const maxStep = Math.floor((h - imgH) / (n - 1));
+    return Math.max(minStep, Math.min(preferred, maxStep));
+  }
+
+  // ---------- actions ----------
   function clearAll(){
     tPiles.forEach(p => p.innerHTML = '');
     fPiles.forEach(p => { p.innerHTML=''; p.dataset.top=''; });
-    if (deckZone) deckZone.innerHTML = '';
-    if (discardZone) discardZone.innerHTML = '';
+    deckZone && (deckZone.innerHTML = '<div id="deckStack"></div>');
+    discardZone && (discardZone.innerHTML = '<div id="discardStack"></div>');
     nodes.clear(); undealt = [];
-    firstDiscardAlerted = false;
-    if (winBanner) winBanner.hidden = true;
+    winBanner && (winBanner.hidden = true);
     setStatus('Table cleared.');
   }
 
@@ -146,9 +158,9 @@
     layoutAll();
   }
 
-  function randomTableau(){ return tPiles[Math.floor(Math.random()*tPiles.length)]; }
+  const randomTableau = () => tPiles[Math.floor(Math.random()*tPiles.length)];
 
-  // ---------- Drag & Drop ----------
+  // ---------- dnd ----------
   function onDragStart(ev){
     const code = ev.currentTarget.dataset.code;
     ev.dataTransfer.setData('text/plain', code);
@@ -175,14 +187,12 @@
     const code = ev.dataTransfer.getData('text/plain');
     if (!code) return;
     const dragNode = nodes.get(code); if (!dragNode) return;
-
     const container = targetCard.parentElement;
 
     if (container.dataset.role === 'foundation'){ dropToFoundation(code, container); layoutAll(); return; }
     if (container === discardZone){ moveToDiscard(code); layoutAll(); return; }
     if (container === deckZone){ moveToDeck(code); layoutAll(); return; }
 
-    // insert before/after inside tableau based on cursor Y
     if (container.dataset.role === 'tableau'){
       const rect = targetCard.getBoundingClientRect();
       const after = ev.clientY > rect.top + rect.height/2;
@@ -195,11 +205,10 @@
     }
   }
 
-  // ---------- Zone helpers ----------
+  // ---------- zone helpers ----------
   function moveToDiscard(code){
     const n = nodes.get(code); if (!n || !discardZone) return;
     n.classList.add('mini'); discardZone.appendChild(n); settle(n);
-    if (!firstDiscardAlerted){ alert(`${human(code)} discarded — event captured.`); firstDiscardAlerted = true; }
     setStatus(`${human(code)} moved to discard.`);
   }
 
@@ -221,9 +230,8 @@
     layoutAll();
   }
 
-  function requiredRankForFoundation(zone){
-    return zone.querySelectorAll('.card-tile').length + 1;
-  }
+  const requiredRankForFoundation = zone =>
+    zone.querySelectorAll('.card-tile').length + 1;
 
   function dropToFoundation(code, zone){
     const suit = zone.dataset.suit;
@@ -247,14 +255,15 @@
     else setStatus(`Not ready for foundation. ${human(`${s}${need}`)} is next.`);
   }
 
-  function settle(n){ n.classList.add('settle'); setTimeout(()=> n.classList.remove('settle'), 160); }
+  const settle = n => { n.classList.add('settle'); setTimeout(()=> n.classList.remove('settle'), 160); };
 
-  // ---------- Layout ----------
+  // ---------- layout ----------
   function layoutTableau(){
     tPiles.forEach(zone => {
       const cards = Array.from(zone.querySelectorAll('.card-tile'));
+      const step = fitFan(zone, PREF_TABLEAU_STEP, 14); // compress if tall
       cards.forEach((c,i) => {
-        c.style.top = `${i * TABLEAU_OFFSET}px`;
+        c.style.top = `${i * step}px`;
         c.style.zIndex = String(100 + i);
       });
     });
@@ -263,8 +272,9 @@
   function layoutFoundations(){
     fPiles.forEach(zone => {
       const cards = Array.from(zone.querySelectorAll('.card-tile'));
+      const step = fitFan(zone, PREF_FOUND_STEP, 10);     // compress to show all
       cards.forEach((c,i) => {
-        c.style.top = `${i * FOUNDATION_OFFSET}px`;
+        c.style.top = `${i * step}px`;
         c.style.zIndex = String(200 + i);
       });
       const top = cards[cards.length-1];
@@ -272,9 +282,27 @@
     });
   }
 
-  function layoutAll(){ layoutTableau(); layoutFoundations(); }
+  function layoutUtilities(){
+    const fan = 18; // horizontal mini fan
+    ['deckZone','discardZone'].forEach(id=>{
+      const zone = document.getElementById(id);
+      if (!zone) return;
+      const cards = Array.from(zone.querySelectorAll('.card-tile'));
+      cards.forEach((c,i) => {
+        c.style.left = `${10 + i*fan}px`;
+        c.style.top  = `10px`;
+        c.style.zIndex = String(50 + i);
+      });
+    });
+  }
 
-  // ---------- Auto-moves ----------
+  function layoutAll(){
+    layoutTableau();
+    layoutFoundations();
+    layoutUtilities();
+  }
+
+  // ---------- auto moves ----------
   function findFirstMovable(){
     const areas = [...tPiles, discardZone, deckZone].filter(Boolean);
     for (const area of areas){
@@ -329,7 +357,7 @@
     setStatus('No completed A..K suit found on a single pile.');
   }
 
-  // ---------- Win ----------
+  // ---------- win ----------
   function checkWin(){
     const complete = fPiles.every(p => p.querySelectorAll('.card-tile').length === 13);
     if (complete){
@@ -339,13 +367,13 @@
     }
   }
 
-  // ---------- Bind zones ----------
+  // ---------- bind zones ----------
   tPiles.forEach(p => makeDropzone(p, (code, zone) => { dropToTableau(code, zone); }));
   fPiles.forEach(p => makeDropzone(p, (code, zone) => { dropToFoundation(code, zone); }));
   makeDropzone(discardZone, (code)=> { moveToDiscard(code); layoutAll(); });
   makeDropzone(deckZone,    (code)=> { moveToDeck(code); layoutAll(); });
 
-  // ---------- Buttons ----------
+  // ---------- buttons ----------
   dealBtn?.addEventListener('click', () => { dealAll(); });
   drawBtn?.addEventListener('click', () => { drawOne(); });
   resetBtn?.addEventListener('click', () => { clearAll(); layoutAll(); });
@@ -355,7 +383,7 @@
   sendRunsBtn?.addEventListener('click', () => { sendCompletedSuit(); });
   playAgainBtn?.addEventListener('click', () => { if (winBanner) winBanner.hidden = true; clearAll(); dealAll(); });
 
-  // ---------- Mobile tap-to-move fallback ----------
+  // ---------- mobile tap-to-move ----------
   (function(){
     const isCoarse = matchMedia('(pointer: coarse)').matches || navigator.maxTouchPoints > 0;
     if (!isCoarse) return;
@@ -406,6 +434,6 @@
     }, {passive:false});
   })();
 
-  // ---------- Auto-deal on load ----------
+  // ---------- start ----------
   dealAll();
 })();
