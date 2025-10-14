@@ -720,3 +720,35 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);border-c
   #toTop{ transition: none; }
 }
 
+/* ===== A7: pile geometry (fixed height + stacked) ===== */
+#a7 .zone { max-width: var(--wrap); }
+#a7 .slot{
+  position: relative;
+  height: 420px;                 /* fixed height: piles won't grow */
+  min-height: 420px;
+  border-radius: 14px;
+  overflow: auto;                /* scroll INSIDE if a pile gets tall */
+}
+
+/* Cards fill the pile and are absolutely positioned by JS */
+#a7 .card-tile{
+  position: absolute;
+  left: 10px;                    /* keep nice gutters */
+  right: 10px;
+  user-select: none;
+  touch-action: none;
+  will-change: transform, top;
+}
+
+/* Card images keep aspect; no squash */
+#a7 .card-tile img{
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* subtle “pop” when a card settles */
+#a7 .card-tile.settle{
+  transform: translateY(-2px);
+  transition: transform .16s ease;
+}
