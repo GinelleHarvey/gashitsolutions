@@ -13,6 +13,18 @@ const fPiles = ['fS','fH','fD','fC'].map(id => el(id));
 const deckZone = el('deckZone'), deckStack = el('deckStack');
 const discardZone = el('discardZone'), discardStack = el('discardStack');
 
+// Optional buttons (only wire if present in your HTML)
+const dealBtn = el('dealBtn');
+const drawBtn = el('drawBtn');
+const resetBtn = el('resetBtn');
+const autoAllBtn = el('autoAllBtn');          // Auto-move All Possible
+const autoMoveBtn = el('autoMoveBtn');        // Send Completed Suit (existing)
+const autoOneBtn = el('autoOneBtn');          // NEW: Auto-move 1
+const autoSomeBtn = el('autoSomeBtn');        // NEW: Auto-move 5
+const sendRunsBtn = el('sendRunsBtn');        // alias for autoMoveBtn if you prefer
+const playAgainBtn = el('playAgainBtn');      // button inside a banner
+const winBanner = el('winBanner');            // <div id="winBanner" hidden>...</div>
+
 let mainDeck = [];              // undealt codes
 let nodes = new Map();          // code -> DOM <a>
 let firstDiscardAlerted = false;
@@ -61,7 +73,7 @@ function buildCardNode(code){
   a.addEventListener('dragstart', onDragStart);
   a.addEventListener('dragover', e => { e.preventDefault(); });
   a.addEventListener('drop', onDropOnCard);
-  a.addEventListener('dblclick', () => tryMoveToFoundation(code)); // NEW: dblclick to send
+  a.addEventListener('dblclick', () => tryMoveToFoundation(code)); // dblclick to send
 
   const img = document.createElement('img');
   img.src = imgPath(code);
@@ -79,7 +91,7 @@ function dealAll(){
   // create nodes for all 52
   mainDeck.forEach(code => nodes.set(code, buildCardNode(code)));
 
-  // deal 7,8,9,10,11,12,13 across tableau columns
+  // deal 7,8,9,10,11,12,13 across tableau columns (fills, looks good)
   const counts = [7,8,9,10,11,12,13];
   counts.forEach((n, i) => {
     for (let k=0; k<n; k++){
@@ -112,6 +124,7 @@ function clearAll(){
   nodes.clear();
   mainDeck = [];
   firstDiscardAlerted = false;
+  if (winBanner) winBanner.hidden = true;
   setStatus('Table cleared.');
 }
 
@@ -173,7 +186,11 @@ function onDropOnCard(ev){
 function moveToDiscard(code){
   const n = nodes.get(code); if (!n) return;
   n.classList.add('mini'); discardStack.appendChild(n);
-  if (!firstDiscardAlerted){ alert(`${human(code)} discarded — event captured.`); firstDiscardAlerted = true; }
+  if (!firstDiscardAlerted){ 
+    // one-time visible event to satisfy "drop response"
+    alert(`${human(code)} discarded — event captured.`); 
+    firstDiscardAlerted = true; 
+  }
   setStatus(`${human(code)} moved to discard.`);
 }
 
@@ -214,7 +231,7 @@ function dropToFoundation(code, zone){
   checkWin();
 }
 
-// Double-click helper
+// Double-click helper to send to correct foundation if legal
 function tryMoveToFoundation(code){
   const suit = suitOf(code);
   const zone = el('f'+suit);
@@ -226,13 +243,14 @@ function tryMoveToFoundation(code){
   }
 }
 
-// layout foundations to stack/overlap and update label
+// layout foundations: show ONLY top card visually + update label
 function layoutFoundations(){
-  const offset = 24; // px between overlapped cards
   fPiles.forEach(zone => {
     const cards = Array.from(zone.querySelectorAll('.card-tile'));
     cards.forEach((c, i) => {
-      c.style.top = `${Math.min(i * offset, 160)}px`; // cap overlap to stay inside 220px container
+      // Hide all but top card (prettier than tall stacks)
+      c.style.display = (i === cards.length - 1) ? '' : 'none';
+      c.style.top = '0px';
     });
     // label shows top card or "Empty"
     const top = cards[cards.length-1];
@@ -240,44 +258,49 @@ function layoutFoundations(){
   });
 }
 
-// Auto-move All Possible (repeat until stuck)
-function autoMoveAllPossible(){
-  let moved = false;
-  do {
-    moved = false;
-    // check all tableau cards (top to bottom)
-    for (const pile of tPiles){
-      const cards = Array.from(pile.querySelectorAll('.card-tile'));
-      for (const n of cards){
-        const code = n.dataset.code;
-        const zone = el('f'+suitOf(code));
-        const need = requiredRankForFoundation(zone);
-        if (rankOf(code) === need){
-          dropToFoundation(code, zone);
-          moved = true;
-          break; // restart scanning
-        }
+// ===== Auto-move logic (1 / some / all) =====
+function findFirstMovableToFoundation(){
+  // scan tableau piles then utility stacks; return first legal move
+  const scanAreas = [...tPiles, discardStack, deckStack].filter(Boolean);
+  for (const area of scanAreas){
+    const cards = Array.from(area.querySelectorAll('.card-tile'));
+    for (const n of cards){
+      const code = n.dataset.code;
+      const zone = el('f'+suitOf(code));
+      const need = requiredRankForFoundation(zone);
+      if (rankOf(code) === need){
+        return { code, zone };
       }
-      if (moved) break;
     }
+  }
+  return null;
+}
+
+function autoMoveOne(){
+  const mv = findFirstMovableToFoundation();
+  if (!mv){ setStatus('No auto-move available.'); return false; }
+  dropToFoundation(mv.code, mv.zone);
+  return true;
+}
+
+async function autoMoveSome(count=5){
+  let moved = 0;
+  while (moved < count && autoMoveOne()) {
+    moved++;
+    await new Promise(r=>setTimeout(r,120)); // tiny pause so movement is visible
+  }
+  if (moved === 0) setStatus('No auto-moves available.');
+}
+
+function autoMoveAllPossible(){
+  let moved;
+  do {
+    moved = autoMoveOne();
   } while (moved);
   if (!moved) setStatus('No more auto-moves available.');
 }
 
-// ===== Make piles & zones live =====
-tPiles.forEach(p => makeDropzone(p, (code, zone) => dropToTableau(code, zone)));
-fPiles.forEach(p => makeDropzone(p, (code, zone) => dropToFoundation(code, zone)));
-makeDropzone(discardZone, (code)=> moveToDiscard(code));
-makeDropzone(deckZone,    (code)=> moveToDeckZone(code));
-
-// ===== Buttons =====
-el('dealBtn').addEventListener('click', dealAll);
-el('drawBtn').addEventListener('click', drawOne);
-el('resetBtn').addEventListener('click', clearAll);
-el('autoMoveBtn').addEventListener('click', autoMoveCompletedSuit);
-el('autoAllBtn').addEventListener('click', autoMoveAllPossible);
-
-// ===== Auto-move a fully ordered suit (existing feature) =====
+// ===== Auto-move a fully ordered suit (existing feature, kept) =====
 function autoMoveCompletedSuit(){
   for (const pile of tPiles){
     const codes = Array.from(pile.querySelectorAll('.card-tile')).map(n => n.dataset.code);
@@ -297,11 +320,37 @@ function autoMoveCompletedSuit(){
   setStatus('No completed A..K suit found on a single pile.');
 }
 
-function checkWin(){
-  const complete = fPiles.every(p => p.childElementCount === 13);
-  if (complete) {
+// ===== Win handling (banner preferred) =====
+function showWin(){
+  if (winBanner){
+    winBanner.hidden = false;
+  } else {
     alert('🎉 All foundations complete — you win!');
-    setStatus('All foundations complete — you win!');
   }
+  setStatus('All foundations complete — you win!');
 }
 
+function checkWin(){
+  const complete = fPiles.every(p => p.childElementCount === 13);
+  if (complete) showWin();
+}
+
+// ===== Make piles & zones live =====
+tPiles.forEach(p => makeDropzone(p, (code, zone) => dropToTableau(code, zone)));
+fPiles.forEach(p => makeDropzone(p, (code, zone) => dropToFoundation(code, zone)));
+makeDropzone(discardZone, (code)=> moveToDiscard(code));
+makeDropzone(deckZone,    (code)=> moveToDeckZone(code));
+
+// ===== Buttons (only wire if present) =====
+if (dealBtn) dealBtn.addEventListener('click', dealAll);
+if (drawBtn) drawBtn.addEventListener('click', drawOne);
+if (resetBtn) resetBtn.addEventListener('click', clearAll);
+if (autoAllBtn) autoAllBtn.addEventListener('click', autoMoveAllPossible);
+if (autoMoveBtn) autoMoveBtn.addEventListener('click', autoMoveCompletedSuit);
+if (sendRunsBtn) sendRunsBtn.addEventListener('click', autoMoveCompletedSuit);
+if (autoOneBtn) autoOneBtn.addEventListener('click', autoMoveOne);
+if (autoSomeBtn) autoSomeBtn.addEventListener('click', () => autoMoveSome(5));
+if (playAgainBtn) playAgainBtn.addEventListener('click', () => { if (winBanner) winBanner.hidden = true; clearAll(); dealAll(); });
+
+// (Optional) initial deal if you want:
+// dealAll();
