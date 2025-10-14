@@ -3,15 +3,27 @@ const IMG_BASE = 'assets';
 const SUITS = ['S','H','D','C'];
 const RANKS = Array.from({length:13}, (_,i)=> i+1); // 1..13
 
-// Map "S1" -> "ace_of_spades.png"
-function codeToFilename(code){
+const suitName = { S:'spades', H:'hearts', D:'diamonds', C:'clubs' };
+const rankName = { 1:'ace', 11:'jack', 12:'queen', 13:'king' };
+
+const el = id => document.getElementById(id);
+const tableau = el('tableau');
+const tPiles = Array.from(tableau.querySelectorAll('.pile[data-role="tableau"]'));
+const fPiles = ['fS','fH','fD','fC'].map(id => el(id));
+const deckZone = el('deckZone'), deckStack = el('deckStack');
+const discardZone = el('discardZone'), discardStack = el('discardStack');
+
+let mainDeck = [];              // undealt codes
+let nodes = new Map();          // code -> DOM <a>
+let firstDiscardAlerted = false;
+
+// ===== helpers =====
+const codeToFilename = code => {
   const s = code[0], n = Number(code.slice(1));
-  const suits = { S:'spades', H:'hearts', D:'diamonds', C:'clubs' };
-  const ranks = { 1:'ace', 11:'jack', 12:'queen', 13:'king' };
-  const rank = ranks[n] || n;
-  return `${rank}_of_${suits[s]}.png`;
-}
-const imgPath = (code) => `${IMG_BASE}/${codeToFilename(code)}`;
+  const rank = rankName[n] || n;
+  return `${rank}_of_${suitName[s]}.png`;
+};
+const imgPath = code => `${IMG_BASE}/${codeToFilename(code)}`;
 
 function human(code){
   const suit = {S:'Spades', H:'Hearts', D:'Diamonds', C:'Clubs'}[code[0]];
@@ -19,21 +31,9 @@ function human(code){
   const n = Number(code.slice(1));
   return `${names[n] || n} of ${suit}`;
 }
+const rankOf = code => Number(code.slice(1));
+const suitOf = code => code[0];
 
-// ===== State =====
-let mainDeck = [];              // remaining undealt cards (codes)
-let nodes = new Map();          // code -> DOM node (single instance moved around)
-let firstDiscardAlerted = false;
-
-// ===== DOM =====
-const el = (id) => document.getElementById(id);
-const table = el('table');
-const deckZone = el('deckZone');
-const discardZone = el('discardZone');
-const deckStack = el('deckStack');
-const discardStack = el('discardStack');
-
-// ===== Deck helpers =====
 function freshShuffledDeck(){
   const all = [];
   for (const s of SUITS) for (const r of RANKS) all.push(`${s}${r}`);
@@ -44,7 +44,11 @@ function freshShuffledDeck(){
   return all;
 }
 
-// ===== Build a single card node (one DOM node per code) =====
+function setStatus(msg){
+  const s = el('status'); if (s) s.textContent = msg;
+  const lr = el('liveRegion'); if (lr) lr.textContent = msg;
+}
+
 function buildCardNode(code){
   const a = document.createElement('a');
   a.href = '#';
@@ -52,166 +56,202 @@ function buildCardNode(code){
   a.draggable = true;
   a.dataset.code = code;
   a.setAttribute('aria-label', `Card ${human(code)} draggable`);
-  a.addEventListener('click', (e)=> e.preventDefault());
+  a.addEventListener('click', e => e.preventDefault());
   a.addEventListener('dragstart', onDragStart);
-  // accept drop ON a card (swap within table)
-  a.addEventListener('dragover', (ev)=> {
-    // Only enable swap if both cards are on the table
-    const draggingCode = ev.dataTransfer && ev.dataTransfer.types.includes('text/plain')
-      ? null : null; // allow default; we'll handle in drop
-    ev.preventDefault();
-  });
+  a.addEventListener('dragover', e => { e.preventDefault(); });
   a.addEventListener('drop', onDropOnCard);
 
   const img = document.createElement('img');
   img.src = imgPath(code);
   img.alt = human(code);
-  img.onerror = ()=> { img.alt += ' (image not found)'; };
+  img.onerror = () => { img.alt += ' (image not found)'; };
   a.appendChild(img);
   return a;
 }
 
-// ===== Moves =====
-function moveToTable(code){
-  const node = nodes.get(code);
-  if (!node) return;
-  node.classList.remove('mini');
-  table.appendChild(node);
-  setStatus(`${human(code)} moved to table.`);
-}
-
-function moveToDiscard(code){
-  const node = nodes.get(code);
-  if (!node) return;
-  node.classList.add('mini');
-  discardStack.appendChild(node);
-  if (!firstDiscardAlerted){
-    alert(`${human(code)} discarded — event captured.`);
-    firstDiscardAlerted = true;
-  }
-  setStatus(`${human(code)} moved to discard.`);
-}
-
-function moveToDeckZone(code){
-  const node = nodes.get(code);
-  if (!node) return;
-  node.classList.add('mini');
-  deckStack.appendChild(node);
-  setStatus(`${human(code)} moved to deck zone.`);
-}
-
 // ===== UI actions =====
 function dealAll(){
-  // Reset everything, build nodes once
   clearAll();
   mainDeck = freshShuffledDeck();
 
-  // Create DOM nodes for all 52 (keeps drag fast later)
-  mainDeck.forEach(code => {
-    const node = buildCardNode(code);
-    nodes.set(code, node);
+  // create nodes for all 52
+  mainDeck.forEach(code => nodes.set(code, buildCardNode(code)));
+
+  // deal 7,8,9,10,11,12,13 across the tableau like solitaire spacing
+  const counts = [7,8,9,10,11,12,13];
+  counts.forEach((n, i) => {
+    for (let k=0; k<n; k++){
+      const code = mainDeck.shift();
+      const node = nodes.get(code);
+      tPiles[i % tPiles.length].appendChild(node);
+    }
   });
 
-  // Deal the first 20 to the table for room to play; rest remain in mainDeck
-  const initial = 20;
-  for (let i = 0; i < initial; i++){
-    const code = mainDeck.shift();
-    moveToTable(code);
-  }
-  setStatus(`Dealt ${initial} to table. ${mainDeck.length} in deck.`);
+  setStatus(`Dealt to tableau. ${mainDeck.length} in deck.`);
 }
 
 function drawOne(){
-  if (mainDeck.length === 0){
-    setStatus('Deck empty.');
-    return;
-  }
+  if (mainDeck.length === 0){ setStatus('Deck empty.'); return; }
   const code = mainDeck.shift();
-  moveToTable(code);
+  moveNodeToPile(nodes.get(code), randomTableauPile()); // drop onto a random tableau pile for convenience
   setStatus(`${human(code)} drawn. ${mainDeck.length} left in deck.`);
 }
 
+function randomTableauPile(){
+  return tPiles[Math.floor(Math.random()*tPiles.length)];
+}
+
 function clearAll(){
-  // wipe containers
-  table.innerHTML = '';
+  tPiles.forEach(p => p.innerHTML = '');
+  fPiles.forEach(p => p.innerHTML = '');
   deckStack.innerHTML = '';
   discardStack.innerHTML = '';
-  // reset state (keep nodes map; rebuilt on new deal)
   nodes.clear();
   mainDeck = [];
   firstDiscardAlerted = false;
   setStatus('Table cleared.');
 }
 
-function setStatus(msg){
-  const s = el('status'); if (s) s.textContent = msg;
-  const lr = el('liveRegion'); if (lr) lr.textContent = msg;
-}
-
-// ===== Drag & drop =====
+// ===== drag & drop core =====
 function onDragStart(ev){
   const code = ev.currentTarget.dataset.code;
   ev.dataTransfer.setData('text/plain', code);
   ev.dataTransfer.effectAllowed = 'move';
 }
 
-// 1) Drop onto empty areas (zones)
+// drop on empty zone/pile
 function makeDropzone(zoneEl, handler){
-  zoneEl.addEventListener('dragover', (ev)=> { ev.preventDefault(); zoneEl.classList.add('highlight'); });
-  zoneEl.addEventListener('dragleave', ()=> zoneEl.classList.remove('highlight'));
-  zoneEl.addEventListener('drop', (ev)=> {
-    ev.preventDefault();
-    zoneEl.classList.remove('highlight');
+  zoneEl.addEventListener('dragover', ev => { ev.preventDefault(); zoneEl.classList.add('highlight'); });
+  zoneEl.addEventListener('dragleave', () => zoneEl.classList.remove('highlight'));
+  zoneEl.addEventListener('drop', ev => {
+    ev.preventDefault(); zoneEl.classList.remove('highlight');
     const code = ev.dataTransfer.getData('text/plain');
     if (!code) return;
-    handler(code);
+    handler(code, zoneEl, ev);
   });
 }
-makeDropzone(discardZone, moveToDiscard);
-makeDropzone(deckZone, moveToDeckZone);
-makeDropzone(table, moveToTable); // drop on table background appends to end
 
-// 2) Drop onto another CARD on the table = SWAP positions
+// drop on a card (insert before/after based on cursor)
 function onDropOnCard(ev){
   ev.preventDefault();
   const targetCard = ev.currentTarget;
-  const targetInTable = targetCard.parentElement === table;
-  const draggingCode = ev.dataTransfer.getData('text/plain');
-  if (!draggingCode) return;
-  const draggingNode = nodes.get(draggingCode);
-  if (!draggingNode) return;
+  const code = ev.dataTransfer.getData('text/plain');
+  if (!code) return;
+  const dragNode = nodes.get(code);
+  if (!dragNode) return;
 
-  const draggingInTable = draggingNode.parentElement === table;
+  const container = targetCard.parentElement;
 
-  // If you drop on a card in a stack (discard/deck), treat as move into that stack
-  if (!targetInTable){
-    if (targetCard.parentElement === discardStack) return moveToDiscard(draggingCode);
-    if (targetCard.parentElement === deckStack) return moveToDeckZone(draggingCode);
-  }
-
-  // If both nodes are on the table, swap their positions
-  if (draggingInTable && targetInTable){
-    const a = draggingNode;
-    const b = targetCard;
-    const aNext = a.nextSibling === b ? a : a.nextSibling;
-    b.replaceWith(a);
-    if (aNext) aNext.before(b); else table.appendChild(b);
-    setStatus(`Swapped ${human(draggingCode)} with ${b.dataset.code ? human(b.dataset.code) : 'card'}.`);
+  // If dropping onto a foundation card, treat as foundation pile rules
+  if (container.dataset.role === 'foundation'){
+    dropToFoundation(code, container);
     return;
   }
 
-  // Otherwise, move the dragging card to the table and insert before the target
-  if (targetInTable){
-    draggingNode.classList.remove('mini');
-    table.insertBefore(draggingNode, targetCard);
-    setStatus(`${human(draggingCode)} placed before ${human(targetCard.dataset.code)}.`);
+  // If dropping onto a stack mini card, treat as its zone move
+  if (container === discardStack) { moveToDiscard(code); return; }
+  if (container === deckStack)    { moveToDeckZone(code); return; }
+
+  // Otherwise it's a tableau pile — insert before/after target based on cursor Y
+  if (container.dataset.role === 'tableau'){
+    const rect = targetCard.getBoundingClientRect();
+    const after = ev.clientY > rect.top + rect.height/2;
+    dragNode.classList.remove('mini');
+    if (after) {
+      container.insertBefore(dragNode, targetCard.nextSibling);
+    } else {
+      container.insertBefore(dragNode, targetCard);
+    }
+    setStatus(`${human(code)} placed ${after?'after':'before'} ${human(targetCard.dataset.code)}.`);
+  }
+
+  checkWin();
+}
+
+// zone handlers
+function moveToDiscard(code){
+  const n = nodes.get(code); if (!n) return;
+  n.classList.add('mini'); discardStack.appendChild(n);
+  if (!firstDiscardAlerted){ alert(`${human(code)} discarded — event captured.`); firstDiscardAlerted = true; }
+  setStatus(`${human(code)} moved to discard.`);
+}
+function moveToDeckZone(code){
+  const n = nodes.get(code); if (!n) return;
+  n.classList.add('mini'); deckStack.appendChild(n);
+  setStatus(`${human(code)} moved to deck zone.`);
+}
+function moveNodeToPile(node, pile){
+  if (!node || !pile) return;
+  node.classList.remove('mini');
+  pile.appendChild(node);
+  setStatus(`${human(node.dataset.code)} moved to ${pile.id}.`);
+}
+
+function dropToTableau(code, zone){
+  // append to end of that tableau pile
+  moveNodeToPile(nodes.get(code), zone);
+}
+
+function dropToFoundation(code, zone){
+  const suit = zone.dataset.suit; // 'S','H','D','C'
+  const need = zone.childElementCount + 1; // next required rank
+  const cardSuit = suitOf(code);
+  const cardRank = rankOf(code);
+  if (cardSuit !== suit){
+    setStatus(`Only ${suitName[suit]} allowed here.`);
     return;
+  }
+  if (cardRank !== need){
+    setStatus(`Need ${human(`${suit}${need}`)} next.`);
+    return;
+  }
+  const n = nodes.get(code);
+  n.classList.remove('mini');
+  zone.appendChild(n);
+  setStatus(`${human(code)} placed on foundation.`);
+  checkWin();
+}
+
+function checkWin(){
+  const complete = fPiles.every(p => p.childElementCount === 13);
+  if (complete) {
+    alert('🎉 All foundations complete — you win!');
+    setStatus('All foundations complete — you win!');
   }
 }
 
-// ===== Wire up =====
+// Make zones live
+tPiles.forEach(p => makeDropzone(p, (code, zone) => dropToTableau(code, zone)));
+fPiles.forEach(p => makeDropzone(p, (code, zone) => dropToFoundation(code, zone)));
+makeDropzone(discardZone, (code)=> moveToDiscard(code));
+makeDropzone(deckZone,    (code)=> moveToDeckZone(code));
+
+// Utility stacks accept drops on their mini cards via onDropOnCard
+
+// ===== buttons =====
 el('dealBtn').addEventListener('click', dealAll);
 el('drawBtn').addEventListener('click', drawOne);
 el('resetBtn').addEventListener('click', clearAll);
+el('autoMoveBtn').addEventListener('click', autoMoveCompletedSuit);
 
-// (no auto-deal; keep instructor’s flow obvious)
+// ===== Auto-move any completed A..K suit from a single tableau pile to its foundation =====
+function autoMoveCompletedSuit(){
+  for (const pile of tPiles){
+    const codes = Array.from(pile.querySelectorAll('.card-tile')).map(n => n.dataset.code);
+    if (codes.length === 13){
+      const suit = suitOf(codes[0]);
+      const isSameSuit = codes.every(c => suitOf(c) === suit);
+      const isOrdered = codes.every((c, i) => rankOf(c) === i+1); // A..K
+      if (isSameSuit && isOrdered){
+        const foundation = el('f'+suit);
+        for (const c of codes){
+          dropToFoundation(c, foundation);
+        }
+        setStatus(`Moved complete ${suitName[suit]} suit to foundation.`);
+        checkWin();
+        return;
+      }
+    }
+  }
+  setStatus('No completed A..K suit found on a single pile.');
+}
