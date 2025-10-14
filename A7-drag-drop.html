@@ -28,7 +28,7 @@
     .a7-toolbar { display:flex; gap:.6rem; align-items:center; flex-wrap:wrap; margin:.75rem 0 1rem; }
     .a7-status { font-size:.95rem; opacity:.85; }
 
-    /* Board: tableau piles */
+    /* Tableau (work area) */
     .tableau {
       display:grid;
       grid-template-columns: repeat(7, minmax(120px,1fr));
@@ -41,6 +41,7 @@
       border-radius:12px;
       min-height:180px;
       padding:.5rem;
+      position: relative;
     }
     .pile[aria-label]::before{
       content: attr(aria-label);
@@ -57,9 +58,29 @@
     .card-tile:active{ transform:scale(.98); }
     .card-tile img{ width:100%; height:100%; object-fit:cover; display:block; }
 
-    /* miniature look inside stacks (deck/discard) */
+    /* miniature look inside utility stacks (deck/discard) */
     .card-tile.mini { width:70px; aspect-ratio:3/4; }
     .card-tile.mini img { width:100%; height:100%; object-fit:cover; }
+
+    /* Foundations: stacked / overlapped like solitaire */
+    .pile[data-role="foundation"]{
+      height: 220px;              /* fixed visual height */
+      overflow: hidden;           /* hide overflow; cards will overlap inside */
+      border-style: dashed;
+    }
+    .pile[data-role="foundation"] .card-tile{
+      position: absolute;         /* we position with JS, see layoutFoundations() */
+      left: .5rem;
+      right: .5rem;
+      margin: 0;
+    }
+    .pile[data-role="foundation"]::after{
+      /* shows current top card */
+      content: attr(data-top);
+      position: absolute;
+      top: .35rem; right: .6rem;
+      font-size: .85rem; opacity: .8;
+    }
 
     .zones { display:grid; grid-template-columns: repeat(4, 1fr); gap:.75rem; margin-top:1rem; }
     .dropzone{
@@ -71,10 +92,14 @@
     .dropzone.highlight{ outline:3px solid var(--accent, #5ee37b); }
 
     .stack { display:flex; align-items:center; gap:.5rem; flex-wrap:wrap; }
-    .stack .card-tile { margin:0; } /* stacked minis have no bottom margin */
+    .stack .card-tile { margin:0; }
 
     .section-title { margin:.75rem 0 .25rem; font-size:1rem; opacity:.85; }
 
+    details.instructions { margin: 1rem 0; border:1px solid var(--panel-border, rgba(255,255,255,.18)); border-radius:8px; padding:.6rem .8rem; background: var(--panel-bg, #121826); }
+    details.instructions summary { cursor:pointer; font-weight:600; }
+    details.instructions ul { margin:.5rem 0 .2rem 1.2rem; }
+    details.instructions li { margin:.2rem 0; }
     @media (max-width: 900px){
       .tableau { grid-template-columns: repeat(3, minmax(120px,1fr)); }
       .zones { grid-template-columns: repeat(2, 1fr); }
@@ -120,12 +145,24 @@
         <button id="dealBtn" class="btn">Deal</button>
         <button id="drawBtn" class="btn">Draw 1</button>
         <button id="autoMoveBtn" class="btn">Auto-move Completed Suit</button>
+        <button id="autoAllBtn" class="btn">Auto-move All Possible</button>
         <button id="resetBtn" class="btn">Reset</button>
         <span id="status" class="a7-status" role="status" aria-live="polite"></span>
         <div id="liveRegion" class="sr" aria-live="polite" aria-atomic="true"></div>
       </div>
 
-      <!-- 7 tableau piles you can freely rearrange -->
+      <details class="instructions" open>
+        <summary>How to play</summary>
+        <ul>
+          <li><strong>Goal:</strong> build each foundation (Spades, Hearts, Diamonds, Clubs) from <em>Ace → King</em>.</li>
+          <li><strong>Drag & drop:</strong> move cards between the 7 <em>Tableau</em> piles. Drop on the top half of a card to insert <em>before</em>, bottom half to insert <em>after</em>.</li>
+          <li><strong>Double-click a card</strong> to auto-send it to its foundation if it’s the next legal card for that suit.</li>
+          <li><strong>Auto-move All Possible</strong> will repeatedly send any cards that can go to a foundation.</li>
+          <li>You can still use the <em>Deck</em> and <em>Discard</em> as scratch areas.</li>
+        </ul>
+      </details>
+
+      <!-- 7 tableau piles -->
       <h3 class="section-title">Tableau</h3>
       <div class="tableau" id="tableau">
         <div class="pile" id="t1" data-role="tableau" aria-label="Pile 1"></div>
@@ -137,7 +174,7 @@
         <div class="pile" id="t7" data-role="tableau" aria-label="Pile 7"></div>
       </div>
 
-      <!-- Foundations (one per suit; must be A→K by suit) -->
+      <!-- Foundations -->
       <h3 class="section-title">Foundations (A→K by suit)</h3>
       <div class="zones">
         <section class="dropzone pile" id="fS" data-role="foundation" data-suit="S" aria-label="Foundation — Spades"></section>
@@ -146,7 +183,7 @@
         <section class="dropzone pile" id="fC" data-role="foundation" data-suit="C" aria-label="Foundation — Clubs"></section>
       </div>
 
-      <!-- Utility zones (optional) -->
+      <!-- Utility -->
       <h3 class="section-title">Utility Stacks</h3>
       <div class="zones">
         <section class="dropzone" id="deckZone" aria-label="Deck zone"><div class="stack" id="deckStack"></div></section>
