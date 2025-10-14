@@ -1,9 +1,10 @@
 /* =========================================================
-   A7 — Drag & Drop (Cards) — Vanilla JS (no jQuery)
-   Piles: fixed height with internal cascade (no panel growth)
-   Images live in /assets (e.g., ace_of_spades.png or 1_of_spades.png)
+   A7 — Drag & Drop (Cards) — FIXED
+   - Visible corner labels on every card (data-label)
+   - Foundations/tableau are fixed height with internal cascade
+   - Tableau wraps on smaller screens (handled by CSS)
+   - No panel growth or hanging columns
    ========================================================= */
-
 (() => {
   // ---------- Constants ----------
   const SUITS = ['S','H','D','C'];
@@ -13,10 +14,11 @@
   const suitTitle = { S:'Spades', H:'Hearts', D:'Diamonds', C:'Clubs' };
   const rankWord  = { 1:'ace', 11:'jack', 12:'queen', 13:'king' };
   const rankLabel = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+  const suitGlyph = { S:'♠', H:'♥', D:'♦', C:'♣' };
 
-  // layout offsets (px)
-  const TABLEAU_OFFSET = 36;  // vertical gap between cards in a column
-  const FOUNDATION_OFFSET = 22;
+  // layout offsets (px) — foundation increased so the next card peeks clearly
+  const TABLEAU_OFFSET = 36;
+  const FOUNDATION_OFFSET = 26;
 
   // ---------- DOM ----------
   const $ = id => document.getElementById(id);
@@ -30,7 +32,7 @@
   const winBanner = $('winBanner');
   const playAgainBtn = $('playAgainBtn');
 
-  // Buttons (optional)
+  // Buttons
   const dealBtn = $('dealBtn'), drawBtn = $('drawBtn'), resetBtn = $('resetBtn');
   const autoOneBtn = $('autoOneBtn'), autoSomeBtn = $('autoSomeBtn');
   const autoAllBtn = $('autoAllBtn'), sendRunsBtn = $('sendRunsBtn');
@@ -64,7 +66,6 @@
     return all;
   }
 
-  // robust image resolver for /assets
   function imageCandidates(code){
     const s = suitLong[code[0]];
     const r = Number(code.slice(1));
@@ -83,6 +84,11 @@
     a.className = 'card-tile';
     a.draggable = true;
     a.dataset.code = code;
+
+    // NEW: short visible label like "A♠"
+    const r = Number(code.slice(1));
+    a.dataset.label = `${rankLabel[r-1]}${suitGlyph[code[0]]}`;
+
     a.setAttribute('aria-label', `Card ${human(code)} draggable`);
     a.addEventListener('click', e => e.preventDefault());
     a.addEventListener('dragstart', onDragStart);
@@ -140,9 +146,7 @@
     layoutAll();
   }
 
-  function randomTableau(){
-    return tPiles[Math.floor(Math.random()*tPiles.length)];
-  }
+  function randomTableau(){ return tPiles[Math.floor(Math.random()*tPiles.length)]; }
 
   // ---------- Drag & Drop ----------
   function onDragStart(ev){
@@ -243,16 +247,15 @@
     else setStatus(`Not ready for foundation. ${human(`${s}${need}`)} is next.`);
   }
 
-  // small settle animation
   function settle(n){ n.classList.add('settle'); setTimeout(()=> n.classList.remove('settle'), 160); }
 
-  // ---------- Layout: tableau cascade + foundation cascade ----------
+  // ---------- Layout ----------
   function layoutTableau(){
     tPiles.forEach(zone => {
       const cards = Array.from(zone.querySelectorAll('.card-tile'));
       cards.forEach((c,i) => {
         c.style.top = `${i * TABLEAU_OFFSET}px`;
-        c.style.zIndex = `${i}`;
+        c.style.zIndex = String(100 + i);
       });
     });
   }
@@ -262,17 +265,14 @@
       const cards = Array.from(zone.querySelectorAll('.card-tile'));
       cards.forEach((c,i) => {
         c.style.top = `${i * FOUNDATION_OFFSET}px`;
-        c.style.zIndex = `${i}`;
+        c.style.zIndex = String(200 + i);
       });
       const top = cards[cards.length-1];
       zone.dataset.top = top ? `Top: ${human(top.dataset.code)}` : 'Empty';
     });
   }
 
-  function layoutAll(){
-    layoutTableau();
-    layoutFoundations();
-  }
+  function layoutAll(){ layoutTableau(); layoutFoundations(); }
 
   // ---------- Auto-moves ----------
   function findFirstMovable(){
