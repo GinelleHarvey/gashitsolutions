@@ -49,6 +49,7 @@ function setStatus(msg){
   const lr = el('liveRegion'); if (lr) lr.textContent = msg;
 }
 
+// ===== node builder =====
 function buildCardNode(code){
   const a = document.createElement('a');
   a.href = '#';
@@ -60,6 +61,7 @@ function buildCardNode(code){
   a.addEventListener('dragstart', onDragStart);
   a.addEventListener('dragover', e => { e.preventDefault(); });
   a.addEventListener('drop', onDropOnCard);
+  a.addEventListener('dblclick', () => tryMoveToFoundation(code)); // NEW: dblclick to send
 
   const img = document.createElement('img');
   img.src = imgPath(code);
@@ -77,7 +79,7 @@ function dealAll(){
   // create nodes for all 52
   mainDeck.forEach(code => nodes.set(code, buildCardNode(code)));
 
-  // deal 7,8,9,10,11,12,13 across the tableau like solitaire spacing
+  // deal 7,8,9,10,11,12,13 across tableau columns
   const counts = [7,8,9,10,11,12,13];
   counts.forEach((n, i) => {
     for (let k=0; k<n; k++){
@@ -88,12 +90,13 @@ function dealAll(){
   });
 
   setStatus(`Dealt to tableau. ${mainDeck.length} in deck.`);
+  layoutFoundations(); // ensure labels are correct (empty)
 }
 
 function drawOne(){
   if (mainDeck.length === 0){ setStatus('Deck empty.'); return; }
   const code = mainDeck.shift();
-  moveNodeToPile(nodes.get(code), randomTableauPile()); // drop onto a random tableau pile for convenience
+  moveNodeToPile(nodes.get(code), randomTableauPile());
   setStatus(`${human(code)} drawn. ${mainDeck.length} left in deck.`);
 }
 
@@ -103,7 +106,7 @@ function randomTableauPile(){
 
 function clearAll(){
   tPiles.forEach(p => p.innerHTML = '');
-  fPiles.forEach(p => p.innerHTML = '');
+  fPiles.forEach(p => { p.innerHTML=''; p.dataset.top=''; });
   deckStack.innerHTML = '';
   discardStack.innerHTML = '';
   nodes.clear();
@@ -142,29 +145,27 @@ function onDropOnCard(ev){
 
   const container = targetCard.parentElement;
 
-  // If dropping onto a foundation card, treat as foundation pile rules
+  // foundation? use foundation rules
   if (container.dataset.role === 'foundation'){
     dropToFoundation(code, container);
     return;
   }
 
-  // If dropping onto a stack mini card, treat as its zone move
+  // in utility stacks
   if (container === discardStack) { moveToDiscard(code); return; }
   if (container === deckStack)    { moveToDeckZone(code); return; }
 
-  // Otherwise it's a tableau pile — insert before/after target based on cursor Y
+  // tableau insert before/after by cursor position
   if (container.dataset.role === 'tableau'){
     const rect = targetCard.getBoundingClientRect();
     const after = ev.clientY > rect.top + rect.height/2;
     dragNode.classList.remove('mini');
-    if (after) {
-      container.insertBefore(dragNode, targetCard.nextSibling);
-    } else {
-      container.insertBefore(dragNode, targetCard);
-    }
+    if (after) container.insertBefore(dragNode, targetCard.nextSibling);
+    else       container.insertBefore(dragNode, targetCard);
     setStatus(`${human(code)} placed ${after?'after':'before'} ${human(targetCard.dataset.code)}.`);
   }
 
+  layoutFoundations();
   checkWin();
 }
 
@@ -175,11 +176,13 @@ function moveToDiscard(code){
   if (!firstDiscardAlerted){ alert(`${human(code)} discarded — event captured.`); firstDiscardAlerted = true; }
   setStatus(`${human(code)} moved to discard.`);
 }
+
 function moveToDeckZone(code){
   const n = nodes.get(code); if (!n) return;
   n.classList.add('mini'); deckStack.appendChild(n);
   setStatus(`${human(code)} moved to deck zone.`);
 }
+
 function moveNodeToPile(node, pile){
   if (!node || !pile) return;
   node.classList.remove('mini');
@@ -188,53 +191,93 @@ function moveNodeToPile(node, pile){
 }
 
 function dropToTableau(code, zone){
-  // append to end of that tableau pile
   moveNodeToPile(nodes.get(code), zone);
+  layoutFoundations();
+}
+
+function requiredRankForFoundation(zone){
+  return zone.childElementCount + 1; // A=1, so empty wants 1
 }
 
 function dropToFoundation(code, zone){
-  const suit = zone.dataset.suit; // 'S','H','D','C'
-  const need = zone.childElementCount + 1; // next required rank
+  const suit = zone.dataset.suit;
+  const need = requiredRankForFoundation(zone);
   const cardSuit = suitOf(code);
   const cardRank = rankOf(code);
-  if (cardSuit !== suit){
-    setStatus(`Only ${suitName[suit]} allowed here.`);
-    return;
-  }
-  if (cardRank !== need){
-    setStatus(`Need ${human(`${suit}${need}`)} next.`);
-    return;
-  }
+  if (cardSuit !== suit){ setStatus(`Only ${suitName[suit]} allowed here.`); return; }
+  if (cardRank !== need){ setStatus(`Need ${human(`${suit}${need}`)} next.`); return; }
   const n = nodes.get(code);
   n.classList.remove('mini');
   zone.appendChild(n);
   setStatus(`${human(code)} placed on foundation.`);
+  layoutFoundations();
   checkWin();
 }
 
-function checkWin(){
-  const complete = fPiles.every(p => p.childElementCount === 13);
-  if (complete) {
-    alert('🎉 All foundations complete — you win!');
-    setStatus('All foundations complete — you win!');
+// Double-click helper
+function tryMoveToFoundation(code){
+  const suit = suitOf(code);
+  const zone = el('f'+suit);
+  const need = requiredRankForFoundation(zone);
+  if (rankOf(code) === need){
+    dropToFoundation(code, zone);
+  } else {
+    setStatus(`Not ready for foundation. ${human(`${suit}${need}`)} is next.`);
   }
 }
 
-// Make zones live
+// layout foundations to stack/overlap and update label
+function layoutFoundations(){
+  const offset = 24; // px between overlapped cards
+  fPiles.forEach(zone => {
+    const cards = Array.from(zone.querySelectorAll('.card-tile'));
+    cards.forEach((c, i) => {
+      c.style.top = `${Math.min(i * offset, 160)}px`; // cap overlap to stay inside 220px container
+    });
+    // label shows top card or "Empty"
+    const top = cards[cards.length-1];
+    zone.dataset.top = top ? `Top: ${human(top.dataset.code)}` : 'Empty';
+  });
+}
+
+// Auto-move All Possible (repeat until stuck)
+function autoMoveAllPossible(){
+  let moved = false;
+  do {
+    moved = false;
+    // check all tableau cards (top to bottom)
+    for (const pile of tPiles){
+      const cards = Array.from(pile.querySelectorAll('.card-tile'));
+      for (const n of cards){
+        const code = n.dataset.code;
+        const zone = el('f'+suitOf(code));
+        const need = requiredRankForFoundation(zone);
+        if (rankOf(code) === need){
+          dropToFoundation(code, zone);
+          moved = true;
+          break; // restart scanning
+        }
+      }
+      if (moved) break;
+    }
+  } while (moved);
+  if (!moved) setStatus('No more auto-moves available.');
+}
+
+// ===== Make piles & zones live =====
 tPiles.forEach(p => makeDropzone(p, (code, zone) => dropToTableau(code, zone)));
 fPiles.forEach(p => makeDropzone(p, (code, zone) => dropToFoundation(code, zone)));
 makeDropzone(discardZone, (code)=> moveToDiscard(code));
 makeDropzone(deckZone,    (code)=> moveToDeckZone(code));
 
-// Utility stacks accept drops on their mini cards via onDropOnCard
-
-// ===== buttons =====
+// ===== Buttons =====
 el('dealBtn').addEventListener('click', dealAll);
 el('drawBtn').addEventListener('click', drawOne);
 el('resetBtn').addEventListener('click', clearAll);
 el('autoMoveBtn').addEventListener('click', autoMoveCompletedSuit);
+el('autoAllBtn').addEventListener('click', autoMoveAllPossible);
 
-// ===== Auto-move any completed A..K suit from a single tableau pile to its foundation =====
+// ===== Auto-move a fully ordered suit (existing feature) =====
 function autoMoveCompletedSuit(){
   for (const pile of tPiles){
     const codes = Array.from(pile.querySelectorAll('.card-tile')).map(n => n.dataset.code);
@@ -244,9 +287,7 @@ function autoMoveCompletedSuit(){
       const isOrdered = codes.every((c, i) => rankOf(c) === i+1); // A..K
       if (isSameSuit && isOrdered){
         const foundation = el('f'+suit);
-        for (const c of codes){
-          dropToFoundation(c, foundation);
-        }
+        for (const c of codes){ dropToFoundation(c, foundation); }
         setStatus(`Moved complete ${suitName[suit]} suit to foundation.`);
         checkWin();
         return;
@@ -254,4 +295,12 @@ function autoMoveCompletedSuit(){
     }
   }
   setStatus('No completed A..K suit found on a single pile.');
+}
+
+function checkWin(){
+  const complete = fPiles.every(p => p.childElementCount === 13);
+  if (complete) {
+    alert('🎉 All foundations complete — you win!');
+    setStatus('All foundations complete — you win!');
+  }
 }
