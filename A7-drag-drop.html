@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>A7 — Drag & Drop (Cards)</title>
-  <meta name="description" content="Assignment 7: Deal a deck and drag cards to drop zones with event capture.">
+  <meta name="description" content="Assignment 7: Deal, drag between cards, build A→K by suit, and stack to foundations.">
 
   <!-- Main site CSS -->
   <link rel="stylesheet" href="style.css">
@@ -19,54 +19,73 @@
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 
   <style>
-    /* Page helpers (your global CSS handles the theme) */
-    .wrap { max-width: 980px; margin: 0 auto; padding: 1rem; }
+    /* Page helpers (theme comes from your site) */
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 1rem; }
     .page-banner { text-align: center; padding: .9rem 0 .6rem; }
     .page-banner .crumb a { text-decoration: none; }
     .sr { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
 
-    /* A7 UI */
     .a7-toolbar { display:flex; gap:.6rem; align-items:center; flex-wrap:wrap; margin:.75rem 0 1rem; }
     .a7-status { font-size:.95rem; opacity:.85; }
 
-    .board{
-      display:grid; grid-template-columns:repeat(auto-fill,minmax(110px,1fr));
-      gap:.75rem; padding:1rem; border-radius:12px;
-      background: var(--panel-bg, #121826);
-      border: 1px solid var(--panel-border, rgba(255,255,255,.14));
-      min-height:220px;
+    /* Board: tableau piles */
+    .tableau {
+      display:grid;
+      grid-template-columns: repeat(7, minmax(120px,1fr));
+      gap:.75rem;
+      align-items:start;
     }
+    .pile {
+      background: var(--panel-bg, #121826);
+      border:1px dashed var(--panel-border, rgba(255,255,255,.18));
+      border-radius:12px;
+      min-height:180px;
+      padding:.5rem;
+    }
+    .pile[aria-label]::before{
+      content: attr(aria-label);
+      display:block; font-size:.85rem; opacity:.75; margin-bottom:.25rem;
+    }
+
     .card-tile{
       width:100%; aspect-ratio:3/4; border-radius:.6rem; overflow:hidden;
       display:block; background:#0d1329;
       box-shadow:0 8px 16px rgba(0,0,0,.35);
       transition:transform .15s ease;
+      margin-bottom:.5rem;
     }
     .card-tile:active{ transform:scale(.98); }
     .card-tile img{ width:100%; height:100%; object-fit:cover; display:block; }
 
-    /* miniature look when card is inside a stack zone */
+    /* miniature look inside stacks (deck/discard) */
     .card-tile.mini { width:70px; aspect-ratio:3/4; }
     .card-tile.mini img { width:100%; height:100%; object-fit:cover; }
 
-    .zones{ display:grid; grid-template-columns:1fr 1fr; gap:.75rem; margin-top:1rem; }
+    .zones { display:grid; grid-template-columns: repeat(4, 1fr); gap:.75rem; margin-top:1rem; }
     .dropzone{
       border:2px dashed var(--accent, #5ee37b);
       border-radius:12px; min-height:160px; padding:1rem;
       background: var(--panel-bg, #0f1531);
-      display:flex; align-items:center; justify-content:center; text-align:center;
+      display:flex; align-items:flex-start; justify-content:flex-start; text-align:left; flex-wrap:wrap; gap:.5rem;
     }
     .dropzone.highlight{ outline:3px solid var(--accent, #5ee37b); }
-    .stack{ display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; margin-top:.5rem; }
 
-    @media (max-width:768px){ .zones{ grid-template-columns:1fr; } }
+    .stack { display:flex; align-items:center; gap:.5rem; flex-wrap:wrap; }
+    .stack .card-tile { margin:0; } /* stacked minis have no bottom margin */
+
+    .section-title { margin:.75rem 0 .25rem; font-size:1rem; opacity:.85; }
+
+    @media (max-width: 900px){
+      .tableau { grid-template-columns: repeat(3, minmax(120px,1fr)); }
+      .zones { grid-template-columns: repeat(2, 1fr); }
+    }
   </style>
 </head>
 
 <body>
   <a class="skip" href="#main">Skip to content</a>
 
-  <!-- Header (same as site) -->
+  <!-- Header -->
   <header class="site-header">
     <div class="wrap">
       <a class="brand" href="index.html" aria-label="GASH IT Solutions home">
@@ -93,35 +112,45 @@
     </div>
   </section>
 
-  <!-- Main -->
   <main id="main" class="wrap">
     <section aria-labelledby="a7Title">
-      <h2 id="a7Title" class="sr">Card Table</h2>
+      <h2 id="a7Title" class="sr">Solitaire-style board</h2>
 
       <div class="a7-toolbar">
         <button id="dealBtn" class="btn">Deal</button>
         <button id="drawBtn" class="btn">Draw 1</button>
+        <button id="autoMoveBtn" class="btn">Auto-move Completed Suit</button>
         <button id="resetBtn" class="btn">Reset</button>
         <span id="status" class="a7-status" role="status" aria-live="polite"></span>
         <div id="liveRegion" class="sr" aria-live="polite" aria-atomic="true"></div>
       </div>
 
-      <div id="table" class="board" aria-label="Card table (drag within to re-order)"></div>
+      <!-- 7 tableau piles you can freely rearrange -->
+      <h3 class="section-title">Tableau</h3>
+      <div class="tableau" id="tableau">
+        <div class="pile" id="t1" data-role="tableau" aria-label="Pile 1"></div>
+        <div class="pile" id="t2" data-role="tableau" aria-label="Pile 2"></div>
+        <div class="pile" id="t3" data-role="tableau" aria-label="Pile 3"></div>
+        <div class="pile" id="t4" data-role="tableau" aria-label="Pile 4"></div>
+        <div class="pile" id="t5" data-role="tableau" aria-label="Pile 5"></div>
+        <div class="pile" id="t6" data-role="tableau" aria-label="Pile 6"></div>
+        <div class="pile" id="t7" data-role="tableau" aria-label="Pile 7"></div>
+      </div>
 
+      <!-- Foundations (one per suit; must be A→K by suit) -->
+      <h3 class="section-title">Foundations (A→K by suit)</h3>
       <div class="zones">
-        <section class="dropzone" id="deckZone" aria-label="Deck zone">
-          <div>
-            <p><strong>Deck zone</strong> — drop a card here</p>
-            <div class="stack" id="deckStack"></div>
-          </div>
-        </section>
+        <section class="dropzone pile" id="fS" data-role="foundation" data-suit="S" aria-label="Foundation — Spades"></section>
+        <section class="dropzone pile" id="fH" data-role="foundation" data-suit="H" aria-label="Foundation — Hearts"></section>
+        <section class="dropzone pile" id="fD" data-role="foundation" data-suit="D" aria-label="Foundation — Diamonds"></section>
+        <section class="dropzone pile" id="fC" data-role="foundation" data-suit="C" aria-label="Foundation — Clubs"></section>
+      </div>
 
-        <section class="dropzone" id="discardZone" aria-label="Discard pile">
-          <div>
-            <p><strong>Discard pile</strong> — drop a card here (event fires)</p>
-            <div class="stack" id="discardStack"></div>
-          </div>
-        </section>
+      <!-- Utility zones (optional) -->
+      <h3 class="section-title">Utility Stacks</h3>
+      <div class="zones">
+        <section class="dropzone" id="deckZone" aria-label="Deck zone"><div class="stack" id="deckStack"></div></section>
+        <section class="dropzone" id="discardZone" aria-label="Discard pile"><div class="stack" id="discardStack"></div></section>
       </div>
     </section>
   </main>
@@ -142,7 +171,7 @@
 
   <!-- Site script (nav, year, etc.) -->
   <script src="script.js"></script>
-  <!-- A7 logic -->
+  <!-- Game logic -->
   <script src="A7-dragdrop.js"></script>
 </body>
 </html>
