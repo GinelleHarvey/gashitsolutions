@@ -1,8 +1,5 @@
 /* =========================================================
-   A7 — Drag & Drop (Cards) — compact & fluid
-   - auto-compress fans so piles always fit (with padding)
-   - utilities A/B/C/D all accept and fan mini cards
-   - clear corner labels & suit tags
+   A7 — Drag & Drop (Cards) — compact & fluid (fixed foundations)
 ========================================================= */
 (() => {
   // ---------- constants ----------
@@ -16,7 +13,7 @@
   const suitGlyph = { S:'♠', H:'♥', D:'♦', C:'♣' };
 
   // preferred spacing (auto-compress if tall)
-  const PREF_TABLEAU_STEP = 28; // tighter by default
+  const PREF_TABLEAU_STEP = 28;
   const PREF_FOUND_STEP   = 22;
 
   // ---------- dom ----------
@@ -65,7 +62,6 @@
     return all;
   }
 
-  // image candidates: numeric first (your set), fallbacks to worded & lettered
   function imageCandidates(code){
     const s = suitLong[code[0]];
     const r = Number(code.slice(1));
@@ -79,14 +75,12 @@
     ].filter(Boolean);
   }
 
-  // build a card node
   function buildCardNode(code){
     const a = document.createElement('a');
     a.href = '#';
     a.className = 'card-tile';
     a.draggable = true;
     a.dataset.code = code;
-
     const r = Number(code.slice(1));
     a.dataset.label = `${rankLabel[r-1]}${suitGlyph[code[0]]}`;
 
@@ -111,14 +105,14 @@
     return a;
   }
 
-  // layout helper: compute fan that fits all cards in a zone height (with bottom pad)
+  // fan step that fits all cards inside a zone height
   function fitFan(zone, preferred, minStep){
     const cards = zone.querySelectorAll('.card-tile');
     const n = cards.length;
     if (n <= 1) return 0;
     const imgH = (cards[0].querySelector('img')?.clientHeight) || 176;
     const h = zone.clientHeight || 260;
-    const padBottom = 12; // keep breathing room
+    const padBottom = 12;
     const maxStep = Math.floor((h - imgH - padBottom) / (n - 1));
     return Math.max(minStep, Math.min(preferred, maxStep));
   }
@@ -234,7 +228,11 @@
 
     const n = nodes.get(code);
     n.classList.remove('mini');
-    zone.appendChild(n); settle(n);
+    zone.appendChild(n);
+    n.classList.add('rise');               // slide-up
+    setTimeout(()=> n.classList.remove('rise'), 260);
+    settle(n);
+
     setStatus(`${human(code)} placed on ${suitTitle[suit]} foundation.`);
     layoutAll(); checkWin();
   }
