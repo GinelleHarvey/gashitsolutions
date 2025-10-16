@@ -1,5 +1,5 @@
 /* =========================================================
-   A7 — Drag & Drop (Cards) — compact & fluid (fixed foundations)
+   A7 — Drag & Drop (Cards) — compact, fluid, mobile-ready
 ========================================================= */
 (() => {
   // ---------- constants ----------
@@ -12,9 +12,9 @@
   const rankLabel = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
   const suitGlyph = { S:'♠', H:'♥', D:'♦', C:'♣' };
 
-  // preferred spacing (auto-compress if tall)
+  // Fan spacing (foundations match tableau feel)
   const PREF_TABLEAU_STEP = 28;
-  const PREF_FOUND_STEP   = 22;
+  const PREF_FOUND_STEP   = 28;
 
   // ---------- dom ----------
   const $ = id => document.getElementById(id);
@@ -48,8 +48,8 @@
   const suitOf = c => c[0];
 
   function setStatus(msg){
-    if (statusEl) statusEl.textContent = msg;
-    if (liveRegion) liveRegion.textContent = msg;
+    statusEl && (statusEl.textContent = msg);
+    liveRegion && (liveRegion.textContent = msg);
   }
 
   function freshDeck(){
@@ -105,7 +105,7 @@
     return a;
   }
 
-  // fan step that fits all cards inside a zone height
+  // Compute a fan step that fits cards inside a zone height
   function fitFan(zone, preferred, minStep){
     const cards = zone.querySelectorAll('.card-tile');
     const n = cards.length;
@@ -229,7 +229,7 @@
     const n = nodes.get(code);
     n.classList.remove('mini');
     zone.appendChild(n);
-    n.classList.add('rise');               // slide-up
+    n.classList.add('rise');               // slide-up animation
     setTimeout(()=> n.classList.remove('rise'), 260);
     settle(n);
 
