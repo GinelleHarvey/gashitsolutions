@@ -7,7 +7,7 @@
   <meta name="description" content="Assignment 7: HTML5 drag-and-drop with cards, foundations, tableau, and utility stacks.">
   <link rel="stylesheet" href="style.css">
 
-  <!-- Favicons -->
+  <!-- Favicons (same set you already use) -->
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48x48.png">
@@ -18,7 +18,7 @@
 
   <!-- ===== A7 (scoped to the game only) ===== -->
   <style>
-    /* Tighter footprint so 7 slots fit comfortably */
+    /* Compact defaults so 7 piles fit; everything uses your site tokens */
     #a7{
       --slot-w: 160px;     /* column width */
       --slot-h: 220px;     /* min slot height */
@@ -91,28 +91,27 @@
       will-change: top, transform;
     }
 
-    /* === FOUNDATIONS (fixed: no overflow outside; gentle peeking) === */
+    /* === FOUNDATIONS: stack like tableau, fixed height === */
     #a7 .slot[data-role="foundation"]{
-      height:280px;
-      overflow:hidden;               /* keep stacks inside the slot */
+      height:260px;           /* fixed so it never grows */
+      overflow:hidden;        /* keep inside the dashed box */
+      padding-top:6px;        /* small breathing room */
     }
-    /* Top label */
-    #a7 .pile[data-role="foundation"]::after{
-      content: attr(data-top);
-      position:absolute; top:8px; right:10px; font-size:.85rem; opacity:.65;
-    }
-    /* faint suit tag */
-    #a7 .slot[data-role="foundation"]::before{
-      content: attr(data-suitname);
-      position:absolute; bottom:6px; left:10px; font-weight:800; font-size:.78rem; opacity:.55;
-      color: var(--muted);
-    }
-    /* layered look (small lift so borders don't merge) */
     #a7 .slot[data-role="foundation"] .card-tile{
-      box-shadow: 0 2px 6px rgba(0,0,0,.18);
+      left:8px; right:8px;
+      box-shadow:0 2px 6px rgba(0,0,0,.20);
       transform: translateY(calc(var(--anim) * -1px));
     }
-    /* slide-up animation class added from JS on drop */
+    /* Top label & suit tag */
+    #a7 .pile[data-role="foundation"]::after{
+      content: attr(data-top);
+      position:absolute; top:6px; right:8px; font-size:.82rem; opacity:.7;
+    }
+    #a7 .slot[data-role="foundation"]::before{
+      content: attr(data-suitname);
+      position:absolute; bottom:6px; left:8px; font-weight:800; font-size:.76rem; opacity:.55; color: var(--muted);
+    }
+    /* subtle rise when dropping */
     #a7 .slot[data-role="foundation"] .card-tile.rise{
       animation: a7-rise calc(.22s * var(--anim)) ease-out;
     }
@@ -124,9 +123,7 @@
       height: calc(var(--card-h) * .56);
     }
     #a7 #deckZone .card-tile, #a7 #discardZone .card-tile,
-    #a7 #uC .card-tile, #a7 #uD .card-tile{
-      position:absolute;
-    }
+    #a7 #uC .card-tile, #a7 #uD .card-tile{ position:absolute; }
 
     /* card visuals */
     #a7 .card-tile{ position:relative; display:inline-block; }
@@ -138,12 +135,7 @@
     #a7 .card-tile.dragging{ transform: scale(1.045); z-index: 40; }
     #a7 .card-tile.settle{ animation:a7-settle calc(.18s * var(--anim)) ease; }
     @keyframes a7-settle{ from { transform: scale(.985) } to { transform: scale(1) } }
-
-    /* slide-up animation used on foundation drops */
-    @keyframes a7-rise{
-      from { transform: translateY(12px) scale(.985); opacity:.98; }
-      to   { transform: translateY(0)     scale(1);    opacity:1;   }
-    }
+    @keyframes a7-rise{ from { transform: translateY(12px) scale(.985); opacity:.98 } to { transform: translateY(0) scale(1); opacity:1 } }
 
     /* corner label like “A♠” */
     #a7 .card-tile::after{
@@ -169,9 +161,22 @@
       box-shadow:0 10px 30px rgba(0,0,0,.3); z-index:9999
     }
 
-    /* responsive tweak */
-    @media (max-width:680px){
-      #a7{ --slot-w: 148px; --slot-h: 200px; --card-w: 118px; --card-h: 160px; }
+    /* === Mobile polish === */
+    @media (max-width:900px){
+      #a7{ --slot-w: 140px; --slot-h: 210px; --card-w: 116px; --card-h: 154px; }
+      #a7 .row.tableau{ grid-template-columns: repeat(3, minmax(var(--slot-w),1fr)); }
+      #a7 .slot.pile{ height:420px; }
+      #a7 .slot[data-role="foundation"]{ height:240px; }
+    }
+    @media (max-width:640px){
+      #a7{ --slot-w: 132px; --slot-h: 200px; --card-w: 104px; --card-h: 140px; }
+      #a7 .row.tableau{ grid-template-columns: repeat(2, minmax(var(--slot-w),1fr)); }
+      #a7 .slot.pile{ height:380px; }
+      #a7 .slot[data-role="foundation"]{ height:220px; }
+      #a7 .card-tile::after{ font-size:10px; padding:2px 5px; }
+      #a7 .pile[data-role="foundation"]::after{ font-size:.78rem; }
+      #a7 .slot[data-role="foundation"]::before{ font-size:.72rem; }
+      #a7 #deckZone .card-tile, #a7 #discardZone .card-tile, #a7 #uC .card-tile, #a7 #uD .card-tile{ top:8px; }
     }
   </style>
 </head>
@@ -269,14 +274,13 @@
           <h2>Utility Stacks <span class="hint">Temporary parking to re-order cards.</span></h2>
           <div class="row">
             <div class="slot" id="deckZone"><span class="slot-name">Utility A</span></div>
-            <div class="slot" id="discardZone"><span class="slot-name">Utility B</span></div>
+            <div class="slot" id="discardZone"><span class="slot-name">Utility B (Discard)</span></div>
             <div class="slot" id="uC"><span class="slot-name">Utility C</span></div>
             <div class="slot" id="uD"><span class="slot-name">Utility D</span></div>
           </div>
         </div>
       </div>
 
-      <!-- Win banner -->
       <div id="winBanner" hidden>
         🎉 You win! All foundations complete.
         <button id="playAgainBtn" style="margin-left:10px">Play again</button>
@@ -298,13 +302,13 @@
     </div>
   </footer>
 
-  <!-- Site JS -->
+  <!-- Your site script -->
   <script src="script.js"></script>
 
   <!-- Game Logic -->
   <script src="A7-dragdrop.js"></script>
 
-  <!-- drag visual helper -->
+  <!-- drag visual helper + animation toggle -->
   <script>
     document.addEventListener('dragstart', e => {
       const t = e.target.closest('#a7 .card-tile'); if (t) t.classList.add('dragging');
@@ -315,8 +319,6 @@
     document.addEventListener('drop', () => {
       document.querySelectorAll('#a7 .card-tile.dragging').forEach(n=>n.classList.remove('dragging'));
     });
-
-    /* animation toggle */
     document.addEventListener('DOMContentLoaded', ()=>{
       const root = document.getElementById('a7');
       const cb = document.getElementById('animToggle');
