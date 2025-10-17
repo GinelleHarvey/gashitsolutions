@@ -7,7 +7,7 @@
   <meta name="description" content="Assignment 7: HTML5 drag-and-drop with cards, foundations, tableau, and utility stacks.">
   <link rel="stylesheet" href="style.css">
 
-  <!-- Favicons (same set you already use) -->
+  <!-- Favicons -->
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48x48.png">
@@ -161,98 +161,84 @@
       box-shadow:0 10px 30px rgba(0,0,0,.3); z-index:9999
     }
 
-    /* === Mobile polish === */
-    @media (max-width:900px){
-      #a7{ --slot-w: 140px; --slot-h: 210px; --card-w: 116px; --card-h: 154px; }
-      #a7 .row.tableau{ grid-template-columns: repeat(3, minmax(var(--slot-w),1fr)); }
-      #a7 .slot.pile{ height:420px; }
-      #a7 .slot[data-role="foundation"]{ height:240px; }
-    }
-    @media (max-width:640px){
-      #a7{ --slot-w: 132px; --slot-h: 200px; --card-w: 104px; --card-h: 140px; }
+    /* === MOBILE UX PACK (phones) ======================================= */
+    @media (max-width: 640px){
+      /* Smaller footprint */
+      #a7{
+        --slot-w: 124px;
+        --slot-h: 188px;
+        --card-w: 96px;
+        --card-h: 128px;
+      }
+
+      /* Game frame */
+      #a7 .game-area{ padding:10px; }
+
+      /* Controls: sticky, big tap targets, 2-wide grid */
+      #a7 .control-bar{
+        position: sticky;
+        bottom: 0;
+        z-index: 50;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        padding: 8px;
+        margin: 8px -8px -8px;      /* edge-to-edge */
+        background: color-mix(in lab, var(--surface) 86%, black 14%);
+        border-top: 1px solid var(--border);
+        backdrop-filter: saturate(1.2) blur(6px);
+      }
+      #a7 .control-bar button{
+        min-height: 46px;
+        font-size: 14px;
+        border-radius: 12px;
+        padding: 10px 12px;
+      }
+      #a7 .control-bar .toggle{
+        grid-column: 1 / -1;        /* full width */
+        justify-content: center;
+      }
+
+      /* 2 columns for tableau */
       #a7 .row.tableau{ grid-template-columns: repeat(2, minmax(var(--slot-w),1fr)); }
-      #a7 .slot.pile{ height:380px; }
-      #a7 .slot[data-role="foundation"]{ height:220px; }
+      #a7 .slot.pile{ height: 360px; }            /* keep columns tidy */
+
+      /* Foundations keep the same peek look but shorter */
+      #a7 .slot[data-role="foundation"]{ height: 208px; }
+
+      /* Utilities: single row that scrolls horizontally */
+      #a7 .row.utilities{
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(var(--slot-w), 1fr);
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        padding-bottom: 6px;
+      }
+      #a7 .row.utilities .slot{ min-width: var(--slot-w); }
+
+      /* Corner label size */
       #a7 .card-tile::after{ font-size:10px; padding:2px 5px; }
       #a7 .pile[data-role="foundation"]::after{ font-size:.78rem; }
       #a7 .slot[data-role="foundation"]::before{ font-size:.72rem; }
-      #a7 #deckZone .card-tile, #a7 #discardZone .card-tile, #a7 #uC .card-tile, #a7 #uD .card-tile{ top:8px; }
     }
 
-    /* === MOBILE UX PACK (phones) ======================================= */
-@media (max-width: 640px){
-  /* Smaller footprint */
-  #a7{
-    --slot-w: 124px;
-    --slot-h: 188px;
-    --card-w: 96px;
-    --card-h: 128px;
-  }
-
-  /* Game frame */
-  #a7 .game-area{ padding:10px; }
-
-  /* Controls: sticky, big tap targets, 2-wide grid */
-  #a7 .control-bar{
-    position: sticky;
-    bottom: 0;
-    z-index: 50;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    padding: 8px;
-    margin: 8px -8px -8px;      /* edge-to-edge */
-    background: color-mix(in lab, var(--surface) 86%, black 14%);
-    border-top: 1px solid var(--border);
-    backdrop-filter: saturate(1.2) blur(6px);
-  }
-  #a7 .control-bar button{
-    min-height: 46px;
-    font-size: 14px;
-    border-radius: 12px;
-    padding: 10px 12px;
-  }
-  #a7 .control-bar .toggle{
-    grid-column: 1 / -1;        /* full width */
-    justify-content: center;
-  }
-
-  /* 2 columns for tableau and (we’ll add a class for foundations below) */
-  #a7 .row.tableau{ grid-template-columns: repeat(2, minmax(var(--slot-w),1fr)); }
-  #a7 .slot.pile{ height: 360px; }            /* keep columns tidy */
-
-  /* Foundations keep the same peek look but shorter */
-  #a7 .slot[data-role="foundation"]{ height: 208px; }
-
-  /* Utilities: single row that scrolls horizontally */
-  #a7 .row.utilities{
-    grid-auto-flow: column;
-    grid-auto-columns: minmax(var(--slot-w), 1fr);
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    padding-bottom: 6px;
-  }
-  #a7 .row.utilities .slot{ min-width: var(--slot-w); }
-}
-
-/* === TABLET TUNE (640–900px) ====================================== */
-@media (min-width: 641px) and (max-width: 900px){
-  #a7{
-    --slot-w: 140px;
-    --slot-h: 210px;
-    --card-w: 116px;
-    --card-h: 154px;
-  }
-  #a7 .row.tableau{ grid-template-columns: repeat(3, minmax(var(--slot-w),1fr)); }
-  #a7 .slot.pile{ height: 420px; }
-  #a7 .slot[data-role="foundation"]{ height: 236px; }
-  #a7 .row.utilities{
-    grid-auto-flow: column;
-    grid-auto-columns: minmax(var(--slot-w), 1fr);
-    overflow-x: auto;
-  }
-}
-
+    /* === TABLET TUNE (640–900px) ====================================== */
+    @media (min-width: 641px) and (max-width: 900px){
+      #a7{
+        --slot-w: 140px;
+        --slot-h: 210px;
+        --card-w: 116px;
+        --card-h: 154px;
+      }
+      #a7 .row.tableau{ grid-template-columns: repeat(3, minmax(var(--slot-w),1fr)); }
+      #a7 .slot.pile{ height: 420px; }
+      #a7 .slot[data-role="foundation"]{ height: 236px; }
+      #a7 .row.utilities{
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(var(--slot-w), 1fr);
+        overflow-x: auto;
+      }
+    }
   </style>
 </head>
 
@@ -304,14 +290,14 @@
 
         <!-- Controls -->
         <div class="control-bar" role="toolbar" aria-label="Game controls">
-          <button id="dealBtn">Deal</button>
-          <button id="drawBtn">Draw 1</button>
-          <button id="resetBtn">Reset</button>
+          <button id="dealBtn" type="button">Deal</button>
+          <button id="drawBtn" type="button">Draw 1</button>
+          <button id="resetBtn" type="button">Reset</button>
           <span style="flex:0 0 12px"></span>
-          <button id="autoOneBtn">Auto-move 1</button>
-          <button id="autoSomeBtn">Auto-move 5</button>
-          <button id="autoAllBtn">Auto-move All</button>
-          <button id="sendRunsBtn">Send Completed Suit</button>
+          <button id="autoOneBtn" type="button">Auto-move 1</button>
+          <button id="autoSomeBtn" type="button">Auto-move 5</button>
+          <button id="autoAllBtn" type="button">Auto-move All</button>
+          <button id="sendRunsBtn" type="button">Send Completed Suit</button>
           <label class="toggle" title="Turn animations on/off">
             <input type="checkbox" id="animToggle" checked> Animations
           </label>
@@ -347,7 +333,7 @@
         <!-- Utility Stacks -->
         <div class="section">
           <h2>Utility Stacks <span class="hint">Temporary parking to re-order cards.</span></h2>
-          <div class="row">
+          <div class="row utilities">
             <div class="slot" id="deckZone"><span class="slot-name">Utility A</span></div>
             <div class="slot" id="discardZone"><span class="slot-name">Utility B (Discard)</span></div>
             <div class="slot" id="uC"><span class="slot-name">Utility C</span></div>
@@ -358,7 +344,7 @@
 
       <div id="winBanner" hidden>
         🎉 You win! All foundations complete.
-        <button id="playAgainBtn" style="margin-left:10px">Play again</button>
+        <button id="playAgainBtn" type="button" style="margin-left:10px">Play again</button>
       </div>
     </section>
   </main>
@@ -378,10 +364,10 @@
   </footer>
 
   <!-- Your site script -->
-  <script src="script.js"></script>
+  <script src="script.js" defer></script>
 
   <!-- Game Logic -->
-  <script src="A7-dragdrop.js"></script>
+  <script src="A7-dragdrop.js" defer></script>
 
   <!-- drag visual helper + animation toggle -->
   <script>
@@ -400,32 +386,14 @@
       if (cb && root){
         cb.addEventListener('change', ()=> root.classList.toggle('no-anim', !cb.checked));
       }
+
+      // Disable animations by default on touch (you can toggle back on)
+      const isTouch = matchMedia('(pointer:coarse)').matches || navigator.maxTouchPoints > 0;
+      if (isTouch && cb){
+        cb.checked = false;
+        root.classList.add('no-anim');
+      }
     });
   </script>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const a7 = document.getElementById('a7');
-
-    // Mark the foundations row so CSS can make it 2 columns on phones
-    const fRow = a7?.querySelector('.section h2 + .row'); // first row after "Foundations" heading
-    if (fRow) fRow.classList.add('foundations-row');
-
-    // Mark the utilities row so it becomes a horizontal scroller on small screens
-    const utilitiesH2 = Array.from(a7.querySelectorAll('.section h2'))
-      .find(h => /Utility Stacks/i.test(h.textContent || ''));
-    const uRow = utilitiesH2?.nextElementSibling;
-    if (uRow) uRow.classList.add('utilities');
-
-    // Auto-disable animations on touch (you can still toggle them back on)
-    const isTouch = matchMedia('(pointer:coarse)').matches || navigator.maxTouchPoints > 0;
-    if (isTouch) {
-      a7?.classList.add('no-anim');
-      const animToggle = document.getElementById('animToggle');
-      if (animToggle) animToggle.checked = false;
-    }
-  });
-</script>
-  
 </body>
 </html>
