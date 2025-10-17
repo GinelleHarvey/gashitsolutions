@@ -178,6 +178,81 @@
       #a7 .slot[data-role="foundation"]::before{ font-size:.72rem; }
       #a7 #deckZone .card-tile, #a7 #discardZone .card-tile, #a7 #uC .card-tile, #a7 #uD .card-tile{ top:8px; }
     }
+
+    /* === MOBILE UX PACK (phones) ======================================= */
+@media (max-width: 640px){
+  /* Smaller footprint */
+  #a7{
+    --slot-w: 124px;
+    --slot-h: 188px;
+    --card-w: 96px;
+    --card-h: 128px;
+  }
+
+  /* Game frame */
+  #a7 .game-area{ padding:10px; }
+
+  /* Controls: sticky, big tap targets, 2-wide grid */
+  #a7 .control-bar{
+    position: sticky;
+    bottom: 0;
+    z-index: 50;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 8px;
+    margin: 8px -8px -8px;      /* edge-to-edge */
+    background: color-mix(in lab, var(--surface) 86%, black 14%);
+    border-top: 1px solid var(--border);
+    backdrop-filter: saturate(1.2) blur(6px);
+  }
+  #a7 .control-bar button{
+    min-height: 46px;
+    font-size: 14px;
+    border-radius: 12px;
+    padding: 10px 12px;
+  }
+  #a7 .control-bar .toggle{
+    grid-column: 1 / -1;        /* full width */
+    justify-content: center;
+  }
+
+  /* 2 columns for tableau and (we’ll add a class for foundations below) */
+  #a7 .row.tableau{ grid-template-columns: repeat(2, minmax(var(--slot-w),1fr)); }
+  #a7 .slot.pile{ height: 360px; }            /* keep columns tidy */
+
+  /* Foundations keep the same peek look but shorter */
+  #a7 .slot[data-role="foundation"]{ height: 208px; }
+
+  /* Utilities: single row that scrolls horizontally */
+  #a7 .row.utilities{
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(var(--slot-w), 1fr);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    padding-bottom: 6px;
+  }
+  #a7 .row.utilities .slot{ min-width: var(--slot-w); }
+}
+
+/* === TABLET TUNE (640–900px) ====================================== */
+@media (min-width: 641px) and (max-width: 900px){
+  #a7{
+    --slot-w: 140px;
+    --slot-h: 210px;
+    --card-w: 116px;
+    --card-h: 154px;
+  }
+  #a7 .row.tableau{ grid-template-columns: repeat(3, minmax(var(--slot-w),1fr)); }
+  #a7 .slot.pile{ height: 420px; }
+  #a7 .slot[data-role="foundation"]{ height: 236px; }
+  #a7 .row.utilities{
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(var(--slot-w), 1fr);
+    overflow-x: auto;
+  }
+}
+
   </style>
 </head>
 
