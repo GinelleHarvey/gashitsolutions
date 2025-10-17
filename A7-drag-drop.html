@@ -402,5 +402,30 @@
       }
     });
   </script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const a7 = document.getElementById('a7');
+
+    // Mark the foundations row so CSS can make it 2 columns on phones
+    const fRow = a7?.querySelector('.section h2 + .row'); // first row after "Foundations" heading
+    if (fRow) fRow.classList.add('foundations-row');
+
+    // Mark the utilities row so it becomes a horizontal scroller on small screens
+    const utilitiesH2 = Array.from(a7.querySelectorAll('.section h2'))
+      .find(h => /Utility Stacks/i.test(h.textContent || ''));
+    const uRow = utilitiesH2?.nextElementSibling;
+    if (uRow) uRow.classList.add('utilities');
+
+    // Auto-disable animations on touch (you can still toggle them back on)
+    const isTouch = matchMedia('(pointer:coarse)').matches || navigator.maxTouchPoints > 0;
+    if (isTouch) {
+      a7?.classList.add('no-anim');
+      const animToggle = document.getElementById('animToggle');
+      if (animToggle) animToggle.checked = false;
+    }
+  });
+</script>
+  
 </body>
 </html>
