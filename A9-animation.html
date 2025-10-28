@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>A9 — Animation (Canvas Bouncer)</title>
+  <meta name="description" content="Assignment 9: Timer-based animation on an HTML5 canvas with click interactions and optional path-follow mode." />
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Favicons (same set you already use) -->
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48x48.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64x64.png">
+  <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon-128x128.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon-512.png">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+
+  <style>
+    /* ===== Scoped polish just for this page ===== */
+    #a9 { --pad: 14px; }
+
+    #a9 .stage {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: var(--pad);
+    }
+
+    #a9 .controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 10px;
+      margin: 0 0 10px;
+      align-items: center;
+    }
+
+    #a9 .controls .stack { display: grid; gap: 6px; }
+    #a9 .controls label { font-size: .92rem; opacity: .85; }
+
+    #a9 .controls button {
+      background: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    #a9 .controls button:hover { filter: brightness(1.06); }
+
+    #a9 .hint { font-size: .9rem; color: var(--muted); margin: 8px 0 0; }
+
+    #a9 .canvas-wrap {
+      position: relative;
+      overflow: hidden; /* ensures we visually enforce bounds */
+      border-radius: 12px;
+      border: 2px dashed color-mix(in srgb, var(--border) 70%, transparent);
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), transparent 40%), var(--surface);
+    }
+
+    #a9 canvas { display: block; width: 100%; height: auto; aspect-ratio: 16/9; }
+
+    #a9 .legend {
+      display:flex; flex-wrap: wrap; gap:10px; align-items:center;
+      margin-top: 8px; font-size: .9rem; color: var(--muted);
+    }
+
+    #a9 .pill { padding: 2px 8px; border-radius: 999px; background: var(--surface-2); border:1px solid var(--border); }
+
+    #a9 #liveRegion { position: absolute; left: -9999px; height: 1px; width: 1px; overflow:hidden; }
+  </style>
+</head>
+
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="GASH IT Solutions home">
+        <img src="assets/logo.svg" alt="GASH IT Solutions logo" width="56" height="56">
+      </a>
+      <nav aria-label="Primary">
+        <button id="navToggle" class="nav__toggle" aria-expanded="false" aria-controls="navMenu">Menu</button>
+        <ul id="navMenu" class="nav__menu">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="purpose.html" aria-current="page">Purpose &amp; Assignments</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Banner -->
+  <section class="page-banner">
+    <div class="wrap">
+      <p class="crumb"><a href="purpose.html">← Back to Purpose &amp; Assignments</a></p>
+      <h1 class="gradient-text">A9 — Animation (Canvas Bouncer)</h1>
+      <p class="muted" style="margin-top:.25rem">Timer-based animation • bounded motion • click interaction • optional path-follow</p>
+    </div>
+  </section>
+
+  <!-- Main -->
+  <main id="main" class="wrap">
+    <section id="a9" aria-label="Assignment 9 Canvas Animation">
+      <div class="stage">
+        <!-- Controls -->
+        <div class="controls" role="toolbar" aria-label="Animation controls">
+          <div class="stack">
+            <div style="display:flex; gap:8px; flex-wrap:wrap">
+              <button id="startBtn" type="button">Start</button>
+              <button id="pauseBtn" type="button">Pause</button>
+              <button id="resetBtn" type="button">Reset</button>
+              <button id="randomizeBtn" type="button" title="Random direction & color">Randomize</button>
+            </div>
+            <div id="statusText" class="hint">Ready. Click the canvas to make the object react (direction + sparkle burst).</div>
+          </div>
+
+          <div class="stack">
+            <label for="speed">Speed <span id="speedVal"></span></label>
+            <input id="speed" type="range" min="0.25" max="4" step="0.25" value="1.25" />
+          </div>
+
+          <div class="stack">
+            <label for="size">Size <span id="sizeVal"></span></label>
+            <input id="size" type="range" min="16" max="80" step="2" value="36" />
+          </div>
+
+          <div class="stack">
+            <label><input id="trail" type="checkbox" checked> Motion trail</label>
+            <label><input id="pathMode" type="checkbox"> Follow path (calculated)</label>
+            <label><input id="timerMode" type="checkbox" checked> Use timer-based animation</label>
+          </div>
+        </div>
+
+        <!-- Canvas -->
+        <div class="canvas-wrap" aria-label="Animation stage (bounded)">
+          <canvas id="stage" width="960" height="540" aria-describedby="canvasDesc"></canvas>
+          <p id="canvasDesc" class="sr-only">A square object moves and bounces within the canvas bounds; on click it reacts with a color change, new direction, and a sparkle burst. Optional mode follows a calculated path.</p>
+          <div id="liveRegion" aria-live="polite"></div>
+        </div>
+
+        <div class="legend">
+          <span class="pill">Bounce mode: reflects off edges</span>
+          <span class="pill">Path mode: parametric (Lissajous-like)</span>
+          <span class="pill">Click: burst + randomize</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="wrap footer__grid">
+      <small>
+        <strong>Created by Ginelle Harvey</strong> • <span class="js-year"></span><br>
+        Got a project or question? Say hello at:
+        <a href="mailto:info@gashitsolutions.com">info@gashitsolutions.com</a>
+      </small>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="purpose.html">← Back to Purpose &amp; Assignments</a>
+      </nav>
+    </div>
+  </footer>
+
+  <!-- Site script -->
+  <script src="script.js" defer></script>
+
+  <!-- ===== A9 Animation Logic (Timer-based by default) ===== -->
+  <script>
+  (function(){
+    const canvas = document.getElementById('stage');
+    const ctx = canvas.getContext('2d');
+
+    // ---- Controls
+    const startBtn = document.getElementById('startBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const randomizeBtn = document.getElementById('randomizeBtn');
+
+    const speed = document.getElementById('speed');
+    const size = document.getElementById('size');
+    const trail = document.getElementById('trail');
+    const pathMode = document.getElementById('pathMode');
+    const timerMode = document.getElementById('timerMode');
+
+    const speedVal = document.getElementById('speedVal');
+    const sizeVal  = document.getElementById('sizeVal');
+    const statusText = document.getElementById('statusText');
+    const liveRegion = document.getElementById('liveRegion');
+
+    // ---- Responsive canvas (keep 16:9, but match container width)
+    const wrap = canvas.parentElement;
+    function fitCanvas(){
+      const w = wrap.clientWidth;
+      const h = Math.round(w * 9/16);
+      canvas.width = w; canvas.height = h;
+    }
+    new ResizeObserver(fitCanvas).observe(wrap); fitCanvas();
+
+    // ---- Animation state
+    const rnd = n => Math.random() * n;
+    const randBetween = (a,b)=> a + Math.random()*(b-a);
+
+    const state = {
+      running: false,
+      timerId: null,
+      rafId: null,
+      t: 0,
+      obj: {
+        x: 40, y: 40, // will be reset in init()
+        vx: 3, vy: 3, // pixels per tick at speed=1
+        size: Number(size.value),
+        color: '#22d3ee',
+        angle: Math.PI/4,
+      },
+      particles: [],
+    };
+
+    function hsl(h, s=80, l=60){ return `hsl(${h} ${s}% ${l}%)`; }
+
+    function init(){
+      // start diagonally from top-left-ish
+      state.obj.size = Number(size.value);
+      state.obj.x = Math.max(state.obj.size + 4, canvas.width * 0.1);
+      state.obj.y = Math.max(state.obj.size + 4, canvas.height * 0.1);
+      const dir = randBetween(20, 70) * Math.PI/180; // 20°–70° diagonal-ish
+      state.obj.vx = Math.cos(dir) * 3;
+      state.obj.vy = Math.sin(dir) * 3;
+      state.obj.color = hsl(Math.floor(rnd(360)));
+      state.t = 0;
+      state.particles.length = 0;
+      draw(true);
+      updateMeters();
+      announce('Reset. Ready.');
+    }
+
+    function announce(msg){ liveRegion.textContent = msg; statusText.textContent = msg; }
+
+    // ---- Particles for the click "sparkle burst"
+    function spawnBurst(px, py){
+      const count = 28;
+      for(let i=0; i<count; i++){
+        const ang = (i / count) * Math.PI * 2 + rnd(0.4);
+        state.particles.push({
+          x: px, y: py,
+          vx: Math.cos(ang) * randBetween(1.5, 4.0),
+          vy: Math.sin(ang) * randBetween(1.5, 4.0),
+          life: randBetween(32, 60),
+          hue: Math.floor(rnd(360)),
+        });
+      }
+    }
+
+    function stepParticles(){
+      for(const p of state.particles){
+        p.x += p.vx; p.y += p.vy; p.vy += 0.03; // light gravity for flair
+        p.life -= 1;
+      }
+      state.particles = state.particles.filter(p=> p.life > 0);
+    }
+
+    function drawParticles(){
+      for(const p of state.particles){
+        const alpha = Math.max(0, p.life/60);
+        ctx.fillStyle = `hsla(${p.hue} 90% 65% / ${alpha})`;
+        ctx.fillRect(p.x, p.y, 2, 2);
+      }
+    }
+
+    // ---- Motion math (two modes)
+    function tickBounce(){
+      const o = state.obj; const s = o.size;
+      const speedMul = Number(speed.value);
+      o.x += o.vx * speedMul; o.y += o.vy * speedMul;
+
+      // reflect off edges (bounded area)
+      if (o.x <= s || o.x >= canvas.width - s){ o.vx *= -1; o.x = Math.max(s, Math.min(canvas.width - s, o.x)); }
+      if (o.y <= s || o.y >= canvas.height - s){ o.vy *= -1; o.y = Math.max(s, Math.min(canvas.height - s, o.y)); }
+    }
+
+    // parametric path (Lissajous-ish). Demonstrates following a calculated set of coordinates.
+    function tickPath(){
+      const o = state.obj;
+      state.t += 0.02 * Number(speed.value);
+      const A = (canvas.width  - o.size*2) / 2;   // amplitude x
+      const B = (canvas.height - o.size*2) / 2;   // amplitude y
+      const cx = canvas.width /2, cy = canvas.height/2;
+      o.x = cx + A * Math.sin(2*state.t + Math.PI/6);
+      o.y = cy + B * Math.sin(3*state.t);
+    }
+
+    function draw(clearHard){
+      if (clearHard || !trail.checked){
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+      } else {
+        // translucent scrub for a slick trail effect
+        ctx.fillStyle = 'rgba(0,0,0,0.06)';
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+      }
+
+      // object (square, per assignment)
+      const o = state.obj; const s = o.size;
+      ctx.save();
+      ctx.translate(o.x, o.y);
+      // a subtle glow
+      const g = ctx.createRadialGradient(0,0, s*0.2, 0,0, s*1.1);
+      g.addColorStop(0, o.color);
+      g.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0,0, s*1.1, 0, Math.PI*2); ctx.fill();
+      ctx.restore();
+
+      ctx.fillStyle = o.color;
+      ctx.fillRect(o.x - s/2, o.y - s/2, s, s);
+
+      drawParticles();
+    }
+
+    // ---- Engine (timer-based by default, as recommended in lectures)
+    function loop(){
+      if (!state.running) return;
+      if (pathMode.checked) tickPath(); else tickBounce();
+      stepParticles();
+      draw(false);
+    }
+
+    function start(){
+      if (state.running) return;
+      state.running = true;
+      if (timerMode.checked){
+        state.timerId = setInterval(loop, 1000/60); // 60 FPS timer
+      } else {
+        (function raf(){
+          if (!state.running) return;
+          loop();
+          state.rafId = requestAnimationFrame(raf);
+        })();
+      }
+      announce('Running.');
+    }
+
+    function pause(){
+      state.running = false;
+      if (state.timerId) clearInterval(state.timerId);
+      if (state.rafId) cancelAnimationFrame(state.rafId);
+      state.timerId = null; state.rafId = null;
+      announce('Paused.');
+    }
+
+    function reset(){ pause(); init(); }
+
+    function randomize(){
+      // random direction and color
+      const dir = randBetween(0, Math.PI*2);
+      state.obj.vx = Math.cos(dir) * randBetween(2.5, 4.5);
+      state.obj.vy = Math.sin(dir) * randBetween(2.5, 4.5);
+      state.obj.color = hsl(Math.floor(rnd(360)));
+      spawnBurst(state.obj.x, state.obj.y);
+      draw(false);
+      announce('Randomized direction and color.');
+    }
+
+    // ---- Click interaction (Part 2)
+    canvas.addEventListener('click', (ev)=>{
+      const rect = canvas.getBoundingClientRect();
+      const x = (ev.clientX - rect.left) * (canvas.width / rect.width);
+      const y = (ev.clientY - rect.top) * (canvas.height / rect.height);
+
+      // Reverse direction away from click point and recolor
+      const dx = state.obj.x - x;
+      const dy = state.obj.y - y;
+      const a = Math.atan2(dy, dx);
+      const mag = Math.hypot(dx, dy) || 1;
+      const base = randBetween(2.5, 4.2) * Number(speed.value);
+      state.obj.vx = Math.cos(a) * (base + Math.min(3, 220/mag));
+      state.obj.vy = Math.sin(a) * (base + Math.min(3, 220/mag));
+      state.obj.color = hsl(Math.floor(rnd(360)));
+
+      spawnBurst(x, y);
+      announce('Click! Changed direction and color.');
+      if (!state.running) draw(false);
+    });
+
+    // UI wiring
+    startBtn.addEventListener('click', start);
+    pauseBtn.addEventListener('click', pause);
+    resetBtn.addEventListener('click', reset);
+    randomizeBtn.addEventListener('click', randomize);
+
+    function updateMeters(){
+      speedVal.textContent = `(${Number(speed.value).toFixed(2)}×)`;
+      sizeVal.textContent = `(${Number(size.value)}px)`;
+    }
+
+    speed.addEventListener('input', updateMeters);
+    size.addEventListener('input', ()=>{ state.obj.size = Number(size.value); updateMeters(); });
+
+    // switching engines live is fine; we just stop/start
+    timerMode.addEventListener('change', ()=>{
+      if (!state.running) return;
+      pause(); start();
+    });
+
+    // Path mode starts at center to look nice
+    pathMode.addEventListener('change', ()=>{
+      if (pathMode.checked){
+        state.obj.x = canvas.width/2; state.obj.y = canvas.height/2; state.t = 0;
+        announce('Path-follow mode enabled.');
+      } else {
+        announce('Bounce mode enabled.');
+      }
+    });
+
+    // Boot
+    init();
+  })();
+  </script>
+</body>
+</html>
