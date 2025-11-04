@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>A10 — Mobile Ready (Lighthouse Audit)</title>
+  <meta name="description" content="Assignment 10: Mobile audit results (Lighthouse) for gashitsolutions.com.">
+  <link rel="stylesheet" href="style.css">
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48x48.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64x64.png">
+  <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon-128x128.png">
+  <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon-512.png">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <style>
+    /* page-local helpers; your main theme does the rest */
+    .wrap { max-width: 980px; margin: 0 auto; padding: 1rem; }
+    .page-banner { text-align:center; padding:.9rem 0 .6rem; }
+    .card { border:1px solid #e5e7eb; border-radius:12px; padding:1rem; background:#fff; }
+    .grid { display:grid; gap:1rem; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+    figure { margin:0; text-align:center; }
+    figure img { width:100%; height:auto; border-radius:12px; border:1px solid #e5e7eb; }
+    figcaption { font-size:.9rem; color:#555; margin-top:.35rem; }
+    .scores { width:100%; border-collapse:collapse; margin:.5rem 0 1rem; }
+    .scores th,.scores td { border:1px solid #e5e7eb; padding:.5rem .6rem; text-align:center; }
+    .note { color:#555; font-size:.95rem; }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="GASH IT Solutions home">
+        <img src="assets/logo.svg" alt="GASH IT Solutions logo" width="56" height="56">
+      </a>
+      <nav aria-label="Primary">
+        <button id="navToggle" class="nav__toggle" aria-expanded="false" aria-controls="navMenu">Menu</button>
+        <ul id="navMenu" class="nav__menu">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="purpose.html">Purpose &amp; Assignments</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Banner -->
+  <section class="page-banner">
+    <div class="wrap">
+      <p class="crumb"><a href="purpose.html">← Back to Purpose &amp; Assignments</a></p>
+      <h1 class="gradient-text">Assignment 10 — Mobile Ready (Lighthouse)</h1>
+    </div>
+  </section>
+
+  <main class="wrap">
+    <section class="card" aria-label="Results">
+      <h2>Overall Scores (Mobile · Navigation)</h2>
+      <table class="scores">
+        <thead><tr><th>Performance</th><th>Accessibility</th><th>Best Practices</th><th>SEO</th></tr></thead>
+        <tbody><tr><td>100</td><td>96</td><td>100</td><td>100</td></tr></tbody>
+      </table>
+      <p class="note">Tested on <a href="https://gashitsolutions.com/index.html">https://gashitsolutions.com/index.html</a> using Chrome DevTools Lighthouse.</p>
+
+      <h3>Summary</h3>
+      <p>After optimizing the images and making the layout more responsive, the page loads much faster and feels more stable. The Largest Contentful Paint improved from <strong>78&nbsp;seconds</strong> to <strong>1.2&nbsp;seconds</strong> once I resized and preloaded the hero image. Now the site is mobile-friendly, quick to open, and easy for everyone to use.</p>
+    </section>
+
+    <section class="card" aria-label="Screenshots">
+      <h2>Report Screenshot</h2>
+      <figure>
+        <!-- put your screenshot in /assets as a10-lighthouse.png -->
+        <img src="assets/a10-lighthouse.png"
+             alt="Lighthouse report showing Performance 100, Accessibility 96, Best Practices 100, SEO 100; FCP 0.8s, LCP 1.2s, TBT 0ms, CLS 0">
+        <figcaption>Lighthouse (Mobile · Navigation) for gashitsolutions.com</figcaption>
+      </figure>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="wrap footer__grid">
+      <small>
+        <strong>Created by Ginelle Harvey</strong> • <span class="js-year"></span><br>
+        Got a project or question? Say hello at:
+        <a href="mailto:info@gashitsolutions.com">info@gashitsolutions.com</a>
+      </small>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="purpose.html">← Back to Purpose &amp; Assignments</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    // keep your existing nav behavior consistent
+    (function(){
+      const navToggle = document.getElementById('navToggle');
+      const navMenu = document.getElementById('navMenu');
+      if (navToggle && navMenu){
+        navToggle.addEventListener('click', ()=>{
+          const open = navMenu.classList.toggle('is-open');
+          navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+      }
+      const y = document.querySelector('.js-year'); if (y) y.textContent = new Date().getFullYear();
+    })();
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>
