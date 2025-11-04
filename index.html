@@ -55,8 +55,14 @@
           </div>
         </div>
         <figure class="hero__media">
-          <!-- your repo uses double extension here -->
-          <img class="img-accent" src="assets/hero.jpg.jpg" alt="Developer working at dual monitors in a modern office">
+          <!-- UPDATED: optimized responsive hero image -->
+          <img class="img-accent"
+               src="assets/hero-800.jpg"
+               srcset="assets/hero-400.jpg 400w, assets/hero-800.jpg 800w, assets/hero-1200.jpg 1200w"
+               sizes="(max-width: 640px) 92vw, (max-width: 1024px) 60vw, 720px"
+               width="800" height="534"
+               alt="Developer working at dual monitors in a modern office"
+               fetchpriority="high" decoding="async">
         </figure>
       </div>
     </section>
@@ -279,7 +285,7 @@
         ];
 
         const body = lines.join('\\n');
-        const mailto = \`mailto:\${encodeURIComponent(TO)}?subject=\${encodeURIComponent(subject)}&body=\${encodeURIComponent(body)}\`;
+        const mailto = `mailto:${encodeURIComponent(TO)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
         // open user’s email client
         window.location.href = mailto;
