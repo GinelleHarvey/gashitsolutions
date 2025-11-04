@@ -5,29 +5,61 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>A10 — Mobile Ready (Lighthouse Audit)</title>
   <meta name="description" content="Assignment 10: Mobile audit results (Lighthouse) for gashitsolutions.com.">
+  
+  <!-- Main site CSS -->
   <link rel="stylesheet" href="style.css">
+
   <!-- Favicons -->
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48x48.png">
   <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64x64.png">
   <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon-128x128.png">
-  <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon-512.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon-512.png">
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+
   <style>
-    /* page-local helpers; your main theme does the rest */
+    /* Local helpers (keeps site theme intact) */
+    body {
+      background: var(--surface, #0b1020);
+      color: var(--text, #e6e8f0);
+    }
     .wrap { max-width: 980px; margin: 0 auto; padding: 1rem; }
-    .page-banner { text-align:center; padding:.9rem 0 .6rem; }
-    .card { border:1px solid #e5e7eb; border-radius:12px; padding:1rem; background:#fff; }
-    .grid { display:grid; gap:1rem; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+    .page-banner { text-align: center; padding: 1rem 0 .5rem; }
+    .page-banner .crumb a { text-decoration: none; }
+    .card {
+      border-radius: 16px;
+      background: var(--surface-2, #11162c);
+      box-shadow: 0 0 12px rgba(0,0,0,0.25);
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+    .scores { width:100%; border-collapse: collapse; margin:.5rem 0 1rem; }
+    .scores th, .scores td {
+      border:1px solid #2a3355;
+      padding:.5rem .6rem;
+      text-align:center;
+      color:#e6e8f0;
+    }
+    .note { color:#9da7c3; font-size:.95rem; }
     figure { margin:0; text-align:center; }
-    figure img { width:100%; height:auto; border-radius:12px; border:1px solid #e5e7eb; }
-    figcaption { font-size:.9rem; color:#555; margin-top:.35rem; }
-    .scores { width:100%; border-collapse:collapse; margin:.5rem 0 1rem; }
-    .scores th,.scores td { border:1px solid #e5e7eb; padding:.5rem .6rem; text-align:center; }
-    .note { color:#555; font-size:.95rem; }
+    figure img {
+      width:100%;
+      height:auto;
+      border-radius:12px;
+      border:1px solid #2a3355;
+      background:#0f1530;
+    }
+    figcaption {
+      margin-top:.5rem;
+      color:#a3adcc;
+      font-size:.9rem;
+    }
+    h1, h2, h3 { color:#fff; text-align:center; }
+    a { color:#64b5ff; }
   </style>
 </head>
+
 <body>
   <!-- Header -->
   <header class="site-header">
@@ -48,7 +80,7 @@
     </div>
   </header>
 
-  <!-- Banner -->
+  <!-- Page Banner -->
   <section class="page-banner">
     <div class="wrap">
       <p class="crumb"><a href="purpose.html">← Back to Purpose &amp; Assignments</a></p>
@@ -57,25 +89,35 @@
   </section>
 
   <main class="wrap">
+    <!-- Results Card -->
     <section class="card" aria-label="Results">
       <h2>Overall Scores (Mobile · Navigation)</h2>
       <table class="scores">
-        <thead><tr><th>Performance</th><th>Accessibility</th><th>Best Practices</th><th>SEO</th></tr></thead>
-        <tbody><tr><td>100</td><td>96</td><td>100</td><td>100</td></tr></tbody>
+        <thead>
+          <tr><th>Performance</th><th>Accessibility</th><th>Best Practices</th><th>SEO</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>100</td><td>96</td><td>100</td><td>100</td></tr>
+        </tbody>
       </table>
-      <p class="note">Tested on <a href="https://gashitsolutions.com/index.html">https://gashitsolutions.com/index.html</a> using Chrome DevTools Lighthouse.</p>
+      <p class="note">
+        Tested on <a href="https://gashitsolutions.com/index.html" target="_blank">https://gashitsolutions.com/index.html</a> using Chrome DevTools Lighthouse.
+      </p>
 
       <h3>Summary</h3>
-      <p>After optimizing the images and making the layout more responsive, the page loads much faster and feels more stable. The Largest Contentful Paint improved from <strong>78&nbsp;seconds</strong> to <strong>1.2&nbsp;seconds</strong> once I resized and preloaded the hero image. Now the site is mobile-friendly, quick to open, and easy for everyone to use.</p>
+      <p style="max-width:700px; margin:0 auto; text-align:center; color:#c5cae9;">
+        After optimizing the images and making the layout more responsive, the page loads much faster and feels more stable. 
+        The Largest Contentful Paint improved from <strong>78 seconds</strong> to just <strong>1.2 seconds</strong> once I resized and preloaded the hero image. 
+        Now the site is mobile-friendly, quick to open, and easy for everyone to use.
+      </p>
     </section>
 
+    <!-- Screenshot Card -->
     <section class="card" aria-label="Screenshots">
       <h2>Report Screenshot</h2>
       <figure>
-        <!-- put your screenshot in /assets as a10-lighthouse.png -->
-        <img src="assets/a10-lighthouse.png"
-             alt="Lighthouse report showing Performance 100, Accessibility 96, Best Practices 100, SEO 100; FCP 0.8s, LCP 1.2s, TBT 0ms, CLS 0">
-        <figcaption>Lighthouse (Mobile · Navigation) for gashitsolutions.com</figcaption>
+        <img src="assets/a10-lighthouse.png" alt="Lighthouse report showing perfect scores: Performance 100, Accessibility 96, Best Practices 100, SEO 100">
+        <figcaption>Lighthouse (Mobile · Navigation) results for GASH IT Solutions</figcaption>
       </figure>
     </section>
   </main>
@@ -94,20 +136,22 @@
     </div>
   </footer>
 
+  <!-- Nav + Year Script -->
   <script>
-    // keep your existing nav behavior consistent
     (function(){
-      const navToggle = document.getElementById('navToggle');
-      const navMenu = document.getElementById('navMenu');
-      if (navToggle && navMenu){
-        navToggle.addEventListener('click', ()=>{
-          const open = navMenu.classList.toggle('is-open');
-          navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      const navToggle=document.getElementById('navToggle');
+      const navMenu=document.getElementById('navMenu');
+      if(navToggle&&navMenu){
+        navToggle.addEventListener('click',()=>{
+          const open=navMenu.classList.toggle('is-open');
+          navToggle.setAttribute('aria-expanded',open?'true':'false');
         });
       }
-      const y = document.querySelector('.js-year'); if (y) y.textContent = new Date().getFullYear();
+      const y=document.querySelector('.js-year');
+      if(y) y.textContent=new Date().getFullYear();
     })();
   </script>
+
   <script src="script.js"></script>
 </body>
 </html>
