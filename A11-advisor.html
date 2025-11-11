@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>A11 — Dynamic Objects (Advising Tool)</title>
+  <meta name="description" content="Assignment 11: JSON-driven advising tool with dynamic UI, drag/drop planning, OR prerequisites, and notes." />
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Favicons (same set you already use) -->
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48x48.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64x64.png">
+  <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon-128x128.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon-512.png">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+
+  <style>
+    /* Page-local polish for A11 */
+    #a11 { --pad: 14px; }
+    #a11 .grid { display:grid; grid-template-columns: 1.1fr 1.2fr .9fr; gap: 16px; }
+    #a11 .panel { background: var(--surface); border:1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-soft); }
+    #a11 .panel h2 { margin:0; padding: 14px 14px 0; font-size: 1.1rem; }
+    #a11 .sub { color: var(--muted); padding: 2px 14px 10px; font-size:.92rem }
+    #a11 .body { padding: 12px; }
+
+    #a11 .toolbar { display:flex; gap:8px; align-items:center; padding: 0 12px 10px; }
+    #a11 .search { flex:1; display:flex; gap:8px; align-items:center; border:1px solid var(--border); border-radius:999px; padding:6px 10px; background: var(--surface-2); }
+    #a11 .search input { flex:1; border:0; background:transparent; color:var(--text); outline:none }
+
+    #a11 .catalog { display:grid; grid-template-columns: repeat(auto-fill, minmax(210px,1fr)); gap:10px }
+    #a11 .chip { background: var(--surface-2); border:1px solid var(--border); border-radius: 14px; padding:10px; display:flex; flex-direction:column; gap:8px; min-height:86px }
+    #a11 .chip header { display:flex; align-items:center; justify-content:space-between; gap:10px }
+    #a11 .cid { font: 600 12px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--accent-blue) }
+    #a11 .cname { font-weight: 700; font-size: 14px }
+    #a11 .meta { display:flex; gap:8px; align-items:center; color:var(--muted); font-size:12px }
+    #a11 .pill { border:1px solid var(--border); padding:2px 6px; border-radius:999px }
+    #a11 .actions { display:flex; gap:6px; margin-top:auto }
+    #a11 .small { font-size:12px; padding:6px 8px; border-radius:10px }
+
+    #a11 .chip[data-disabled="true"] { opacity:.45; filter: grayscale(.1) }
+    #a11 .chip[style*="outline"] { outline-offset: 2px }
+
+    #a11 .planner { display:grid; grid-template-columns: repeat(3, 1fr); gap:10px }
+    #a11 .term { background: var(--surface-2); border:1px dashed var(--border); border-radius: 12px; min-height: 190px; padding:10px; display:flex; flex-direction:column }
+    #a11 .term h3 { margin:0 0 8px 0; font-size: .98rem; color: var(--muted) }
+    #a11 .dropzone { flex:1; border:1px dashed color-mix(in srgb, var(--border) 80%, transparent); border-radius: 10px; padding:8px; display:grid; gap:8px }
+    #a11 .dropzone[aria-dropeffect="copy"] { background: color-mix(in srgb, var(--accent) 12%, transparent) }
+
+    #a11 .legend { display:flex; gap:8px; flex-wrap:wrap; font-size:12px; color:var(--muted) }
+    #a11 .legend span { display:inline-flex; align-items:center; gap:6px }
+    #a11 .legend i { width:10px; height:10px; border-radius:3px; display:inline-block }
+    #a11 .lg-eligible i { background: var(--accent-blue) }
+    #a11 .lg-disabled i { background: #8a93a0 }
+    #a11 .lg-planned i { background: var(--accent) }
+
+    /* buttons mimic your site tokens */
+    #a11 .btn { background: var(--surface-3); color: var(--text); border:1px solid var(--border); padding:8px 10px; border-radius: 10px; font-weight:800; cursor:pointer }
+    #a11 .btn:hover { filter: brightness(1.06) }
+  </style>
+</head>
+
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <!-- Header (your site shell) -->
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="GASH IT Solutions home">
+        <img src="assets/logo.svg" alt="GASH IT Solutions logo" width="56" height="56">
+      </a>
+      <nav aria-label="Primary">
+        <button id="navToggle" class="nav__toggle" aria-expanded="false" aria-controls="navMenu">Menu</button>
+        <ul id="navMenu" class="nav__menu">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="purpose.html">Purpose &amp; Assignments</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Banner -->
+  <section class="page-banner">
+    <div class="wrap">
+      <p class="crumb"><a href="purpose.html">← Back to Purpose &amp; Assignments</a></p>
+      <h1 class="gradient-text">A11 — Dynamic Objects (Advising Tool)</h1>
+      <p class="muted" style="margin-top:.25rem">JSON-driven catalog • dynamic UI • drag &amp; drop • OR prerequisites • notes</p>
+    </div>
+  </section>
+
+  <!-- Main -->
+  <main id="main" class="wrap">
+    <section id="a11" aria-label="Assignment 11 Advising Tool">
+      <div class="grid">
+        <!-- Course Catalog -->
+        <section class="panel" aria-labelledby="catalog-h">
+          <h2 id="catalog-h">Course Catalog (BSIT core + specialization)</h2>
+          <div class="sub">Sourced from the DSC 2024–2025 Catalog (program-specific courses & sample plan). This advisor is a demo and not an official plan.</div>
+          <div class="toolbar">
+            <label class="search" aria-label="Search courses">
+              <input id="search" placeholder="Search code or title…" />
+            </label>
+            <button class="btn" id="markCompleted" type="button">Toggle Completed Mode</button>
+            <button class="btn" id="save" type="button">Save</button>
+            <button class="btn" id="load" type="button">Load</button>
+            <button class="btn" id="reset" type="button">Reset</button>
+          </div>
+          <div class="body">
+            <div class="legend" style="margin-bottom:8px">
+              <span class="lg-eligible"><i></i> Eligible Now</span>
+              <span class="lg-disabled"><i></i> Disabled (alt satisfied)</span>
+              <span class="lg-planned"><i></i> Planned/Completed</span>
+            </div>
+            <div id="catalog" class="catalog" role="list"></div>
+          </div>
+        </section>
+
+        <!-- Planner -->
+        <section class="panel" aria-labelledby="planner-h">
+          <h2 id="planner-h">Planner (Drag &amp; Drop)</h2>
+          <div class="sub">Drop courses into terms. Keyboard: focus a course then press <kbd>Enter</kbd> to add to Term 1.</div>
+          <div class="body">
+            <div id="planner" class="planner"></div>
+          </div>
+        </section>
+
+        <!-- Status & Notes -->
+        <aside class="panel" aria-labelledby="status-h">
+          <h2 id="status-h">Status & Notes</h2>
+          <div class="sub">Auto-updates as you plan/complete courses.</div>
+          <div class="body" style="display:grid; gap:8px">
+            <div class="note" style="background:var(--surface-2); border:1px solid var(--border); border-radius:12px; padding:10px"><strong>Eligible now:</strong> <span id="eligibleList">—</span></div>
+            <div class="note" style="background:var(--surface-2); border:1px solid var(--border); border-radius:12px; padding:10px"><strong>Total planned credits:</strong> <span id="creditCount">0</span></div>
+            <div class="note" style="background:var(--surface-2); border:1px solid var(--border); border-radius:12px; padding:10px">
+              <strong>Meets A11 Requirements:</strong>
+              <ul>
+                <li>JSON stores catalog, prereqs (including OR), notes.</li>
+                <li>Cards/terms are dynamically created from JSON.</li>
+                <li>Events on generated elements: drag/drop, click, search, complete toggle, save/load.</li>
+              </ul>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="wrap footer__grid">
+      <small>
+        <strong>Created by Ginelle Harvey</strong> • <span class="js-year"></span><br>
+        Got a project or question? Say hello at:
+        <a href="mailto:info@gashitsolutions.com">info@gashitsolutions.com</a>
+      </small>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="purpose.html">← Back to Purpose &amp; Assignments</a>
+      </nav>
+    </div>
+  </footer>
+
+  <!-- Site script -->
+  <script src="script.js" defer></script>
+
+  <!-- A11 Logic -->
+  <script>
+  /*********************************
+   * JSON Catalog — BSIT (DSC 2024–25)
+   * Source: Program Specific Courses & Specializations in the catalog.
+   * Prerequisites marked with "*demo" are illustrative for advising logic only —
+   * always verify official requisites in the catalog.
+   *********************************/
+  const CATALOG = {
+    // --- Foundation / Gateway examples (to model prereq logic) ---
+    "MAC1105": { id:"MAC1105", title:"College Algebra", credits:3, prereq:[], note:"Math foundation. (Program completion also requires MAC2311C and STA2023 per catalog.) *demo" },
+    "STA2023": { id:"STA2023", title:"Statistics", credits:3, prereq:[["MAC1105"]], note:"Statistics. *demo" },
+    "MAC2311C": { id:"MAC2311C", title:"Calculus I with Lab", credits:4, prereq:[["MAC1105"]], note:"Calculus requirement. *demo" },
+
+    // Programming sequence options (OR group used repeatedly)
+    "COP1000": { id:"COP1000", title:"Intro to Programming", credits:3, prereq:[], note:"Recommended before the program (catalog)." },
+    "COP2220": { id:"COP2220", title:"C Programming", credits:3, prereq:[["COP1000"]], note:"Second programming course option. *demo" },
+    "COP2360": { id:"COP2360", title:"C# Programming", credits:3, prereq:[["COP1000"]], altWith:["COP2800","COP2220"], note:"Pick any second programming course (C#, Java, or C). *demo" },
+    "COP2800": { id:"COP2800", title:"Java Programming", credits:3, prereq:[["COP1000"]], altWith:["COP2360","COP2220"], note:"Alternative to C#/C as second programming. *demo" },
+
+    // --- BSIT Program Specific Courses (from catalog) ---
+    "COP3530": { id:"COP3530", title:"Data Structures", credits:3, prereq:[["COP2220","COP2360","COP2800"]], note:"Requires prior programming (any one). *demo" },
+    "COP4610": { id:"COP4610", title:"Operating Systems", credits:3, prereq:[["COP3530"]], note:"Typically after Data Structures. *demo" },
+    "CNT3104": { id:"CNT3104", title:"Intro to Telecommunications", credits:2, prereq:[], note:"Networking intro (2 credits)." },
+    "CIS4250": { id:"CIS4250", title:"Ethical Issues in IT", credits:1, prereq:[], note:"Professional ethics in IT." },
+    "CNT4007": { id:"CNT4007", title:"Data & Computer Communications", credits:3, prereq:[["CNT3104"]], note:"Follow-on networking. *demo" },
+    "CIS4360": { id:"CIS4360", title:"Applied Cybersecurity", credits:3, prereq:[["CNT3104"]], note:"Cybersecurity fundamentals. *demo" },
+    "COP4813": { id:"COP4813", title:"Web Systems I", credits:3, prereq:[["COP2360","COP2800","COP2220"]], note:"Web dev — requires prior programming. *demo" },
+    "CDA4101": { id:"CDA4101", title:"Computer Organization & Design", credits:3, prereq:[["COP3530"]], note:"Computer architecture. *demo" },
+    "CNT4703": { id:"CNT4703", title:"Voice & Data Network Design", credits:3, prereq:[["CNT4007"]], note:"Advanced network design. *demo" },
+    "COP4708": { id:"COP4708", title:"Applied Database I", credits:3, prereq:[["COP2360","COP2800","COP2220"]], note:"Database fundamentals with programming background. *demo" },
+    "CEN4010": { id:"CEN4010", title:"Software Engineering", credits:3, prereq:[["COP2360","COP2800","COP2220"],["MAC1105"]], note:"SE principles; programming + algebra. *demo" },
+    "CEN4801": { id:"CEN4801", title:"Systems Integration", credits:3, prereq:[["CEN4010"]], note:"Integration/architecture. *demo" },
+    "CEN3722": { id:"CEN3722", title:"Human Computer Interfaces", credits:3, prereq:[], note:"HCI and usability." },
+    "CIS4510": { id:"CIS4510", title:"IT Project Management", credits:3, prereq:[["CEN4010"]], note:"Project processes and PM tools. *demo" },
+
+    // Technical Writing option (catalog allows GEB3213 or ENC2210 as equivalency)
+    "GEB3213": { id:"GEB3213", title:"Business Writing (Technical Writing)", credits:3, prereq:[], note:"Catalog: choose GEB3213; ENC2210 equivalency allowed." },
+
+    // --- Specializations (choose 2 per catalog) ---
+    // Web Systems Programming
+    "COP4709": { id:"COP4709", title:"Applied Database II", credits:3, prereq:[["COP4708"]], note:"Second database course (Web specialization). *demo" },
+    "COP4834": { id:"COP4834", title:"Web Systems II", credits:3, prereq:[["COP4813"]], note:"Advanced web systems. *demo" },
+
+    // Cybersecurity & Cyberforensics
+    "CET4860": { id:"CET4860", title:"Intro to Digital Forensics", credits:3, prereq:[["CIS4360"]], note:"Cyberforensics intro. *demo" },
+    "CET4861": { id:"CET4861", title:"Advanced Digital Forensics", credits:3, prereq:[["CET4860"]], note:"Advanced DF. *demo" },
+    "CET4862": { id:"CET4862", title:"Network Forensics & Incident Response", credits:3, prereq:[["CIS4360"]], note:"Network DF/IR. *demo" },
+    "CET4884": { id:"CET4884", title:"Security Methods & Practice", credits:3, prereq:[["CIS4360"]], note:"Security operations. *demo" }
+  };
+
+  /** Course typedef (for clarity)
+   * @typedef {{id:string,title:string,credits:number,prereq?:string[][],altWith?:string[],note?:string}} Course
+   */
+
+  // ===== State =====
+  const state = {
+    completed: new Set(),
+    planned: new Set(),
+    terms: [ {name:"Term 1", items:[]}, {name:"Term 2", items:[]}, {name:"Term 3", items:[]} ],
+    markCompletedMode: false,
+  };
+
+  // ===== Helpers =====
+  const els = {
+    catalog: document.getElementById('catalog'),
+    planner: document.getElementById('planner'),
+    eligibleList: document.getElementById('eligibleList'),
+    creditCount: document.getElementById('creditCount'),
+    search: document.getElementById('search'),
+  };
+
+  function hasCourse(id){ return state.completed.has(id) || state.planned.has(id); }
+  function prereqSatisfied(course){
+    const groups = course.prereq || [];
+    return groups.every(group => group.some(cid => state.completed.has(cid)));
+  }
+  function isAltSatisfied(course){ return (course.altWith||[]).some(cid => state.completed.has(cid)); }
+  function eligibleCourses(){ return Object.values(CATALOG).filter(c => !hasCourse(c.id) && prereqSatisfied(c)); }
+  function totalPlannedCredits(){ let sum=0; state.terms.forEach(t=> t.items.forEach(id=> sum += (CATALOG[id]?.credits||0))); return sum; }
+
+  // ===== UI Builders =====
+  function makeChip(course){
+    const el = document.createElement('article');
+    el.className='chip'; el.tabIndex=0; el.role='listitem'; el.draggable=true; el.dataset.id=course.id;
+    const disabled = isAltSatisfied(course);
+    el.dataset.disabled = disabled? 'true':'false';
+    if (prereqSatisfied(course)) el.style.outline = '1px solid var(--accent)';
+
+    el.innerHTML = `
+      <header>
+        <div>
+          <div class="cid">${course.id}</div>
+          <div class="cname">${course.title}</div>
+        </div>
+        <button class="btn small" data-act="info" title="Info for ${course.id}">Info</button>
+      </header>
+      <div class="meta">
+        <span class="pill" title="credits">${course.credits} cr</span>
+        ${course.prereq?.length ? `<span class="pill" title="prerequisites">Prereq</span>` : ''}
+        ${course.altWith?.length ? `<span class="pill" title="alternative">Alt</span>` : ''}
+      </div>
+      <div class="actions">
+        <button class="btn small" data-act="plan">Plan</button>
+        <button class="btn small" data-act="done">Completed</button>
+      </div>`;
+
+    el.addEventListener('dragstart', (e)=>{ e.dataTransfer.setData('text/plain', course.id); el.classList.add('dragging'); });
+    el.addEventListener('dragend', ()=> el.classList.remove('dragging'));
+    el.addEventListener('keydown', (e)=>{ if(e.key==='Enter') addToTerm(course.id, 0); });
+    el.addEventListener('click', (e)=>{
+      const btn = e.target.closest('button'); if(!btn) return;
+      const act = btn.dataset.act;
+      if(act==='info') showInfo(course);
+      if(act==='plan') addToTerm(course.id, 0);
+      if(act==='done') toggleCompleted(course.id);
+    });
+
+    if(disabled){ el.title = `Disabled: alternative satisfied.`; }
+    if(hasCourse(course.id)) el.style.boxShadow = '0 0 0 2px color-mix(in srgb, var(--accent) 50%, transparent) inset';
+    return el;
+  }
+
+  function renderCatalog(){
+    const q = (els.search.value||'').trim().toLowerCase();
+    els.catalog.innerHTML='';
+    Object.values(CATALOG)
+      .filter(c=> !q || c.id.toLowerCase().includes(q) || c.title.toLowerCase().includes(q))
+      .forEach(c=> els.catalog.appendChild(makeChip(c)));
+  }
+
+  function renderPlanner(){
+    els.planner.innerHTML='';
+    state.terms.forEach((t,i)=>{
+      const term = document.createElement('section'); term.className='term';
+      term.innerHTML = `<h3>${t.name}</h3>`;
+      const dz = document.createElement('div'); dz.className='dropzone'; dz.dataset.term=String(i);
+      term.appendChild(dz); els.planner.appendChild(term);
+    });
+    state.terms.forEach((t,i)=>{
+      const dz = els.planner.querySelector(`.dropzone[data-term="${i}"]`);
+      t.items.forEach(id=> dz.appendChild(renderPlannedChip(id)));
+    });
+    els.planner.querySelectorAll('.dropzone').forEach(dz=>{
+      dz.addEventListener('dragover', (e)=>{ e.preventDefault(); dz.setAttribute('aria-dropeffect','copy'); });
+      dz.addEventListener('dragleave', ()=> dz.removeAttribute('aria-dropeffect'));
+      dz.addEventListener('drop', (e)=>{ e.preventDefault(); dz.removeAttribute('aria-dropeffect'); const id = e.dataTransfer.getData('text/plain'); addToTerm(id, Number(dz.dataset.term)); });
+    });
+  }
+
+  function renderPlannedChip(id){
+    const c = CATALOG[id];
+    const el = document.createElement('article'); el.className='chip'; el.dataset.id=id;
+    el.innerHTML = `
+      <header>
+        <div>
+          <div class=\"cid\">${c.id}</div>
+          <div class=\"cname\">${c.title}</div>
+        </div>
+        <button class=\"btn small\" data-act=\"remove\" title=\"Remove from term\">Remove</button>
+      </header>
+      <div class=\"meta\"><span class=\"pill\">${c.credits} cr</span><span class=\"pill\">Planned</span></div>`;
+    el.addEventListener('click', (e)=>{ const btn = e.target.closest('button'); if(!btn) return; if(btn.dataset.act==='remove') removeFromTerms(id); });
+    return el;
+  }
+
+  function showInfo(course){
+    const prereqText = (course.prereq && course.prereq.length) ? course.prereq.map(g=> g.join(' OR ')).join(' AND ') : 'None';
+    const altText = (course.altWith && course.altWith.length) ? course.altWith.join(' OR ') : '—';
+    alert(`${course.id} — ${course.title}
+Credits: ${course.credits}
+Prerequisites: ${prereqText}
+Alternatives: ${altText}
+
+Note: ${course.note||'—'}`);
+  }
+
+  // ===== Mutations =====
+  function addToTerm(id, termIdx){ if(!CATALOG[id]) return; if(state.planned.has(id) || state.completed.has(id)) return; state.terms[termIdx].items.push(id); state.planned.add(id); update(); }
+  function removeFromTerms(id){ state.terms.forEach(t=> t.items = t.items.filter(x=> x!==id)); state.planned.delete(id); update(); }
+  function toggleCompleted(id){ if(state.planned.has(id)) removeFromTerms(id); if(state.completed.has(id)) state.completed.delete(id); else state.completed.add(id); update(); }
+
+  // ===== Save/Load =====
+  function save(){ const payload = { completed:[...state.completed], terms: state.terms }; localStorage.setItem('a11.save', JSON.stringify(payload)); toast('Saved.'); }
+  function load(){ const raw = localStorage.getItem('a11.save'); if(!raw) return toast('Nothing saved yet.'); try{ const data = JSON.parse(raw); state.completed = new Set(data.completed||[]); state.terms = (data.terms||state.terms).map(t=> ({name:t.name, items:[...t.items]})); state.planned = new Set(state.terms.flatMap(t=> t.items)); update(); toast('Loaded.'); }catch(e){ toast('Failed to load.'); } }
+  function resetAll(){ state.completed.clear(); state.planned.clear(); state.terms.forEach(t=> t.items=[]); update(); }
+
+  // ===== Status & wiring =====
+  function updateEligibleBox(){ const list = eligibleCourses().map(c=> c.id).sort(); document.getElementById('eligibleList').textContent = list.length? list.join(', '): '—'; }
+  function updateCredits(){ document.getElementById('creditCount').textContent = String(totalPlannedCredits()); }
+  function applyAltDisables(){ Object.values(CATALOG).forEach(c=>{ const card = els.catalog.querySelector(`[data-id="${c.id}"]`); if(!card) return; const disabled = isAltSatisfied(c) && !state.completed.has(c.id); card.dataset.disabled = disabled? 'true':'false'; }); }
+
+  function update(){ renderCatalog(); renderPlanner(); updateEligibleBox(); updateCredits(); applyAltDisables(); }
+  function toast(msg){ console.log(msg); }
+
+  (function init(){ renderPlanner(); renderCatalog(); updateEligibleBox(); updateCredits();
+    document.getElementById('save').addEventListener('click', save);
+    document.getElementById('load').addEventListener('click', load);
+    document.getElementById('reset').addEventListener('click', ()=>{ if(confirm('Reset plan and completed courses?')) resetAll(); });
+    document.getElementById('markCompleted').addEventListener('click', ()=>{ state.markCompletedMode = !state.markCompletedMode; toast(state.markCompletedMode? 'Completed Mode ON: click a course to toggle.' : 'Completed Mode OFF'); });
+    els.catalog.addEventListener('click', (e)=>{ if(!state.markCompletedMode) return; const card = e.target.closest('.chip'); if(!card) return; toggleCompleted(card.dataset.id); });
+    els.search.addEventListener('input', renderCatalog);
+  })();
+  </script>
+</body>
+</html>
