@@ -60,6 +60,8 @@
     #a11 .btn:hover { filter: brightness(1.06) }
     .page-banner .wrap {  text-align: center;}
 
+    /* highlight the active term (added) */
+    .term.active { outline: 2px solid var(--accent-blue); outline-offset: -2px; }
   </style>
 </head>
 
@@ -173,7 +175,7 @@
   /*********************************
    * JSON Catalog — BSIT (DSC 2024–25)
    * Source: Program Specific Courses & Specializations in the catalog.
-   * Prerequisites marked with "*demo" are illustrative for advising logic only —
+   * Prerequisites marked with "*demo" are illustrative for advising logic only — 
    * always verify official requisites in the catalog.
    *********************************/
   const CATALOG = {
@@ -240,6 +242,15 @@
     search: document.getElementById('search'),
   };
 
+  // Track which term is active for the Plan button (added)
+  let activeTermIndex = 0;
+  function setActiveTerm(idx) {
+    activeTermIndex = idx;
+    document.querySelectorAll('.term').forEach((t,i)=>{
+      t.classList.toggle('active', i===idx);
+    });
+  }
+
   function hasCourse(id){ return state.completed.has(id) || state.planned.has(id); }
   function prereqSatisfied(course){
     const groups = course.prereq || [];
@@ -277,12 +288,16 @@
 
     el.addEventListener('dragstart', (e)=>{ e.dataTransfer.setData('text/plain', course.id); el.classList.add('dragging'); });
     el.addEventListener('dragend', ()=> el.classList.remove('dragging'));
+
+    // Keep your original keyboard behavior: Enter adds to Term 1
     el.addEventListener('keydown', (e)=>{ if(e.key==='Enter') addToTerm(course.id, 0); });
+
+    // Fix: Plan now uses the active term
     el.addEventListener('click', (e)=>{
       const btn = e.target.closest('button'); if(!btn) return;
       const act = btn.dataset.act;
       if(act==='info') showInfo(course);
-      if(act==='plan') addToTerm(course.id, 0);
+      if(act==='plan') addToTerm(course.id, activeTermIndex);
       if(act==='done') toggleCompleted(course.id);
     });
 
@@ -311,6 +326,12 @@
       const dz = els.planner.querySelector(`.dropzone[data-term="${i}"]`);
       t.items.forEach(id=> dz.appendChild(renderPlannedChip(id)));
     });
+
+    // Clicking a term makes it active for the Plan button
+    els.planner.querySelectorAll('.term').forEach((termEl,i)=>{
+      termEl.addEventListener('click', ()=> setActiveTerm(i));
+    });
+
     els.planner.querySelectorAll('.dropzone').forEach(dz=>{
       dz.addEventListener('dragover', (e)=>{ e.preventDefault(); dz.setAttribute('aria-dropeffect','copy'); });
       dz.addEventListener('dragleave', ()=> dz.removeAttribute('aria-dropeffect'));
@@ -324,12 +345,12 @@
     el.innerHTML = `
       <header>
         <div>
-          <div class=\"cid\">${c.id}</div>
-          <div class=\"cname\">${c.title}</div>
+          <div class="cid">${c.id}</div>
+          <div class="cname">${c.title}</div>
         </div>
-        <button class=\"btn small\" data-act=\"remove\" title=\"Remove from term\">Remove</button>
+        <button class="btn small" data-act="remove" title="Remove from term">Remove</button>
       </header>
-      <div class=\"meta\"><span class=\"pill\">${c.credits} cr</span><span class=\"pill\">Planned</span></div>`;
+      <div class="meta"><span class="pill">${c.credits} cr</span><span class="pill">Planned</span></div>`;
     el.addEventListener('click', (e)=>{ const btn = e.target.closest('button'); if(!btn) return; if(btn.dataset.act==='remove') removeFromTerms(id); });
     return el;
   }
@@ -363,7 +384,9 @@ Note: ${course.note||'—'}`);
   function update(){ renderCatalog(); renderPlanner(); updateEligibleBox(); updateCredits(); applyAltDisables(); }
   function toast(msg){ console.log(msg); }
 
-  (function init(){ renderPlanner(); renderCatalog(); updateEligibleBox(); updateCredits();
+  (function init(){
+    renderPlanner(); renderCatalog(); updateEligibleBox(); updateCredits();
+    setActiveTerm(0); // start with Term 1 active for Plan button
     document.getElementById('save').addEventListener('click', save);
     document.getElementById('load').addEventListener('click', load);
     document.getElementById('reset').addEventListener('click', ()=>{ if(confirm('Reset plan and completed courses?')) resetAll(); });
