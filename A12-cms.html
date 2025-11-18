@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>A12 — CMS Comparison (JSON Table)</title>
+  <meta name="description" content="Assignment 12: Compare web content management systems using data loaded from an external JSON file.">
+
+  <!-- Main site CSS -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48x48.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64x64.png">
+  <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon-128x128.png">
+  <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon-512.png">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+
+  <style>
+    /* Page helpers (your main theme handles the rest) */
+    .wrap { max-width: 980px; margin: 0 auto; padding: 1rem; }
+    .page-banner { text-align: center; padding: .9rem 0 .6rem; }
+    .page-banner .crumb a { text-decoration: none; }
+
+    .cms-intro {
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    /* Table container */
+    .table-wrap {
+      overflow: auto;
+      margin-top: 1rem;
+    }
+
+    table.cms-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .cms-table th,
+    .cms-table td {
+      border: 1px solid #ccc;
+      padding: .6rem .7rem;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .cms-table th {
+      background: #1f283a;
+      color: #f5f7ff;
+    }
+
+    .cms-table td {
+      background: #121826;
+      color: #f5f7ff;
+    }
+
+    .cms-table a {
+      color: #9fd5ff;
+      text-decoration: underline;
+    }
+
+    .cms-table ul {
+      margin: 0;
+      padding-left: 1.1rem;
+    }
+
+    .visually-hidden {
+      position: absolute !important;
+      height: 1px; width: 1px;
+      overflow: hidden;
+      clip: rect(1px,1px,1px,1px);
+      white-space: nowrap;
+    }
+
+    /* Mobile: turn rows into cards */
+    @media (max-width: 768px) {
+      .table-wrap {
+        overflow: visible;
+      }
+
+      .cms-table,
+      .cms-table thead,
+      .cms-table tbody,
+      .cms-table th,
+      .cms-table td,
+      .cms-table tr {
+        display: block;
+        width: 100%;
+      }
+
+      .cms-table thead {
+        display: none;
+      }
+
+      .cms-table tr {
+        background: #121826;
+        border: 1px solid #333a4f;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+        padding: .6rem .7rem;
+      }
+
+      .cms-table td {
+        border: none;
+        display: flex;
+        justify-content: space-between;
+        gap: .75rem;
+        padding: .35rem 0;
+      }
+
+      .cms-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #9dc1ff;
+        padding-right: .75rem;
+        flex: 0 0 40%;
+      }
+
+      .cms-table td ul {
+        margin-top: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <!-- Header (same as site) -->
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="GASH IT Solutions home">
+        <img src="assets/logo.svg" alt="GASH IT Solutions logo" width="56" height="56">
+      </a>
+      <nav aria-label="Primary">
+        <button id="navToggle" class="nav__toggle" aria-expanded="false" aria-controls="navMenu">Menu</button>
+        <ul id="navMenu" class="nav__menu">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="purpose.html">Purpose &amp; Assignments</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Page banner -->
+  <section class="page-banner">
+    <div class="wrap">
+      <p class="crumb"><a href="purpose.html">← Back to Purpose &amp; Assignments</a></p>
+      <h1 class="gradient-text">A12 — CMS Comparison (JSON Table)</h1>
+    </div>
+  </section>
+
+  <!-- Main -->
+  <main id="main" class="wrap">
+    <section aria-labelledby="cmsTitle">
+      <h2 id="cmsTitle" class="visually-hidden">Content Management Systems Table</h2>
+
+      <p class="cms-intro">
+        This assignment compares several web content management systems (CMS) by loading their details
+        from an external JSON file and rendering them into an interactive table using JavaScript.
+        Each row shows the CMS name, support model, technology stack, major capabilities,
+        limitations, and at least one example site that uses it.
+      </p>
+
+      <div id="cmsStatus" aria-live="polite"></div>
+
+      <div id="cmsTableWrap" class="table-wrap">
+        <!-- Table will be injected here by A12-cms.js -->
+      </div>
+
+      <p style="margin-top:0.75rem; font-size:0.95rem; opacity:0.85;">
+        Data source: <code>A12-cms.json</code>, loaded via <code>fetch()</code> and processed on the client side.
+      </p>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="wrap footer__grid">
+      <small>
+        <strong>Created by Ginelle Harvey</strong> • <span class="js-year"></span><br>
+        Got a project or question? Say hello at:
+        <a href="mailto:info@gashitsolutions.com">info@gashitsolutions.com</a>
+      </small>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="purpose.html">← Back to Purpose &amp; Assignments</a>
+      </nav>
+    </div>
+  </footer>
+
+  <!-- Site script (nav, year, etc.) -->
+  <script src="script.js"></script>
+  <!-- A12 logic -->
+  <script src="A12-cms.js"></script>
+</body>
+</html>
