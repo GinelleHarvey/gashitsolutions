@@ -1,0 +1,73 @@
+{
+  "systems": [
+    {
+      "name": "WordPress.org",
+      "support": "Open source; maintained by the WordPress community; backed by the WordPress Foundation and Automattic; widely supported by most hosting companies.",
+      "technology": "PHP-based CMS running on a LAMP/LEMP stack (Linux, Apache/Nginx, MySQL/MariaDB, PHP); themes and plugins render HTML, CSS, and JavaScript.",
+      "capabilities": "Massive ecosystem of themes and plugins; built-in blogging and CMS features; Gutenberg block editor for page building; REST API for headless or custom integrations; good SEO support through plugins; multi-user roles and permissions.",
+      "limitations": "Security depends heavily on keeping core, themes, and plugins updated; third-party plugins can introduce vulnerabilities; performance can degrade without caching/optimization; requires more ongoing maintenance than SaaS builders.",
+      "examples": [
+        {
+          "label": "TechCrunch",
+          "url": "https://techcrunch.com"
+        },
+        {
+          "label": "WordPress.org",
+          "url": "https://wordpress.org"
+        }
+      ]
+    },
+    {
+      "name": "Drupal",
+      "support": "Open source; maintained by the Drupal community; commercial support available from vendors like Acquia.",
+      "technology": "PHP framework/CMS using a modular architecture; typically runs on LAMP/LEMP with MySQL/MariaDB or PostgreSQL; uses Twig for templating.",
+      "capabilities": "Highly flexible content modeling with custom content types and fields; enterprise-grade security and regular security advisories; advanced role-based access control (ACL); multilingual support built in; very scalable for large and high-traffic sites; strong API support and integration options.",
+      "limitations": "Steeper learning curve for non-developers; fewer plug-and-play themes compared with WordPress; upgrades between major versions can be complex; heavy use of modules can impact performance if not optimized.",
+      "examples": [
+        {
+          "label": "The White House",
+          "url": "https://www.whitehouse.gov"
+        }
+      ]
+    },
+    {
+      "name": "Joomla",
+      "support": "Open source; managed by the Joomla Project and Open Source Matters with a global volunteer community.",
+      "technology": "PHP-based CMS using an MVC architecture; usually runs on LAMP/LEMP with MySQL/MariaDB; templates built with HTML, CSS, and JavaScript.",
+      "capabilities": "Integrated Access Control List (ACL) for granular permissions; multilingual support in core; flexible template and extension system; good for portals and more complex sites; supports modules, components, and plugins for extensibility.",
+      "limitations": "Smaller extension and theme ecosystem than WordPress; extension quality and maintenance can vary; admin UI can feel less friendly for beginners; fewer turnkey managed hosting options and tutorials compared with WordPress.",
+      "examples": [
+        {
+          "label": "UIDAI (India Aadhaar Portal)",
+          "url": "https://uidai.gov.in"
+        }
+      ]
+    },
+    {
+      "name": "Squarespace",
+      "support": "Commercial SaaS platform; fully hosted and supported by Squarespace with subscription plans.",
+      "technology": "Proprietary hosted platform; no direct database or server access; templates rendered with HTML, CSS, and JavaScript through the Squarespace editor and template system.",
+      "capabilities": "All-in-one hosting and CMS; drag-and-drop visual editor; professionally designed responsive templates; built-in blogging, basic ecommerce, and SEO tools; automatic updates, backups, and security handled by the vendor; no need to manage servers.",
+      "limitations": "Limited back-end customization; cannot install custom server-side code or use your own database; design options are constrained by the template system; content and page limits on some plans; limited multilingual features compared with open-source CMS; ongoing subscription costs and vendor lock-in.",
+      "examples": [
+        {
+          "label": "Squarespace Showcase",
+          "url": "https://www.squarespace.com/showcase"
+        }
+      ]
+    },
+    {
+      "name": "Wix",
+      "support": "Commercial SaaS platform; fully hosted and supported by Wix with free and premium plans.",
+      "technology": "Proprietary website builder; drag-and-drop editor with optional Velo (JavaScript) for custom logic; content stored in Wix CMS collections on Wix’s infrastructure.",
+      "capabilities": "Very easy visual editing with many templates; built-in blog and ecommerce tools; app market for adding marketing, booking, and analytics features; Wix CMS collections for dynamic content; hosting, security, and updates managed by Wix.",
+      "limitations": "Sites run on shared hosting with limited low-level performance tuning; vendor lock-in and limited ability to export a full site to another platform; CMS collections and item counts are limited by plan; advanced customization and SEO tuning can be harder than on fully self-hosted platforms.",
+      "examples": [
+        {
+          "label": "Wix Website Examples",
+          "url": "https://www.wix.com/blog/wix-websites-examples"
+        }
+      ]
+    }
+  ]
+}
