@@ -1,5 +1,9 @@
-// A14 – Memory Match Game with Emoji + Text Cards + PNG Cards
-// Updated: no face-up preview; intro shuffle animation instead.
+// A14 – Memory Match Game
+// Themes: Emoji symbols, Text playing cards, PNG playing cards from /assets
+// Features: difficulty up to 26 pairs, full deck button, preview+shuffle intro,
+// accuracy, best time per theme, bonus preview mini-game, fun match effects.
+
+// ---------- Card Definitions ----------
 
 // Emoji / symbol set for card faces (up to 26)
 const memSymbolIcons = [
@@ -26,9 +30,9 @@ const memPngCards = (() => {
   for (const suit of suits) {
     for (const rank of ranks) {
       if (defs.length >= 26) break;
-      const key = `${rank}_of_${suit}`;          // matches assets: 2_of_clubs.png etc.
-      const label = `${rank}${suitSymbols[suit]}`; // for text theme
-      const img = `${key}.png`;                 // e.g. "2_of_clubs.png"
+      const key = `${rank}_of_${suit}`;          // matches assets: 2_of_clubs.png
+      const label = `${rank}${suitSymbols[suit]}`; // text style: "10♠"
+      const img = `${key}.png`;                 // "2_of_clubs.png"
       defs.push({ key, label, img });
     }
     if (defs.length >= 26) break;
@@ -36,37 +40,46 @@ const memPngCards = (() => {
   return defs;
 })();
 
-// DOM elements
-const memPairRange = document.getElementById("memPairRange");
-const memPairCountSpan = document.getElementById("memPairCount");
-const memStartBtn = document.getElementById("memStartBtn");
-const memFullDeckBtn = document.getElementById("memFullDeckBtn");
-const memThemeSelect = document.getElementById("memTheme");
+// ---------- DOM Elements ----------
 
-const memBoard = document.getElementById("memBoard");
-const memTimeDisplay = document.getElementById("memTime");
-const memMovesDisplay = document.getElementById("memMoves");
-const memAccuracyDisplay = document.getElementById("memAccuracy");
-const memBestTimeDisplay = document.getElementById("memBestTime");
+const memPairRange        = document.getElementById("memPairRange");
+const memPairCountSpan    = document.getElementById("memPairCount");
+const memStartBtn         = document.getElementById("memStartBtn");
+const memFullDeckBtn      = document.getElementById("memFullDeckBtn");
+const memThemeSelect      = document.getElementById("memTheme");
 
-const memWinModal = document.getElementById("memWinModal");
-const memFinalTimeSpan = document.getElementById("memFinalTime");
-const memFinalMovesSpan = document.getElementById("memFinalMoves");
-const memPlayAgainBtn = document.getElementById("memPlayAgainBtn");
+const memBoard            = document.getElementById("memBoard");
+const memTimeDisplay      = document.getElementById("memTime");
+const memMovesDisplay     = document.getElementById("memMoves");
+const memAccuracyDisplay  = document.getElementById("memAccuracy");
+const memBestTimeDisplay  = document.getElementById("memBestTime");
 
-// Game state
+const memWinModal         = document.getElementById("memWinModal");
+const memFinalTimeSpan    = document.getElementById("memFinalTime");
+const memFinalMovesSpan   = document.getElementById("memFinalMoves");
+const memPlayAgainBtn     = document.getElementById("memPlayAgainBtn");
+
+const memBonusBtn         = document.getElementById("memBonusBtn");
+
+// ---------- Game State ----------
+
 let memNumberOfPairs = memPairRange ? parseInt(memPairRange.value, 10) : 10;
-let memCards = [];
-let memFirstCardEl = null;
-let memSecondCardEl = null;
-let memLockBoard = false;
+let memCards          = [];
+let memFirstCardEl    = null;
+let memSecondCardEl   = null;
+let memLockBoard      = false;
+let memIsPreviewing   = false;
 
-let memTimerId = null;
+let memTimerId        = null;
 let memElapsedSeconds = 0;
-let memMoves = 0;
-let memMatchedPairs = 0;
+let memMoves          = 0;
+let memMatchedPairs   = 0;
 
-let memTheme = memThemeSelect ? memThemeSelect.value : "symbols";
+let memTheme          = memThemeSelect ? memThemeSelect.value : "symbols";
+
+let memBonusAvailable = false;
+
+// ---------- Helpers ----------
 
 function memShuffle(arr) {
   const array = arr.slice();
@@ -93,22 +106,18 @@ function memStopTimer() {
 }
 
 function memGetBestKey() {
-  if (memTheme === "png") return "A14BestTimePNG";
+  if (memTheme === "png")  return "A14BestTimePNG";
   if (memTheme === "text") return "A14BestTimeText";
   return "A14BestTimeSymbols";
 }
 
 function memUpdateBestTimeDisplay() {
   const best = localStorage.getItem(memGetBestKey());
-  if (best) {
-    memBestTimeDisplay.textContent = best + "s";
-  } else {
-    memBestTimeDisplay.textContent = "N/A";
-  }
+  memBestTimeDisplay.textContent = best ? `${best}s` : "N/A";
 }
 
 function memSaveBestTimeIfNeeded() {
-  const key = memGetBestKey();
+  const key  = memGetBestKey();
   const best = localStorage.getItem(key);
   if (!best || memElapsedSeconds < parseInt(best, 10)) {
     localStorage.setItem(key, memElapsedSeconds.toString());
@@ -117,13 +126,41 @@ function memSaveBestTimeIfNeeded() {
 
 function memUpdateAccuracy() {
   if (!memAccuracyDisplay) return;
-  const totalFlips = memMoves * 2;
+  const totalFlips   = memMoves * 2;
   const correctFlips = memMatchedPairs * 2;
   const acc = totalFlips ? Math.round((correctFlips / totalFlips) * 100) : 0;
   memAccuracyDisplay.textContent = acc.toString();
 }
 
-// Build deck based on theme
+// Little burst effect when you get a match
+function memSpawnMatchBurst(targetEl) {
+  if (!memBoard || !targetEl) return;
+
+  const boardRect = memBoard.getBoundingClientRect();
+  const rect      = targetEl.getBoundingClientRect();
+
+  const burst = document.createElement("div");
+  burst.className = "mem-burst";
+
+  const icons = ["✨","🎉","💥","🌟","💜","⚡"];
+  burst.textContent = icons[Math.floor(Math.random() * icons.length)];
+
+  // Position relative to board
+  burst.style.position = "absolute";
+  burst.style.left = `${rect.left - boardRect.left + rect.width / 2}px`;
+  burst.style.top  = `${rect.top - boardRect.top + rect.height / 2}px`;
+  burst.style.pointerEvents = "none";
+  burst.style.fontSize = "1.7rem";
+  burst.style.transform = "translate(-50%, -50%)";
+  burst.style.animation = "memBurst 0.9s ease-out forwards";
+
+  memBoard.appendChild(burst);
+
+  setTimeout(() => burst.remove(), 950);
+}
+
+// ---------- Deck Generation ----------
+
 function memGenerateDeck() {
   const deck = [];
 
@@ -154,6 +191,8 @@ function memGenerateDeck() {
   return memShuffle(deck);
 }
 
+// ---------- Rendering ----------
+
 function memCreateCardElement(card, index) {
   const cardEl = document.createElement("button");
   cardEl.classList.add("mem-card");
@@ -172,7 +211,7 @@ function memCreateCardElement(card, index) {
 
   if (card.type === "png") {
     const img = document.createElement("img");
-    img.src = "assets/" + card.img; // e.g. "assets/2_of_clubs.png"
+    img.src = "assets/" + card.img;   // e.g. assets/2_of_clubs.png
     img.alt = card.label || card.key;
     front.appendChild(img);
   } else if (card.type === "text") {
@@ -193,7 +232,7 @@ function memCreateCardElement(card, index) {
 function memRenderBoard() {
   if (!memBoard) return;
 
-  memBoard.classList.remove("ready");
+  memBoard.classList.remove("ready", "shuffling");
   memBoard.innerHTML = "";
 
   memCards.forEach((card, index) => {
@@ -206,13 +245,12 @@ function memRenderBoard() {
   });
 }
 
-// Board intro shuffle (no faces, just motion)
+// ---------- Fancy Intro: Preview + Shuffle ----------
+
+// Shuffle animation on the whole board
 function memRunIntroAnimation() {
   if (!memBoard) return;
-  const cards = memBoard.querySelectorAll(".mem-card");
-  if (!cards.length) return;
-
-  memLockBoard = true; // block clicks during intro
+  memLockBoard = true;
   memBoard.classList.add("shuffling");
 
   setTimeout(() => {
@@ -221,16 +259,68 @@ function memRunIntroAnimation() {
   }, 850);
 }
 
+// Preview all cards, then flip back and (optionally) shuffle.
+// options: { resetTime: boolean, shuffleAfter: boolean }
+function memPreviewBoard(options = {}) {
+  const { resetTime = false, shuffleAfter = false } = options;
+  if (!memBoard) return;
+  const cards = memBoard.querySelectorAll(".mem-card");
+  if (!cards.length) return;
+
+  // Start with all cards face-down.
+  cards.forEach(c => c.classList.remove("flipped","matched","mismatch"));
+
+  memIsPreviewing = true;
+  memLockBoard    = true;
+
+  // Small delay so they see the face-down layout first.
+  const startDelay = 350;
+
+  setTimeout(() => {
+    cards.forEach(c => c.classList.add("flipped")); // show fronts
+  }, startDelay);
+
+  let previewTime;
+  if (memNumberOfPairs <= 8)      previewTime = 1600;
+  else if (memNumberOfPairs <= 16) previewTime = 2100;
+  else                             previewTime = 2600;
+
+  setTimeout(() => {
+    // Flip them back down.
+    cards.forEach(c => c.classList.remove("flipped"));
+    memIsPreviewing = false;
+    memLockBoard    = false;
+
+    if (resetTime) {
+      memElapsedSeconds = 0;
+      memTimeDisplay.textContent = "0";
+    }
+
+    if (shuffleAfter) {
+      memRunIntroAnimation();
+    }
+  }, startDelay + previewTime);
+}
+
+// ---------- Game Reset / Start ----------
+
 function memResetState() {
-  memFirstCardEl = null;
+  memFirstCardEl  = null;
   memSecondCardEl = null;
-  memLockBoard = false;
+  memLockBoard    = false;
+  memIsPreviewing = false;
+
   memMatchedPairs = 0;
-  memMoves = 0;
+  memMoves        = 0;
   memElapsedSeconds = 0;
-  memTimeDisplay.textContent = "0";
+
   memMovesDisplay.textContent = "0";
+  memTimeDisplay.textContent  = "0";
   memUpdateAccuracy();
+
+  memBonusAvailable = false;
+  if (memBonusBtn) memBonusBtn.style.display = "none";
+
   memStopTimer();
 }
 
@@ -244,11 +334,16 @@ function memStartGame() {
   memCards = memGenerateDeck();
   memRenderBoard();
   memUpdateBestTimeDisplay();
-  memRunIntroAnimation(); // fancy start, cards still face-down
+
+  // Fancy sequence: cards down → flip preview → flip back → shuffle.
+  memPreviewBoard({ resetTime: true, shuffleAfter: true });
 }
 
+// ---------- Core Game Logic ----------
+
 function memHandleCardClick(cardEl) {
-  if (memLockBoard) return; // ignore clicks during intro or while comparing
+  if (memIsPreviewing) return;
+  if (memLockBoard)    return;
   if (cardEl.classList.contains("flipped") || cardEl.classList.contains("matched")) return;
 
   if (!memTimerId) {
@@ -263,7 +358,7 @@ function memHandleCardClick(cardEl) {
   }
 
   memSecondCardEl = cardEl;
-  memLockBoard = true;
+  memLockBoard    = true;
 
   memMoves++;
   memMovesDisplay.textContent = memMoves.toString();
@@ -292,6 +387,14 @@ function memHandleMatch(i1, i2) {
   memSecondCardEl.classList.add("matched");
 
   memMatchedPairs++;
+  memSpawnMatchBurst(memSecondCardEl); // fun little pop over second card
+
+  // Bonus mini-game: every 3 matches, unlock a Bonus Peek (if game not done).
+  if (memMatchedPairs % 3 === 0 && memMatchedPairs < memNumberOfPairs && memBonusBtn) {
+    memBonusAvailable = true;
+    memBonusBtn.style.display = "inline-block";
+  }
+
   memResetSelection();
   memUpdateAccuracy();
 
@@ -313,9 +416,9 @@ function memHandleMismatch() {
 }
 
 function memResetSelection() {
-  memFirstCardEl = null;
+  memFirstCardEl  = null;
   memSecondCardEl = null;
-  memLockBoard = false;
+  memLockBoard    = false;
 }
 
 function memHandleWin() {
@@ -323,7 +426,7 @@ function memHandleWin() {
   memSaveBestTimeIfNeeded();
   memUpdateBestTimeDisplay();
 
-  memFinalTimeSpan.textContent = memElapsedSeconds.toString();
+  memFinalTimeSpan.textContent  = memElapsedSeconds.toString();
   memFinalMovesSpan.textContent = memMoves.toString();
 
   if (memWinModal) {
@@ -332,7 +435,8 @@ function memHandleWin() {
   }
 }
 
-// Event listeners
+// ---------- Event Listeners ----------
+
 if (memPairRange) {
   memPairRange.addEventListener("input", () => {
     memPairCountSpan.textContent = memPairRange.value;
@@ -378,7 +482,25 @@ if (memPlayAgainBtn) {
   });
 }
 
-// Close modal by clicking outside
+// Bonus Peek mini-game
+if (memBonusBtn) {
+  memBonusBtn.addEventListener("click", () => {
+    if (!memBonusAvailable) return;
+    if (memIsPreviewing || memLockBoard) return;
+
+    // Using the bonus costs one extra "move" – tiny tradeoff
+    memMoves++;
+    memMovesDisplay.textContent = memMoves.toString();
+
+    memBonusAvailable = false;
+    memBonusBtn.style.display = "none";
+
+    // Preview again, but do NOT reset timer or shuffle this time.
+    memPreviewBoard({ resetTime: false, shuffleAfter: false });
+  });
+}
+
+// Close win modal by clicking outside
 if (memWinModal) {
   memWinModal.addEventListener("click", (e) => {
     if (e.target === memWinModal) {
@@ -388,7 +510,8 @@ if (memWinModal) {
   });
 }
 
-// Initialize when on this page (you can keep this so the board isn't empty)
+// ---------- Init ----------
+
 if (memBoard && memPairRange) {
   memUpdateBestTimeDisplay();
   memStartGame();
