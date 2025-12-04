@@ -1,4 +1,5 @@
 // A14 – Memory Match Game with Emoji + Text Cards + PNG Cards
+// Updated: no face-up preview; intro shuffle animation instead.
 
 // Emoji / symbol set for card faces (up to 26)
 const memSymbolIcons = [
@@ -59,7 +60,6 @@ let memCards = [];
 let memFirstCardEl = null;
 let memSecondCardEl = null;
 let memLockBoard = false;
-let memIsPreviewing = false;
 
 let memTimerId = null;
 let memElapsedSeconds = 0;
@@ -206,27 +206,19 @@ function memRenderBoard() {
   });
 }
 
-// Quick preview at start of each game
-function memPreviewBoard() {
+// Board intro shuffle (no faces, just motion)
+function memRunIntroAnimation() {
   if (!memBoard) return;
   const cards = memBoard.querySelectorAll(".mem-card");
   if (!cards.length) return;
 
-  memIsPreviewing = true;
-
-  cards.forEach(c => c.classList.add("flipped"));
-
-  let previewTime;
-  if (memNumberOfPairs <= 8) previewTime = 1800;
-  else if (memNumberOfPairs <= 16) previewTime = 2300;
-  else previewTime = 2800;
+  memLockBoard = true; // block clicks during intro
+  memBoard.classList.add("shuffling");
 
   setTimeout(() => {
-    cards.forEach(c => c.classList.remove("flipped"));
-    memIsPreviewing = false;
-    memElapsedSeconds = 0;
-    memTimeDisplay.textContent = "0";
-  }, previewTime);
+    memBoard.classList.remove("shuffling");
+    memLockBoard = false;
+  }, 850);
 }
 
 function memResetState() {
@@ -252,12 +244,11 @@ function memStartGame() {
   memCards = memGenerateDeck();
   memRenderBoard();
   memUpdateBestTimeDisplay();
-  memPreviewBoard(); // timer starts on first click
+  memRunIntroAnimation(); // fancy start, cards still face-down
 }
 
 function memHandleCardClick(cardEl) {
-  if (memIsPreviewing) return;
-  if (memLockBoard) return;
+  if (memLockBoard) return; // ignore clicks during intro or while comparing
   if (cardEl.classList.contains("flipped") || cardEl.classList.contains("matched")) return;
 
   if (!memTimerId) {
@@ -397,7 +388,7 @@ if (memWinModal) {
   });
 }
 
-// Initialize when on this page
+// Initialize when on this page (you can keep this so the board isn't empty)
 if (memBoard && memPairRange) {
   memUpdateBestTimeDisplay();
   memStartGame();
