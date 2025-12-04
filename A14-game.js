@@ -1,15 +1,22 @@
-// Assignment 14 – Memory Match Game
+// Assignment 14 – Memory Match Game with themes + animation
 
-// Emoji set for the card faces (visuals)
-const memCardIcons = [
+// Emoji / symbol set for the card faces
+const memSymbolIcons = [
   "💻", "📱", "🖱️", "⌨️", "📡",
   "💾", "🧠", "🛰️", "🧪", "🎮"
 ]; // up to 10 pairs
+
+// Playing card style set
+const memCardIcons = [
+  "A♠", "K♥", "Q♣", "J♦", "10♠",
+  "9♥", "8♣", "7♦", "6♠", "5♥"
+]; // also up to 10 pairs
 
 // DOM elements
 const memPairRange = document.getElementById("memPairRange");
 const memPairCountSpan = document.getElementById("memPairCount");
 const memStartBtn = document.getElementById("memStartBtn");
+const memThemeSelect = document.getElementById("memTheme");
 
 const memBoard = document.getElementById("memBoard");
 const memTimeDisplay = document.getElementById("memTime");
@@ -22,7 +29,7 @@ const memFinalMovesSpan = document.getElementById("memFinalMoves");
 const memPlayAgainBtn = document.getElementById("memPlayAgainBtn");
 
 // Game state
-let memNumberOfPairs = parseInt(memPairRange.value, 10);
+let memNumberOfPairs = memPairRange ? parseInt(memPairRange.value, 10) : 6;
 let memCards = [];
 let memFirstCardEl = null;
 let memSecondCardEl = null;
@@ -32,6 +39,8 @@ let memTimerId = null;
 let memElapsedSeconds = 0;
 let memMoves = 0;
 let memMatchedPairs = 0;
+
+let memTheme = memThemeSelect ? memThemeSelect.value : "symbols";
 
 // Utilities
 function memShuffle(arr) {
@@ -60,8 +69,13 @@ function memStopTimer() {
   }
 }
 
+function memGetBestKey() {
+  return memTheme === "cards" ? "A14MemoryBestTimeCards" : "A14MemoryBestTimeSymbols";
+}
+
 function memUpdateBestTimeDisplay() {
-  const best = localStorage.getItem("A14MemoryBestTime");
+  const key = memGetBestKey();
+  const best = localStorage.getItem(key);
   if (best) {
     memBestTimeDisplay.textContent = best + "s";
   } else {
@@ -70,15 +84,17 @@ function memUpdateBestTimeDisplay() {
 }
 
 function memSaveBestTimeIfNeeded() {
-  const best = localStorage.getItem("A14MemoryBestTime");
+  const key = memGetBestKey();
+  const best = localStorage.getItem(key);
   if (!best || memElapsedSeconds < parseInt(best, 10)) {
-    localStorage.setItem("A14MemoryBestTime", memElapsedSeconds.toString());
+    localStorage.setItem(key, memElapsedSeconds.toString());
   }
 }
 
-// Build deck
+// Build deck based on theme
 function memGenerateDeck() {
-  const icons = memCardIcons.slice(0, memNumberOfPairs);
+  const baseIcons = memTheme === "cards" ? memCardIcons : memSymbolIcons;
+  const icons = baseIcons.slice(0, memNumberOfPairs);
   const deck = [];
   icons.forEach(icon => {
     deck.push({ icon, matched: false });
@@ -114,10 +130,20 @@ function memCreateCardElement(card, index) {
 }
 
 function memRenderBoard() {
+  if (!memBoard) return;
+
+  // reset board animation
+  memBoard.classList.remove("ready");
   memBoard.innerHTML = "";
+
   memCards.forEach((card, index) => {
     const el = memCreateCardElement(card, index);
     memBoard.appendChild(el);
+  });
+
+  // trigger fade-in
+  requestAnimationFrame(() => {
+    memBoard.classList.add("ready");
   });
 }
 
@@ -135,6 +161,8 @@ function memResetState() {
 
 // Start game
 function memStartGame() {
+  if (!memPairRange) return;
+
   memNumberOfPairs = parseInt(memPairRange.value, 10);
   memPairCountSpan.textContent = memNumberOfPairs.toString();
 
@@ -199,11 +227,14 @@ function memHandleMatch(i1, i2) {
 }
 
 function memHandleMismatch() {
+  memFirstCardEl.classList.add("mismatch");
+  memSecondCardEl.classList.add("mismatch");
+
   setTimeout(() => {
-    memFirstCardEl.classList.remove("flipped");
-    memSecondCardEl.classList.remove("flipped");
+    memFirstCardEl.classList.remove("flipped", "mismatch");
+    memSecondCardEl.classList.remove("flipped", "mismatch");
     memResetSelection();
-  }, 700);
+  }, 350);
 }
 
 function memResetSelection() {
@@ -230,6 +261,13 @@ function memHandleWin() {
 if (memPairRange) {
   memPairRange.addEventListener("input", () => {
     memPairCountSpan.textContent = memPairRange.value;
+  });
+}
+
+if (memThemeSelect) {
+  memThemeSelect.addEventListener("change", () => {
+    memTheme = memThemeSelect.value;
+    memStartGame(); // restart game when theme changes
   });
 }
 
@@ -264,7 +302,7 @@ if (memWinModal) {
 }
 
 // Initialize when on this page
-if (memBoard) {
+if (memBoard && memPairRange) {
   memUpdateBestTimeDisplay();
   memStartGame();
 }
