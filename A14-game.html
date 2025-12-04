@@ -51,7 +51,7 @@
     }
 
     #memPairRange {
-      width: 150px;
+      width: 160px;
     }
 
     #memTheme {
@@ -64,7 +64,8 @@
     }
 
     #memStartBtn,
-    #memPlayAgainBtn {
+    #memPlayAgainBtn,
+    #memFullDeckBtn {
       border: none;
       padding: 0.4rem 0.9rem;
       border-radius: 999px;
@@ -72,10 +73,12 @@
       cursor: pointer;
       background: var(--accent, #6b0075);
       color: #fff;
+      white-space: nowrap;
     }
 
     #memStartBtn:hover,
-    #memPlayAgainBtn:hover {
+    #memPlayAgainBtn:hover,
+    #memFullDeckBtn:hover {
       filter: brightness(1.1);
     }
 
@@ -94,7 +97,7 @@
     /* Board & cards */
     .mem-board {
       display: grid;
-      grid-template-columns: repeat(4, minmax(70px, 110px));
+      grid-template-columns: repeat(auto-fit, minmax(70px, 110px));
       gap: 0.75rem;
       justify-content: center;
       align-content: flex-start;
@@ -152,7 +155,7 @@
     .mem-card-face.front {
       background: #ffffff;
       transform: rotateY(180deg);
-      font-size: 2.3rem;
+      font-size: 2.1rem;
     }
 
     /* Flip states */
@@ -189,10 +192,6 @@
     @media (max-width: 800px) {
       .mem-layout {
         grid-template-columns: 1fr;
-      }
-
-      .mem-board {
-        grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
       }
     }
 
@@ -261,8 +260,8 @@
 
       <p class="mem-intro">
         This assignment implements a JavaScript memory matching game based on the design from Assignment 13.
-        The game supports a difficulty slider (number of pairs), a timer, move counter, and a stored best time
-        using <code>localStorage</code>.
+        The game supports a difficulty slider (up to a full 52-card deck), a theme selector, a timer, move counter,
+        accuracy rating, and a stored best time using <code>localStorage</code>.
       </p>
 
       <div class="mem-layout">
@@ -270,11 +269,11 @@
           <!-- Row 1: number of pairs -->
           <div class="mem-control-row">
             <label for="memPairRange">Number of Pairs:</label>
-            <input type="range" id="memPairRange" min="3" max="10" value="6">
-            <span id="memPairCount">6</span>
+            <input type="range" id="memPairRange" min="3" max="26" value="10">
+            <span id="memPairCount">10</span>
           </div>
 
-          <!-- Row 2: theme + start button -->
+          <!-- Row 2: theme + start / full deck buttons -->
           <div class="mem-control-row">
             <label for="memTheme">Card Style:</label>
             <select id="memTheme">
@@ -282,22 +281,23 @@
               <option value="cards">Playing Cards</option>
             </select>
             <button id="memStartBtn" type="button">Start Game</button>
+            <button id="memFullDeckBtn" type="button">Full Deck</button>
           </div>
 
           <section class="mem-rules">
             <h3>Rules</h3>
             <ul>
-              <li>Click on a card to flip it over.</li>
-              <li>You can flip two cards at a time.</li>
-              <li>If they match, they stay face up.</li>
-              <li>If they don’t match, they flip back down.</li>
-              <li>Try to match all pairs with as few moves as possible.</li>
+              <li>At the beginning of each game you get a quick preview of all cards.</li>
+              <li>Click on a card to flip it over. You can flip two cards at a time.</li>
+              <li>If they match, they stay face up. If they don’t, they flip back down.</li>
+              <li>Try to match all pairs with as few moves and the best accuracy as possible.</li>
             </ul>
           </section>
 
           <section class="mem-stats">
             <p><strong>Time:</strong> <span id="memTime">0</span>s</p>
             <p><strong>Moves:</strong> <span id="memMoves">0</span></p>
+            <p><strong>Accuracy:</strong> <span id="memAccuracy">0</span>%</p>
             <p><strong>Best Time:</strong> <span id="memBestTime">N/A</span></p>
           </section>
         </section>
