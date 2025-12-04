@@ -1,26 +1,51 @@
-// Assignment 14 – Memory Match Game with themes + animation
+// A14 – Memory Match Game with Emoji + Text Cards + PNG Cards
 
-// Emoji / symbol set for the card faces
+// Emoji / symbol set for card faces (up to 26)
 const memSymbolIcons = [
-  "💻", "📱", "🖱️", "⌨️", "📡",
-  "💾", "🧠", "🛰️", "🧪", "🎮"
-]; // up to 10 pairs
+  "💻","📱","🖱️","⌨️","📡","💾",
+  "🧠","🛰️","🧪","🎮","📚","📊",
+  "📔","🖊️","🧮","🕹️","🎧","💡",
+  "🔐","🔧","⚙️","📂","🧱","📶",
+  "🧬","🌐"
+];
 
-// Playing card style set
-const memCardIcons = [
-  "A♠", "K♥", "Q♣", "J♦", "10♠",
-  "9♥", "8♣", "7♦", "6♠", "5♥"
-]; // also up to 10 pairs
+// Build PNG / text card definitions from your assets folder.
+// We only need 26 unique cards (26 pairs = 52 cards).
+const memPngCards = (() => {
+  const ranks = ["2","3","4","5","6","7","8","9","10"];
+  const suits = ["clubs","diamonds","hearts","spades"];
+  const suitSymbols = {
+    clubs: "♣",
+    diamonds: "♦",
+    hearts: "♥",
+    spades: "♠"
+  };
+
+  const defs = [];
+  for (const suit of suits) {
+    for (const rank of ranks) {
+      if (defs.length >= 26) break;
+      const key = `${rank}_of_${suit}`;          // matches assets: 2_of_clubs.png etc.
+      const label = `${rank}${suitSymbols[suit]}`; // for text theme
+      const img = `${key}.png`;                 // e.g. "2_of_clubs.png"
+      defs.push({ key, label, img });
+    }
+    if (defs.length >= 26) break;
+  }
+  return defs;
+})();
 
 // DOM elements
 const memPairRange = document.getElementById("memPairRange");
 const memPairCountSpan = document.getElementById("memPairCount");
 const memStartBtn = document.getElementById("memStartBtn");
+const memFullDeckBtn = document.getElementById("memFullDeckBtn");
 const memThemeSelect = document.getElementById("memTheme");
 
 const memBoard = document.getElementById("memBoard");
 const memTimeDisplay = document.getElementById("memTime");
 const memMovesDisplay = document.getElementById("memMoves");
+const memAccuracyDisplay = document.getElementById("memAccuracy");
 const memBestTimeDisplay = document.getElementById("memBestTime");
 
 const memWinModal = document.getElementById("memWinModal");
@@ -29,11 +54,12 @@ const memFinalMovesSpan = document.getElementById("memFinalMoves");
 const memPlayAgainBtn = document.getElementById("memPlayAgainBtn");
 
 // Game state
-let memNumberOfPairs = memPairRange ? parseInt(memPairRange.value, 10) : 6;
+let memNumberOfPairs = memPairRange ? parseInt(memPairRange.value, 10) : 10;
 let memCards = [];
 let memFirstCardEl = null;
 let memSecondCardEl = null;
 let memLockBoard = false;
+let memIsPreviewing = false;
 
 let memTimerId = null;
 let memElapsedSeconds = 0;
@@ -42,7 +68,6 @@ let memMatchedPairs = 0;
 
 let memTheme = memThemeSelect ? memThemeSelect.value : "symbols";
 
-// Utilities
 function memShuffle(arr) {
   const array = arr.slice();
   for (let i = array.length - 1; i > 0; i--) {
@@ -54,8 +79,6 @@ function memShuffle(arr) {
 
 function memStartTimer() {
   memStopTimer();
-  memElapsedSeconds = 0;
-  memTimeDisplay.textContent = "0";
   memTimerId = setInterval(() => {
     memElapsedSeconds++;
     memTimeDisplay.textContent = memElapsedSeconds.toString();
@@ -70,12 +93,13 @@ function memStopTimer() {
 }
 
 function memGetBestKey() {
-  return memTheme === "cards" ? "A14MemoryBestTimeCards" : "A14MemoryBestTimeSymbols";
+  if (memTheme === "png") return "A14BestTimePNG";
+  if (memTheme === "text") return "A14BestTimeText";
+  return "A14BestTimeSymbols";
 }
 
 function memUpdateBestTimeDisplay() {
-  const key = memGetBestKey();
-  const best = localStorage.getItem(key);
+  const best = localStorage.getItem(memGetBestKey());
   if (best) {
     memBestTimeDisplay.textContent = best + "s";
   } else {
@@ -91,19 +115,45 @@ function memSaveBestTimeIfNeeded() {
   }
 }
 
+function memUpdateAccuracy() {
+  if (!memAccuracyDisplay) return;
+  const totalFlips = memMoves * 2;
+  const correctFlips = memMatchedPairs * 2;
+  const acc = totalFlips ? Math.round((correctFlips / totalFlips) * 100) : 0;
+  memAccuracyDisplay.textContent = acc.toString();
+}
+
 // Build deck based on theme
 function memGenerateDeck() {
-  const baseIcons = memTheme === "cards" ? memCardIcons : memSymbolIcons;
-  const icons = baseIcons.slice(0, memNumberOfPairs);
   const deck = [];
-  icons.forEach(icon => {
-    deck.push({ icon, matched: false });
-    deck.push({ icon, matched: false });
-  });
+
+  if (memTheme === "png" || memTheme === "text") {
+    const defs = memPngCards.slice(0, memNumberOfPairs);
+    defs.forEach(def => {
+      deck.push({
+        key: def.key,
+        type: memTheme === "png" ? "png" : "text",
+        img: def.img,
+        label: def.label
+      });
+      deck.push({
+        key: def.key,
+        type: memTheme === "png" ? "png" : "text",
+        img: def.img,
+        label: def.label
+      });
+    });
+  } else {
+    const icons = memSymbolIcons.slice(0, memNumberOfPairs);
+    icons.forEach(icon => {
+      deck.push({ key: icon, type: "emoji", icon });
+      deck.push({ key: icon, type: "emoji", icon });
+    });
+  }
+
   return memShuffle(deck);
 }
 
-// Create DOM card
 function memCreateCardElement(card, index) {
   const cardEl = document.createElement("button");
   cardEl.classList.add("mem-card");
@@ -119,7 +169,18 @@ function memCreateCardElement(card, index) {
 
   const front = document.createElement("div");
   front.classList.add("mem-card-face", "front");
-  front.textContent = card.icon;
+
+  if (card.type === "png") {
+    const img = document.createElement("img");
+    img.src = "assets/" + card.img; // e.g. "assets/2_of_clubs.png"
+    img.alt = card.label || card.key;
+    front.appendChild(img);
+  } else if (card.type === "text") {
+    front.classList.add("text-cards");
+    front.textContent = card.label;
+  } else {
+    front.textContent = card.icon;
+  }
 
   inner.appendChild(back);
   inner.appendChild(front);
@@ -132,7 +193,6 @@ function memCreateCardElement(card, index) {
 function memRenderBoard() {
   if (!memBoard) return;
 
-  // reset board animation
   memBoard.classList.remove("ready");
   memBoard.innerHTML = "";
 
@@ -141,25 +201,47 @@ function memRenderBoard() {
     memBoard.appendChild(el);
   });
 
-  // trigger fade-in
   requestAnimationFrame(() => {
     memBoard.classList.add("ready");
   });
 }
 
-// Reset state
+// Quick preview at start of each game
+function memPreviewBoard() {
+  if (!memBoard) return;
+  const cards = memBoard.querySelectorAll(".mem-card");
+  if (!cards.length) return;
+
+  memIsPreviewing = true;
+
+  cards.forEach(c => c.classList.add("flipped"));
+
+  let previewTime;
+  if (memNumberOfPairs <= 8) previewTime = 1800;
+  else if (memNumberOfPairs <= 16) previewTime = 2300;
+  else previewTime = 2800;
+
+  setTimeout(() => {
+    cards.forEach(c => c.classList.remove("flipped"));
+    memIsPreviewing = false;
+    memElapsedSeconds = 0;
+    memTimeDisplay.textContent = "0";
+  }, previewTime);
+}
+
 function memResetState() {
   memFirstCardEl = null;
   memSecondCardEl = null;
   memLockBoard = false;
-  memMoves = 0;
   memMatchedPairs = 0;
-  memMovesDisplay.textContent = "0";
+  memMoves = 0;
   memElapsedSeconds = 0;
   memTimeDisplay.textContent = "0";
+  memMovesDisplay.textContent = "0";
+  memUpdateAccuracy();
+  memStopTimer();
 }
 
-// Start game
 function memStartGame() {
   if (!memPairRange) return;
 
@@ -169,12 +251,12 @@ function memStartGame() {
   memResetState();
   memCards = memGenerateDeck();
   memRenderBoard();
-  memStartTimer();
   memUpdateBestTimeDisplay();
+  memPreviewBoard(); // timer starts on first click
 }
 
-// Card click handling
 function memHandleCardClick(cardEl) {
+  if (memIsPreviewing) return;
   if (memLockBoard) return;
   if (cardEl.classList.contains("flipped") || cardEl.classList.contains("matched")) return;
 
@@ -202,7 +284,7 @@ function memCheckForMatch() {
   const i1 = parseInt(memFirstCardEl.dataset.index, 10);
   const i2 = parseInt(memSecondCardEl.dataset.index, 10);
 
-  const isMatch = memCards[i1].icon === memCards[i2].icon;
+  const isMatch = memCards[i1].key === memCards[i2].key;
 
   if (isMatch) {
     memHandleMatch(i1, i2);
@@ -220,6 +302,7 @@ function memHandleMatch(i1, i2) {
 
   memMatchedPairs++;
   memResetSelection();
+  memUpdateAccuracy();
 
   if (memMatchedPairs === memNumberOfPairs) {
     memHandleWin();
@@ -234,6 +317,7 @@ function memHandleMismatch() {
     memFirstCardEl.classList.remove("flipped", "mismatch");
     memSecondCardEl.classList.remove("flipped", "mismatch");
     memResetSelection();
+    memUpdateAccuracy();
   }, 350);
 }
 
@@ -267,12 +351,24 @@ if (memPairRange) {
 if (memThemeSelect) {
   memThemeSelect.addEventListener("change", () => {
     memTheme = memThemeSelect.value;
-    memStartGame(); // restart game when theme changes
+    memStartGame();
   });
 }
 
 if (memStartBtn) {
   memStartBtn.addEventListener("click", () => {
+    if (memWinModal) {
+      memWinModal.classList.remove("show");
+      memWinModal.setAttribute("aria-hidden", "true");
+    }
+    memStartGame();
+  });
+}
+
+if (memFullDeckBtn && memPairRange) {
+  memFullDeckBtn.addEventListener("click", () => {
+    memPairRange.value = "26";
+    memPairCountSpan.textContent = "26";
     if (memWinModal) {
       memWinModal.classList.remove("show");
       memWinModal.setAttribute("aria-hidden", "true");
