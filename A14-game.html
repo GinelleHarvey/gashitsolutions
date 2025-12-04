@@ -317,7 +317,22 @@
       box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
       animation: memWinPop 0.32s ease-out;
     }
-   </style>
+
+    @keyframes memBurst {
+      0%   { opacity: 0; transform: translate(-50%, -20%) scale(0.6); }
+      40%  { opacity: 1; transform: translate(-50%, -60%) scale(1.1); }
+      100% { opacity: 0; transform: translate(-50%, -110%) scale(0.8); }
+    }
+    
+    .mem-burst {
+      position: absolute;
+      pointer-events: none;
+      text-shadow: 0 0 10px rgba(255,255,255,0.85);
+      animation: memBurst 0.9s ease-out forwards;
+      z-index: 9999;
+    }
+    
+  </style>
 </head>
 
 <body>
