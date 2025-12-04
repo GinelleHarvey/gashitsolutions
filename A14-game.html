@@ -46,12 +46,21 @@
       display: flex;
       align-items: center;
       gap: 0.75rem;
-      margin-bottom: 1rem;
+      margin-bottom: 0.8rem;
       flex-wrap: wrap;
     }
 
     #memPairRange {
       width: 150px;
+    }
+
+    #memTheme {
+      padding: 0.25rem 0.5rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: #121826;
+      color: #f5f7ff;
+      font-size: 0.9rem;
     }
 
     #memStartBtn,
@@ -90,6 +99,15 @@
       justify-content: center;
       align-content: flex-start;
       min-height: 260px;
+
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+
+    .mem-board.ready {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     .mem-card {
@@ -98,6 +116,13 @@
       padding-top: 130%; /* keep card rectangular */
       cursor: pointer;
       perspective: 900px;
+
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .mem-card:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35);
     }
 
     .mem-card-inner {
@@ -123,7 +148,7 @@
       background: #7a007f;
     }
 
-    /* Front of card (emoji side) */
+    /* Front of card (emoji / card side) */
     .mem-card-face.front {
       background: #ffffff;
       transform: rotateY(180deg);
@@ -136,9 +161,28 @@
       transform: rotateY(180deg);
     }
 
-    /* Highlight matched cards slightly */
-    .mem-card.matched .mem-card-face.front {
-      box-shadow: 0 0 0 3px #6b0075;
+    /* Highlight matched cards with a little pulse */
+    @keyframes memMatchPulse {
+      0% { transform: rotateY(180deg) scale(1); }
+      50% { transform: rotateY(180deg) scale(1.08); }
+      100% { transform: rotateY(180deg) scale(1); }
+    }
+
+    .mem-card.matched .mem-card-inner {
+      animation: memMatchPulse 0.45s ease-out;
+    }
+
+    /* Shake animation on mismatch */
+    @keyframes memMismatchShake {
+      0% { transform: rotateY(180deg) translateX(0); }
+      25% { transform: rotateY(180deg) translateX(-4px); }
+      50% { transform: rotateY(180deg) translateX(4px); }
+      75% { transform: rotateY(180deg) translateX(-4px); }
+      100% { transform: rotateY(180deg) translateX(0); }
+    }
+
+    .mem-card.mismatch .mem-card-inner {
+      animation: memMismatchShake 0.25s ease;
     }
 
     /* Responsive board: stack controls above game */
@@ -223,10 +267,20 @@
 
       <div class="mem-layout">
         <section class="mem-controls">
+          <!-- Row 1: number of pairs -->
           <div class="mem-control-row">
             <label for="memPairRange">Number of Pairs:</label>
             <input type="range" id="memPairRange" min="3" max="10" value="6">
             <span id="memPairCount">6</span>
+          </div>
+
+          <!-- Row 2: theme + start button -->
+          <div class="mem-control-row">
+            <label for="memTheme">Card Style:</label>
+            <select id="memTheme">
+              <option value="symbols" selected>Symbols (Emoji)</option>
+              <option value="cards">Playing Cards</option>
+            </select>
             <button id="memStartBtn" type="button">Start Game</button>
           </div>
 
