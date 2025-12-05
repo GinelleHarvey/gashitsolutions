@@ -1,7 +1,7 @@
 // A14 – Memory Match Game
 // Themes: Emoji symbols, Text playing cards, PNG playing cards from /assets
-// Features: difficulty up to 26 pairs, full deck button, preview+shuffle intro,
-// accuracy, best time per theme, bonus preview mini-game, fun match effects.
+// Features: difficulty up to 26 pairs, full deck button, preview + visible shuffle,
+// accuracy, best time per theme, bonus preview mini-game, stronger match burst effects.
 
 // ---------- Card Definitions ----------
 
@@ -14,7 +14,7 @@ const memSymbolIcons = [
   "🧬","🌐"
 ];
 
-// Build PNG / text card definitions from your assets folder.
+// PNG / text card definitions based on your assets folder.
 // We only need 26 unique cards (26 pairs = 52 cards).
 const memPngCards = (() => {
   const ranks = ["2","3","4","5","6","7","8","9","10"];
@@ -30,9 +30,9 @@ const memPngCards = (() => {
   for (const suit of suits) {
     for (const rank of ranks) {
       if (defs.length >= 26) break;
-      const key = `${rank}_of_${suit}`;          // matches assets: 2_of_clubs.png
-      const label = `${rank}${suitSymbols[suit]}`; // text style: "10♠"
-      const img = `${key}.png`;                 // "2_of_clubs.png"
+      const key   = `${rank}_of_${suit}`;          // matches assets: 2_of_clubs.png
+      const label = `${rank}${suitSymbols[suit]}`; // "10♠"
+      const img   = `${key}.png`;                  // "2_of_clubs.png"
       defs.push({ key, label, img });
     }
     if (defs.length >= 26) break;
@@ -42,24 +42,24 @@ const memPngCards = (() => {
 
 // ---------- DOM Elements ----------
 
-const memPairRange        = document.getElementById("memPairRange");
-const memPairCountSpan    = document.getElementById("memPairCount");
-const memStartBtn         = document.getElementById("memStartBtn");
-const memFullDeckBtn      = document.getElementById("memFullDeckBtn");
-const memThemeSelect      = document.getElementById("memTheme");
+const memPairRange       = document.getElementById("memPairRange");
+const memPairCountSpan   = document.getElementById("memPairCount");
+const memStartBtn        = document.getElementById("memStartBtn");
+const memFullDeckBtn     = document.getElementById("memFullDeckBtn");
+const memThemeSelect     = document.getElementById("memTheme");
 
-const memBoard            = document.getElementById("memBoard");
-const memTimeDisplay      = document.getElementById("memTime");
-const memMovesDisplay     = document.getElementById("memMoves");
-const memAccuracyDisplay  = document.getElementById("memAccuracy");
-const memBestTimeDisplay  = document.getElementById("memBestTime");
+const memBoard           = document.getElementById("memBoard");
+const memTimeDisplay     = document.getElementById("memTime");
+const memMovesDisplay    = document.getElementById("memMoves");
+const memAccuracyDisplay = document.getElementById("memAccuracy");
+const memBestTimeDisplay = document.getElementById("memBestTime");
 
-const memWinModal         = document.getElementById("memWinModal");
-const memFinalTimeSpan    = document.getElementById("memFinalTime");
-const memFinalMovesSpan   = document.getElementById("memFinalMoves");
-const memPlayAgainBtn     = document.getElementById("memPlayAgainBtn");
+const memWinModal        = document.getElementById("memWinModal");
+const memFinalTimeSpan   = document.getElementById("memFinalTime");
+const memFinalMovesSpan  = document.getElementById("memFinalMoves");
+const memPlayAgainBtn    = document.getElementById("memPlayAgainBtn");
 
-const memBonusBtn         = document.getElementById("memBonusBtn");
+const memBonusBtn        = document.getElementById("memBonusBtn");
 
 // ---------- Game State ----------
 
@@ -132,31 +132,36 @@ function memUpdateAccuracy() {
   memAccuracyDisplay.textContent = acc.toString();
 }
 
-// Little burst effect when you get a match
+// Stronger burst effect when you get a match (multiple particles)
 function memSpawnMatchBurst(targetEl) {
   if (!memBoard || !targetEl) return;
 
   const boardRect = memBoard.getBoundingClientRect();
   const rect      = targetEl.getBoundingClientRect();
 
-  const burst = document.createElement("div");
-  burst.className = "mem-burst";
+  const centerX = rect.left - boardRect.left + rect.width / 2;
+  const centerY = rect.top  - boardRect.top  + rect.height / 2;
 
   const icons = ["✨","🎉","💥","🌟","💜","⚡"];
-  burst.textContent = icons[Math.floor(Math.random() * icons.length)];
 
-  // Position relative to board
-  burst.style.position = "absolute";
-  burst.style.left = `${rect.left - boardRect.left + rect.width / 2}px`;
-  burst.style.top  = `${rect.top - boardRect.top + rect.height / 2}px`;
-  burst.style.pointerEvents = "none";
-  burst.style.fontSize = "1.7rem";
-  burst.style.transform = "translate(-50%, -50%)";
-  burst.style.animation = "memBurst 0.9s ease-out forwards";
+  // Create multiple sparkles for a bigger effect
+  const count = 5;
+  for (let i = 0; i < count; i++) {
+    const burst = document.createElement("div");
+    burst.className = "mem-burst";
+    burst.textContent = icons[Math.floor(Math.random() * icons.length)];
 
-  memBoard.appendChild(burst);
+    // Slight random offset so they don't stack perfectly
+    const offsetX = (Math.random() - 0.5) * 40; // -20 to 20 px
+    const offsetY = (Math.random() - 0.5) * 20; // -10 to 10 px
 
-  setTimeout(() => burst.remove(), 950);
+    burst.style.left = `${centerX + offsetX}px`;
+    burst.style.top  = `${centerY + offsetY}px`;
+
+    memBoard.appendChild(burst);
+
+    setTimeout(() => burst.remove(), 1000);
+  }
 }
 
 // ---------- Deck Generation ----------
@@ -232,7 +237,7 @@ function memCreateCardElement(card, index) {
 function memRenderBoard() {
   if (!memBoard) return;
 
-  memBoard.classList.remove("ready", "shuffling");
+  memBoard.classList.remove("ready");
   memBoard.innerHTML = "";
 
   memCards.forEach((card, index) => {
@@ -245,19 +250,85 @@ function memRenderBoard() {
   });
 }
 
-// ---------- Fancy Intro: Preview + Shuffle ----------
+// ---------- Visible Shuffle (cards move to new slots) ----------
 
-// Shuffle animation on the whole board
-function memRunIntroAnimation() {
+function memVisibleShuffle() {
   if (!memBoard) return;
-  memLockBoard = true;
-  memBoard.classList.add("shuffling");
+  const cards = Array.from(memBoard.querySelectorAll(".mem-card"));
+  if (!cards.length) return;
 
+  memLockBoard = true;
+
+  const boardRect = memBoard.getBoundingClientRect();
+  const positions = cards.map(card => {
+    const r = card.getBoundingClientRect();
+    return {
+      card,
+      left:  r.left - boardRect.left,
+      top:   r.top  - boardRect.top,
+      width: r.width,
+      height:r.height
+    };
+  });
+
+  // Freeze board height so it doesn't collapse while cards go absolute
+  const boardHeight = boardRect.height;
+  memBoard.style.height = boardHeight + "px";
+
+  // Turn cards into absolutely positioned at their current spots
+  positions.forEach(pos => {
+    const card = pos.card;
+    card.style.position   = "absolute";
+    card.style.left       = `${pos.left}px`;
+    card.style.top        = `${pos.top}px`;
+    card.style.width      = `${pos.width}px`;
+    card.style.height     = `${pos.height}px`;
+    card.style.transition = "left 0.55s ease, top 0.55s ease, transform 0.55s ease";
+    card.style.transform  = "scale(1)";
+  });
+
+  // Build a shuffled index mapping
+  const indices  = cards.map((_, idx) => idx);
+  const shuffled = memShuffle(indices);
+
+  const newOrder = new Array(cards.length);
+
+  shuffled.forEach((targetIndex, i) => {
+    const card      = cards[i];
+    const targetPos = positions[targetIndex];
+
+    card.style.left = `${targetPos.left}px`;
+    card.style.top  = `${targetPos.top}px`;
+
+    // slight random wobble
+    const angle = (Math.random() - 0.5) * 8; // -4deg to 4deg
+    card.style.transform = `scale(1.03) rotate(${angle}deg)`;
+
+    newOrder[targetIndex] = card;
+  });
+
+  // After animation completes, clean up and restore grid layout
   setTimeout(() => {
-    memBoard.classList.remove("shuffling");
+    memBoard.style.height = "";
+
+    newOrder.forEach(card => {
+      card.style.position   = "";
+      card.style.left       = "";
+      card.style.top        = "";
+      card.style.width      = "";
+      card.style.height     = "";
+      card.style.transition = "";
+      card.style.transform  = "";
+    });
+
+    // Re-append in new order so DOM order matches visual order
+    newOrder.forEach(card => memBoard.appendChild(card));
+
     memLockBoard = false;
-  }, 850);
+  }, 620);
 }
+
+// ---------- Fancy Intro: Preview + Shuffle ----------
 
 // Preview all cards, then flip back and (optionally) shuffle.
 // options: { resetTime: boolean, shuffleAfter: boolean }
@@ -267,13 +338,13 @@ function memPreviewBoard(options = {}) {
   const cards = memBoard.querySelectorAll(".mem-card");
   if (!cards.length) return;
 
-  // Start with all cards face-down.
+  // Ensure all cards start face-down.
   cards.forEach(c => c.classList.remove("flipped","matched","mismatch"));
 
   memIsPreviewing = true;
   memLockBoard    = true;
 
-  // Small delay so they see the face-down layout first.
+  // Small delay so players see the face-down layout first.
   const startDelay = 350;
 
   setTimeout(() => {
@@ -281,7 +352,7 @@ function memPreviewBoard(options = {}) {
   }, startDelay);
 
   let previewTime;
-  if (memNumberOfPairs <= 8)      previewTime = 1600;
+  if (memNumberOfPairs <= 8)       previewTime = 1600;
   else if (memNumberOfPairs <= 16) previewTime = 2100;
   else                             previewTime = 2600;
 
@@ -297,7 +368,7 @@ function memPreviewBoard(options = {}) {
     }
 
     if (shuffleAfter) {
-      memRunIntroAnimation();
+      memVisibleShuffle(); // visibly move them to new slots
     }
   }, startDelay + previewTime);
 }
@@ -310,8 +381,8 @@ function memResetState() {
   memLockBoard    = false;
   memIsPreviewing = false;
 
-  memMatchedPairs = 0;
-  memMoves        = 0;
+  memMatchedPairs   = 0;
+  memMoves          = 0;
   memElapsedSeconds = 0;
 
   memMovesDisplay.textContent = "0";
@@ -335,7 +406,7 @@ function memStartGame() {
   memRenderBoard();
   memUpdateBestTimeDisplay();
 
-  // Fancy sequence: cards down → flip preview → flip back → shuffle.
+  // Sequence: cards down → brief preview → flip back → visible shuffle.
   memPreviewBoard({ resetTime: true, shuffleAfter: true });
 }
 
@@ -387,7 +458,7 @@ function memHandleMatch(i1, i2) {
   memSecondCardEl.classList.add("matched");
 
   memMatchedPairs++;
-  memSpawnMatchBurst(memSecondCardEl); // fun little pop over second card
+  memSpawnMatchBurst(memSecondCardEl); // bigger sparkle burst on match
 
   // Bonus mini-game: every 3 matches, unlock a Bonus Peek (if game not done).
   if (memMatchedPairs % 3 === 0 && memMatchedPairs < memNumberOfPairs && memBonusBtn) {
