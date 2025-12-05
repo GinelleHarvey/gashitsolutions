@@ -141,9 +141,15 @@
       transition: width 0.25s ease;
     }
 
+    .mem-bonus-next {
+      margin-top: 0.25rem;
+      font-size: 0.8rem;
+      opacity: 0.9;
+    }
+
     /* Board & cards */
     .mem-board {
-      position: relative; /* important for bursts & visible shuffle */
+      position: relative;
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(70px, 110px));
       gap: 0.75rem;
@@ -168,7 +174,6 @@
       transform: translateY(0);
     }
 
-    /* Card entrance animation */
     @keyframes memCardSpawn {
       0% {
         opacity: 0;
@@ -187,7 +192,7 @@
     .mem-card {
       position: relative;
       width: 100%;
-      padding-top: 130%; /* keep card rectangular */
+      padding-top: 130%;
       cursor: pointer;
       perspective: 900px;
 
@@ -198,7 +203,6 @@
       transition: transform 0.18s ease, box-shadow 0.18s ease;
     }
 
-    /* Staggered entrance (enough for up to 26 pairs) */
     .mem-card:nth-child(1)  { animation-delay: 0.02s; }
     .mem-card:nth-child(2)  { animation-delay: 0.04s; }
     .mem-card:nth-child(3)  { animation-delay: 0.06s; }
@@ -250,12 +254,10 @@
       backface-visibility: hidden;
     }
 
-    /* Back of card (what you see first) */
     .mem-card-face.back {
       background: #7a007f;
     }
 
-    /* Front of card (emoji / png / text side) */
     .mem-card-face.front {
       background: #ffffff;
       transform: rotateY(180deg);
@@ -275,13 +277,11 @@
       letter-spacing: 0.04em;
     }
 
-    /* Flip states */
     .mem-card.flipped .mem-card-inner,
     .mem-card.matched .mem-card-inner {
       transform: rotateY(180deg);
     }
 
-    /* Highlight matched cards with a little pulse + glow */
     @keyframes memMatchPulse {
       0%   { transform: rotateY(180deg) scale(1); }
       40%  { transform: rotateY(180deg) scale(1.08); }
@@ -294,7 +294,6 @@
       box-shadow: 0 0 0 3px rgba(155, 255, 203, 0.9);
     }
 
-    /* Shake animation on mismatch */
     @keyframes memMismatchShake {
       0%   { transform: rotateY(180deg) translateX(0); }
       25%  { transform: rotateY(180deg) translateX(-4px); }
@@ -307,7 +306,6 @@
       animation: memMismatchShake 0.28s ease;
     }
 
-    /* Stronger sparkle burst (multi-spark) */
     @keyframes memBurst {
       0% {
         opacity: 0;
@@ -334,14 +332,12 @@
       z-index: 9999;
     }
 
-    /* Responsive board: stack controls above game */
     @media (max-width: 800px) {
       .mem-layout {
         grid-template-columns: 1fr;
       }
     }
 
-    /* Win modal */
     .mem-win-modal {
       position: fixed;
       inset: 0;
@@ -414,20 +410,18 @@
       <p class="mem-intro">
         This assignment implements a JavaScript memory matching game based on the design from Assignment 13.
         The game supports a difficulty slider (up to 26 pairs), three card styles (emoji, text cards, and PNG cards),
-        a timer, move counter, accuracy rating, stored best times using <code>localStorage</code>, and a bonus
-        streak feature that rewards accurate play with free matches.
+        a timer, move counter, accuracy rating, stored best times using <code>localStorage</code>, and a leveling
+        bonus system that rewards streaks of correct matches.
       </p>
 
       <div class="mem-layout">
         <section class="mem-controls">
-          <!-- Row 1: number of pairs -->
           <div class="mem-control-row">
             <label for="memPairRange">Number of Pairs:</label>
             <input type="range" id="memPairRange" min="3" max="26" value="10">
             <span id="memPairCount">10</span>
           </div>
 
-          <!-- Row 2: theme + start / full deck buttons -->
           <div class="mem-control-row">
             <label for="memTheme">Card Style:</label>
             <select id="memTheme">
@@ -445,8 +439,12 @@
               <li>Cards start face down. At the beginning of each game you get a brief preview, then the deck visibly shuffles.</li>
               <li>Click on cards to flip them. You can flip two at a time.</li>
               <li>If they match, they stay face up with a sparkle burst; if not, they flip back down.</li>
-              <li>Every correct match increases your <strong>streak bar</strong>. Get <strong>3 matches in a row</strong> to earn a <strong>Bonus Match</strong>.</li>
-              <li>Each Bonus Match instantly clears a random pair for free. Use it strategically to finish the deck faster.</li>
+              <li>
+                Every correct match increases your streak bar.
+                Get <strong>3 matches in a row</strong> to earn a bonus. The first time this happens you get
+                <strong>+1 free match</strong>, the next time <strong>+2</strong>, then <strong>+3</strong>, and so on.
+              </li>
+              <li>Use the <strong>Bonus Match ✨</strong> button to instantly clear multiple random pairs based on your saved charges.</li>
             </ul>
           </section>
 
@@ -462,6 +460,9 @@
               </div>
               <div class="mem-bonus-bar">
                 <div id="memBonusFill" class="mem-bonus-fill"></div>
+              </div>
+              <div class="mem-bonus-next">
+                Next bonus level: <span id="memBonusLevel">1</span> free matches for 3-in-a-row
               </div>
             </div>
 
