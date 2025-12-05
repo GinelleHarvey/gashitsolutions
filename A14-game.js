@@ -1,11 +1,10 @@
 // A14 – Memory Match Game
 // Themes: Emoji symbols, Text playing cards, PNG playing cards from /assets
 // Features: difficulty up to 26 pairs, full deck button, preview + visible shuffle,
-// accuracy, best time per theme, streak-based bonus mini-game, stronger match burst.
+// accuracy, best time per theme, streak-based bonus mini-game with leveling bonuses.
 
 // ---------- Card Definitions ----------
 
-// Emoji / symbol set for card faces (up to 26)
 const memSymbolIcons = [
   "💻","📱","🖱️","⌨️","📡","💾",
   "🧠","🛰️","🧪","🎮","📚","📊",
@@ -14,8 +13,6 @@ const memSymbolIcons = [
   "🧬","🌐"
 ];
 
-// PNG / text card definitions based on your assets folder.
-// We only need 26 unique cards (26 pairs = 52 cards).
 const memPngCards = (() => {
   const ranks = ["2","3","4","5","6","7","8","9","10"];
   const suits = ["clubs","diamonds","hearts","spades"];
@@ -30,9 +27,9 @@ const memPngCards = (() => {
   for (const suit of suits) {
     for (const rank of ranks) {
       if (defs.length >= 26) break;
-      const key   = `${rank}_of_${suit}`;          // matches assets: 2_of_clubs.png
-      const label = `${rank}${suitSymbols[suit]}`; // "10♠"
-      const img   = `${key}.png`;                  // "2_of_clubs.png"
+      const key   = `${rank}_of_${suit}`;
+      const label = `${rank}${suitSymbols[suit]}`;
+      const img   = `${key}.png`;
       defs.push({ key, label, img });
     }
     if (defs.length >= 26) break;
@@ -62,6 +59,7 @@ const memPlayAgainBtn    = document.getElementById("memPlayAgainBtn");
 const memBonusBtn        = document.getElementById("memBonusBtn");
 const memBonusStreakSpan = document.getElementById("memBonusStreak");
 const memBonusFill       = document.getElementById("memBonusFill");
+const memBonusLevelSpan  = document.getElementById("memBonusLevel");
 
 // ---------- Game State ----------
 
@@ -80,8 +78,9 @@ let memMatchedPairs   = 0;
 let memTheme          = memThemeSelect ? memThemeSelect.value : "symbols";
 
 // Bonus / streak
-let memStreak         = 0; // consecutive correct matches
-let memBonusCharges   = 0; // usable bonus matches
+let memStreak       = 0; // consecutive correct matches
+let memBonusCharges = 0; // usable bonus matches
+let memBonusLevel   = 1; // each 3-in-a-row awards this many charges
 
 // ---------- Helpers ----------
 
@@ -136,7 +135,6 @@ function memUpdateAccuracy() {
   memAccuracyDisplay.textContent = acc.toString();
 }
 
-// Update bonus UI: streak bar, button label / disabled state
 function memUpdateBonusUI() {
   if (memBonusStreakSpan) {
     memBonusStreakSpan.textContent = memStreak.toString();
@@ -153,9 +151,11 @@ function memUpdateBonusUI() {
       memBonusBtn.textContent = "Bonus Match ✨";
     }
   }
+  if (memBonusLevelSpan) {
+    memBonusLevelSpan.textContent = memBonusLevel.toString();
+  }
 }
 
-// Stronger burst effect when you get a match (multiple particles)
 function memSpawnMatchBurst(targetEl) {
   if (!memBoard || !targetEl) return;
 
@@ -173,8 +173,8 @@ function memSpawnMatchBurst(targetEl) {
     burst.className = "mem-burst";
     burst.textContent = icons[Math.floor(Math.random() * icons.length)];
 
-    const offsetX = (Math.random() - 0.5) * 40; // -20..20 px
-    const offsetY = (Math.random() - 0.5) * 20; // -10..10 px
+    const offsetX = (Math.random() - 0.5) * 40;
+    const offsetY = (Math.random() - 0.5) * 20;
 
     burst.style.left = `${centerX + offsetX}px`;
     burst.style.top  = `${centerY + offsetY}px`;
@@ -236,7 +236,7 @@ function memCreateCardElement(card, index) {
 
   if (card.type === "png") {
     const img = document.createElement("img");
-    img.src = "assets/" + card.img;   // e.g. assets/2_of_clubs.png
+    img.src = "assets/" + card.img;
     img.alt = card.label || card.key;
     front.appendChild(img);
   } else if (card.type === "text") {
@@ -270,7 +270,7 @@ function memRenderBoard() {
   });
 }
 
-// ---------- Visible Shuffle (cards move to new slots) ----------
+// ---------- Visible Shuffle ----------
 
 function memVisibleShuffle() {
   if (!memBoard) return;
@@ -341,9 +341,8 @@ function memVisibleShuffle() {
   }, 620);
 }
 
-// ---------- Fancy Intro: Preview + Shuffle ----------
+// ---------- Preview + Shuffle ----------
 
-// Preview all cards, then flip back and (optionally) shuffle.
 function memPreviewBoard({ resetTime = false, shuffleAfter = false } = {}) {
   if (!memBoard) return;
   const cards = memBoard.querySelectorAll(".mem-card");
@@ -399,6 +398,7 @@ function memResetState() {
 
   memStreak       = 0;
   memBonusCharges = 0;
+  memBonusLevel   = 1;
   memUpdateBonusUI();
 
   memStopTimer();
@@ -468,11 +468,13 @@ function memHandleMatch(i1, i2) {
   memMatchedPairs++;
   memSpawnMatchBurst(memSecondCardEl);
 
-  // Update streak and award bonus charges on 3-in-a-row
+  // Leveling bonus: every 3 matches in a row
+  // → award memBonusLevel charges, reset streak to 0, increase level
   memStreak++;
   if (memStreak >= 3) {
-    memBonusCharges++;
+    memBonusCharges += memBonusLevel;
     memStreak = 0;
+    memBonusLevel++;
   }
   memUpdateBonusUI();
 
@@ -492,7 +494,7 @@ function memHandleMismatch() {
     memFirstCardEl.classList.remove("flipped", "mismatch");
     memSecondCardEl.classList.remove("flipped", "mismatch");
     memResetSelection();
-    // Mismatch breaks the streak
+
     memStreak = 0;
     memUpdateBonusUI();
     memUpdateAccuracy();
@@ -521,41 +523,28 @@ function memHandleWin() {
 
 // ---------- Bonus Match Logic ----------
 
-function memGrantBonusMatch() {
-  if (!memBoard) return;
-  if (memBonusCharges <= 0) return;
+function memAutoMatchRandomPair() {
+  if (!memBoard) return false;
 
-  // Clear any half-selected card
-  if (memFirstCardEl && !memSecondCardEl) {
-    memFirstCardEl.classList.remove("flipped");
-  }
-  memFirstCardEl  = null;
-  memSecondCardEl = null;
-  memLockBoard    = false;
-  memIsPreviewing = false;
-
-  // Collect unmatched indices
   const unmatched = [];
   memCards.forEach((c, idx) => {
     if (!c.matched) unmatched.push(idx);
   });
-  if (unmatched.length < 2) return;
+  if (unmatched.length < 2) return false;
 
-  // Pick a random key among unmatched
   const randomIndex = unmatched[Math.floor(Math.random() * unmatched.length)];
   const chosenKey   = memCards[randomIndex].key;
 
   const pairIndices = unmatched.filter(i => memCards[i].key === chosenKey);
-  if (pairIndices.length < 2) return;
+  if (pairIndices.length < 2) return false;
 
   const [i1, i2] = pairIndices;
 
   const cardEls = Array.from(memBoard.querySelectorAll(".mem-card"));
   const cardEl1 = cardEls.find(el => parseInt(el.dataset.index, 10) === i1);
   const cardEl2 = cardEls.find(el => parseInt(el.dataset.index, 10) === i2);
-  if (!cardEl1 || !cardEl2) return;
+  if (!cardEl1 || !cardEl2) return false;
 
-  // Flip + mark as matched (free point, no extra move)
   cardEl1.classList.add("flipped","matched");
   cardEl2.classList.add("flipped","matched");
   memCards[i1].matched = true;
@@ -564,14 +553,42 @@ function memGrantBonusMatch() {
   memMatchedPairs++;
   memSpawnMatchBurst(cardEl2);
 
-  // Use one bonus charge; streak stays as-is
-  memBonusCharges--;
-  memUpdateBonusUI();
   memUpdateAccuracy();
 
   if (memMatchedPairs === memNumberOfPairs) {
     memHandleWin();
   }
+
+  return true;
+}
+
+function memGrantBonusMatch() {
+  if (memBonusCharges <= 0) return;
+
+  if (memFirstCardEl && !memSecondCardEl) {
+    memFirstCardEl.classList.remove("flipped");
+  }
+  memFirstCardEl  = null;
+  memSecondCardEl = null;
+  memLockBoard    = false;
+  memIsPreviewing = false;
+
+  let pairsToReveal = 1;
+  if (memBonusCharges >= 3) {
+    pairsToReveal = 3;
+  } else if (memBonusCharges === 2) {
+    pairsToReveal = 2;
+  }
+
+  let used = 0;
+  for (let i = 0; i < pairsToReveal; i++) {
+    const success = memAutoMatchRandomPair();
+    if (!success) break;
+    used++;
+  }
+
+  memBonusCharges = Math.max(0, memBonusCharges - used);
+  memUpdateBonusUI();
 }
 
 // ---------- Event Listeners ----------
@@ -627,7 +644,6 @@ if (memBonusBtn) {
   });
 }
 
-// Close win modal by clicking outside
 if (memWinModal) {
   memWinModal.addEventListener("click", (e) => {
     if (e.target === memWinModal) {
