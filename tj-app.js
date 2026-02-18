@@ -17,9 +17,12 @@
   function showToast(msg) {
     if (!toastEl) return;
     toastEl.textContent = msg;
-    toastEl.classList.add("is-show");
+
+    // ✅ Match CSS: .tjapp-toast.show
+    toastEl.classList.add("show");
+
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toastEl.classList.remove("is-show"), 2200);
+    toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2200);
   }
 
   // ---------- Tabs ----------
@@ -45,7 +48,14 @@
     // Move focus to heading of the panel (nice for keyboard users)
     const activePanel = $(`#tab-${tabKey}`);
     const h2 = activePanel ? $(".tjapp-h2", activePanel) : null;
-    if (h2) h2.setAttribute("tabindex", "-1"), h2.focus({ preventScroll: true });
+
+    if (h2) {
+      h2.setAttribute("tabindex", "-1");
+      h2.focus({ preventScroll: true });
+
+      // ✅ Optional: remove tabindex after focus so it doesn't stay in tab order
+      setTimeout(() => h2.removeAttribute("tabindex"), 0);
+    }
   }
 
   // init hidden states (only home visible)
@@ -374,4 +384,3 @@
     return escapeHTML(str).replaceAll("`", "&#96;");
   }
 })();
-
