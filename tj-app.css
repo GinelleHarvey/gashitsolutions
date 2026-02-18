@@ -398,3 +398,13 @@
     min-height: 620px;
   }
 }
+
+
+/* =========================================================
+   VISIBILITY / SAFE HIDE ADDITION (DO NOT REMOVE)
+   If JS sets hidden=true on non-active panels, this enforces it.
+   Works alongside .is-active rules above without conflicts.
+   ========================================================= */
+.tj-page .tjapp-tab[hidden] {
+  display: none !important;
+}
