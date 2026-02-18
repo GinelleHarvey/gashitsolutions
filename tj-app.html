@@ -8,7 +8,7 @@
 
   <!-- Main site CSS -->
   <link rel="stylesheet" href="style.css">
-  <!-- App-specific CSS (new) -->
+  <!-- App-specific CSS -->
   <link rel="stylesheet" href="tj-app.css">
 
   <!-- Favicons -->
@@ -21,7 +21,8 @@
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 </head>
 
-<body>
+<!-- ✅ Tiny hook so CSS can scope cleanly -->
+<body class="tj-page">
   <a class="skip" href="#main">Skip to content</a>
 
   <!-- Header (same as site) -->
@@ -56,203 +57,215 @@
 
   <!-- Main -->
   <main id="main" class="wrap">
-    <section class="tjapp-shell" aria-label="Trader Joe’s Rewards App Mock">
+    <!-- ✅ Tiny wrapper hook (keeps your original class too) -->
+    <section class="tjapp-shell tj-app-shell" aria-label="Trader Joe’s Rewards App Mock">
 
-      <!-- Phone frame -->
-      <div class="tjapp-phone" role="region" aria-label="Mobile app preview">
-        <div class="tjapp-statusbar" aria-hidden="true">
-          <span>9:41</span>
-          <span class="tjapp-status-icons">◉ ︎︎︎︎▮▮▮  🔋</span>
-        </div>
+      <!-- ✅ Tiny wrapper hook -->
+      <div class="tj-phone-wrap">
+        <!-- Phone frame -->
+        <!-- ✅ Add tj-phone hook, keep tjapp-phone -->
+        <div class="tjapp-phone tj-phone" role="region" aria-label="Mobile app preview">
 
-        <!-- App header -->
-        <header class="tjapp-header">
-          <div class="tjapp-brand" aria-label="Trader Joe’s mock brand">TRADER JOE’S</div>
-        </header>
+          <!-- ✅ Screen wrapper hook so tabs can stick inside phone -->
+          <div class="tj-screen">
 
-        <!-- App content -->
-        <div class="tjapp-content">
-
-          <!-- HOME TAB -->
-          <section class="tjapp-tab is-active" id="tab-home" role="tabpanel" aria-labelledby="btn-home">
-            <div class="tjapp-row tjapp-row--top">
-              <h2 class="tjapp-h2">Welcome, Emily!</h2>
-              <button class="tjapp-pill" type="button" aria-label="View profile">View Profile</button>
+            <div class="tjapp-statusbar" aria-hidden="true">
+              <span>9:41</span>
+              <span class="tjapp-status-icons">◉ ︎︎︎︎▮▮▮ 🔋</span>
             </div>
 
-            <div class="tjapp-hero">
-              <div class="tjapp-hero-left" aria-hidden="true">
-                <div class="tjapp-store-card">
-                  <div class="tjapp-store-title">Local Store</div>
-                  <div class="tjapp-store-sub">Advanced Tech Area</div>
-                </div>
-              </div>
+            <!-- App header -->
+            <header class="tjapp-header">
+              <div class="tjapp-brand" aria-label="Trader Joe’s mock brand">TRADER JOE’S</div>
+            </header>
 
-              <article class="tjapp-rewards-card" aria-label="Rewards summary">
-                <div>
-                  <div class="tjapp-kicker">Rewards</div>
-                  <div class="tjapp-points">
-                    <span class="tjapp-points-label">Your Points:</span>
-                    <span id="tjPoints" class="tjapp-points-value">1250</span>
+            <!-- App content -->
+            <div class="tjapp-content">
+
+              <!-- HOME TAB -->
+              <section class="tjapp-tab is-active" id="tab-home" role="tabpanel" aria-labelledby="btn-home">
+                <div class="tjapp-row tjapp-row--top">
+                  <h2 class="tjapp-h2">Welcome, Emily!</h2>
+                  <button class="tjapp-pill" type="button" aria-label="View profile">View Profile</button>
+                </div>
+
+                <div class="tjapp-hero">
+                  <div class="tjapp-hero-left" aria-hidden="true">
+                    <div class="tjapp-store-card">
+                      <div class="tjapp-store-title">Local Store</div>
+                      <div class="tjapp-store-sub">Advanced Tech Area</div>
+                    </div>
                   </div>
+
+                  <article class="tjapp-rewards-card" aria-label="Rewards summary">
+                    <div>
+                      <div class="tjapp-kicker">Rewards</div>
+                      <div class="tjapp-points">
+                        <span class="tjapp-points-label">Your Points:</span>
+                        <span id="tjPoints" class="tjapp-points-value">1250</span>
+                      </div>
+                    </div>
+                    <button class="tjapp-btn" type="button" data-go="rewards">
+                      View Rewards
+                    </button>
+                  </article>
                 </div>
-                <button class="tjapp-btn" type="button" data-go="rewards">
-                  View Rewards
-                </button>
-              </article>
+
+                <div class="tjapp-actions" role="list" aria-label="Quick actions">
+                  <button class="tjapp-tile" type="button" data-toast="Shop Online is a website feature (Phase 2).">
+                    <span class="tjapp-tile-ico" aria-hidden="true">🛒</span>
+                    <span class="tjapp-tile-text">Shop Online</span>
+                  </button>
+
+                  <button class="tjapp-tile" type="button" data-toast="Weekly Deals would sync from corporate promotions.">
+                    <span class="tjapp-tile-ico" aria-hidden="true">🏷️</span>
+                    <span class="tjapp-tile-text">Weekly Deals</span>
+                  </button>
+
+                  <button class="tjapp-tile" type="button" data-go="rewards">
+                    <span class="tjapp-tile-ico" aria-hidden="true">✂️</span>
+                    <span class="tjapp-tile-text">My Coupons</span>
+                  </button>
+                </div>
+
+                <section class="tjapp-section" aria-label="Featured products">
+                  <h3 class="tjapp-h3">Featured Products</h3>
+
+                  <div class="tjapp-products" role="list">
+                    <article class="tjapp-prod" role="listitem">
+                      <div class="tjapp-prod-img" aria-hidden="true">🥑</div>
+                      <div class="tjapp-prod-name">Organic Avocados</div>
+                      <div class="tjapp-prod-price">$2.99</div>
+                    </article>
+
+                    <article class="tjapp-prod" role="listitem">
+                      <div class="tjapp-prod-img" aria-hidden="true">🍪</div>
+                      <div class="tjapp-prod-name">Pumpkin Spice Cookies</div>
+                      <div class="tjapp-prod-badge">New</div>
+                    </article>
+
+                    <article class="tjapp-prod" role="listitem">
+                      <div class="tjapp-prod-img" aria-hidden="true">🥯</div>
+                      <div class="tjapp-prod-name">TJ’s Pizza Bagels</div>
+                      <div class="tjapp-prod-price">$4.49</div>
+                    </article>
+                  </div>
+                </section>
+              </section>
+
+              <!-- REWARDS TAB -->
+              <section class="tjapp-tab" id="tab-rewards" role="tabpanel" aria-labelledby="btn-rewards">
+                <h2 class="tjapp-h2">Rewards</h2>
+
+                <div class="tjapp-card">
+                  <div class="tjapp-kicker">Points Wallet</div>
+                  <p class="tjapp-muted">
+                    Scan at checkout to earn points quickly (designed to avoid slowing down lines).
+                  </p>
+
+                  <div class="tjapp-qr" role="img" aria-label="Mock QR code for in-store scanning">
+                    <div class="tjapp-qr-grid" aria-hidden="true"></div>
+                  </div>
+
+                  <div class="tjapp-row">
+                    <button class="tjapp-btn tjapp-btn--ghost" type="button" id="tjEarnPoints">
+                      Simulate Scan (+150)
+                    </button>
+                    <button class="tjapp-btn" type="button" id="tjRedeem">
+                      Redeem Points
+                    </button>
+                  </div>
+
+                  <p class="tjapp-note" id="tjRewardNote" aria-live="polite"></p>
+                </div>
+
+                <div class="tjapp-card">
+                  <div class="tjapp-kicker">My Coupons</div>
+                  <ul class="tjapp-coupons" id="tjCoupons" aria-label="Coupon list">
+                    <li class="tjapp-coupon tjapp-muted">No coupons yet — redeem points to generate one.</li>
+                  </ul>
+                </div>
+              </section>
+
+              <!-- SHOPPING LIST TAB -->
+              <section class="tjapp-tab" id="tab-list" role="tabpanel" aria-labelledby="btn-list">
+                <h2 class="tjapp-h2">Shopping List</h2>
+
+                <div class="tjapp-card">
+                  <label class="tjapp-label" for="tjItem">Add an item</label>
+                  <div class="tjapp-row">
+                    <input class="tjapp-input" id="tjItem" type="text" placeholder="e.g., Mandarins, Greek yogurt" autocomplete="off">
+                    <button class="tjapp-btn" type="button" id="tjAddItem">Add</button>
+                  </div>
+
+                  <ul class="tjapp-list" id="tjList" aria-label="Shopping list items">
+                    <li class="tjapp-list-empty tjapp-muted">Your list is empty — add your first item.</li>
+                  </ul>
+                </div>
+              </section>
+
+              <!-- MORE TAB -->
+              <section class="tjapp-tab" id="tab-more" role="tabpanel" aria-labelledby="btn-more">
+                <h2 class="tjapp-h2">More</h2>
+
+                <div class="tjapp-card">
+                  <div class="tjapp-kicker">Store Locator</div>
+                  <p class="tjapp-muted">
+                    Find the nearest store by ZIP or device location (Phase 1 mock).
+                  </p>
+
+                  <label class="tjapp-label" for="tjZip">ZIP Code</label>
+                  <div class="tjapp-row">
+                    <input class="tjapp-input" id="tjZip" type="text" inputmode="numeric" placeholder="e.g., 32114">
+                    <button class="tjapp-btn tjapp-btn--ghost" type="button" id="tjFindStore">Find</button>
+                  </div>
+
+                  <p class="tjapp-note" id="tjStoreResult" aria-live="polite"></p>
+                </div>
+
+                <div class="tjapp-card">
+                  <div class="tjapp-kicker">Website (Reference)</div>
+                  <p class="tjapp-muted">
+                    For now, we reference the official site. Later we’ll replace this with our companion website mock page.
+                  </p>
+                  <a class="tjapp-link" href="https://www.traderjoes.com" target="_blank" rel="noopener">
+                    Visit Trader Joe’s Website →
+                  </a>
+                </div>
+              </section>
+
             </div>
 
-            <div class="tjapp-actions" role="list" aria-label="Quick actions">
-              <button class="tjapp-tile" type="button" data-toast="Shop Online is a website feature (Phase 2).">
-                <span class="tjapp-tile-ico" aria-hidden="true">🛒</span>
-                <span class="tjapp-tile-text">Shop Online</span>
+            <!-- Bottom nav (tab bar) -->
+            <!-- ✅ add tj-tabs hook, keep tjapp-nav -->
+            <nav class="tjapp-nav tj-tabs" aria-label="App tabs">
+              <button class="tjapp-navbtn is-active" id="btn-home" type="button" data-tab="home" aria-controls="tab-home" aria-selected="true">
+                <span aria-hidden="true">🏠</span>
+                <span class="tjapp-navtext">Home</span>
               </button>
 
-              <button class="tjapp-tile" type="button" data-toast="Weekly Deals would sync from corporate promotions.">
-                <span class="tjapp-tile-ico" aria-hidden="true">🏷️</span>
-                <span class="tjapp-tile-text">Weekly Deals</span>
+              <button class="tjapp-navbtn" id="btn-rewards" type="button" data-tab="rewards" aria-controls="tab-rewards" aria-selected="false">
+                <span aria-hidden="true">⭐</span>
+                <span class="tjapp-navtext">Rewards</span>
               </button>
 
-              <button class="tjapp-tile" type="button" data-go="rewards">
-                <span class="tjapp-tile-ico" aria-hidden="true">✂️</span>
-                <span class="tjapp-tile-text">My Coupons</span>
+              <button class="tjapp-navbtn" id="btn-list" type="button" data-tab="list" aria-controls="tab-list" aria-selected="false">
+                <span aria-hidden="true">🧾</span>
+                <span class="tjapp-navtext">List</span>
               </button>
-            </div>
 
-            <section class="tjapp-section" aria-label="Featured products">
-              <h3 class="tjapp-h3">Featured Products</h3>
+              <button class="tjapp-navbtn" id="btn-more" type="button" data-tab="more" aria-controls="tab-more" aria-selected="false">
+                <span aria-hidden="true">⋯</span>
+                <span class="tjapp-navtext">More</span>
+              </button>
+            </nav>
 
-              <div class="tjapp-products" role="list">
-                <article class="tjapp-prod" role="listitem">
-                  <div class="tjapp-prod-img" aria-hidden="true">🥑</div>
-                  <div class="tjapp-prod-name">Organic Avocados</div>
-                  <div class="tjapp-prod-price">$2.99</div>
-                </article>
+            <!-- Toast -->
+            <div class="tjapp-toast" id="tjToast" role="status" aria-live="polite" aria-atomic="true"></div>
 
-                <article class="tjapp-prod" role="listitem">
-                  <div class="tjapp-prod-img" aria-hidden="true">🍪</div>
-                  <div class="tjapp-prod-name">Pumpkin Spice Cookies</div>
-                  <div class="tjapp-prod-badge">New</div>
-                </article>
-
-                <article class="tjapp-prod" role="listitem">
-                  <div class="tjapp-prod-img" aria-hidden="true">🥯</div>
-                  <div class="tjapp-prod-name">TJ’s Pizza Bagels</div>
-                  <div class="tjapp-prod-price">$4.49</div>
-                </article>
-              </div>
-            </section>
-          </section>
-
-          <!-- REWARDS TAB -->
-          <section class="tjapp-tab" id="tab-rewards" role="tabpanel" aria-labelledby="btn-rewards">
-            <h2 class="tjapp-h2">Rewards</h2>
-
-            <div class="tjapp-card">
-              <div class="tjapp-kicker">Points Wallet</div>
-              <p class="tjapp-muted">
-                Scan at checkout to earn points quickly (designed to avoid slowing down lines).
-              </p>
-
-              <div class="tjapp-qr" role="img" aria-label="Mock QR code for in-store scanning">
-                <div class="tjapp-qr-grid" aria-hidden="true"></div>
-              </div>
-
-              <div class="tjapp-row">
-                <button class="tjapp-btn tjapp-btn--ghost" type="button" id="tjEarnPoints">
-                  Simulate Scan (+150)
-                </button>
-                <button class="tjapp-btn" type="button" id="tjRedeem">
-                  Redeem Points
-                </button>
-              </div>
-
-              <p class="tjapp-note" id="tjRewardNote" aria-live="polite"></p>
-            </div>
-
-            <div class="tjapp-card">
-              <div class="tjapp-kicker">My Coupons</div>
-              <ul class="tjapp-coupons" id="tjCoupons" aria-label="Coupon list">
-                <li class="tjapp-coupon tjapp-muted">No coupons yet — redeem points to generate one.</li>
-              </ul>
-            </div>
-          </section>
-
-          <!-- SHOPPING LIST TAB -->
-          <section class="tjapp-tab" id="tab-list" role="tabpanel" aria-labelledby="btn-list">
-            <h2 class="tjapp-h2">Shopping List</h2>
-
-            <div class="tjapp-card">
-              <label class="tjapp-label" for="tjItem">Add an item</label>
-              <div class="tjapp-row">
-                <input class="tjapp-input" id="tjItem" type="text" placeholder="e.g., Mandarins, Greek yogurt" autocomplete="off">
-                <button class="tjapp-btn" type="button" id="tjAddItem">Add</button>
-              </div>
-
-              <ul class="tjapp-list" id="tjList" aria-label="Shopping list items">
-                <li class="tjapp-list-empty tjapp-muted">Your list is empty — add your first item.</li>
-              </ul>
-            </div>
-          </section>
-
-          <!-- MORE TAB -->
-          <section class="tjapp-tab" id="tab-more" role="tabpanel" aria-labelledby="btn-more">
-            <h2 class="tjapp-h2">More</h2>
-
-            <div class="tjapp-card">
-              <div class="tjapp-kicker">Store Locator</div>
-              <p class="tjapp-muted">
-                Find the nearest store by ZIP or device location (Phase 1 mock).
-              </p>
-
-              <label class="tjapp-label" for="tjZip">ZIP Code</label>
-              <div class="tjapp-row">
-                <input class="tjapp-input" id="tjZip" type="text" inputmode="numeric" placeholder="e.g., 32114">
-                <button class="tjapp-btn tjapp-btn--ghost" type="button" id="tjFindStore">Find</button>
-              </div>
-
-              <p class="tjapp-note" id="tjStoreResult" aria-live="polite"></p>
-            </div>
-
-            <div class="tjapp-card">
-              <div class="tjapp-kicker">Website (Reference)</div>
-              <p class="tjapp-muted">
-                For now, we reference the official site. Later we’ll replace this with our companion website mock page.
-              </p>
-              <a class="tjapp-link" href="https://www.traderjoes.com" target="_blank" rel="noopener">
-                Visit Trader Joe’s Website →
-              </a>
-            </div>
-          </section>
-
-        </div>
-
-        <!-- Bottom nav (tab bar) -->
-        <nav class="tjapp-nav" aria-label="App tabs">
-          <button class="tjapp-navbtn is-active" id="btn-home" type="button" data-tab="home" aria-controls="tab-home" aria-selected="true">
-            <span aria-hidden="true">🏠</span>
-            <span class="tjapp-navtext">Home</span>
-          </button>
-
-          <button class="tjapp-navbtn" id="btn-rewards" type="button" data-tab="rewards" aria-controls="tab-rewards" aria-selected="false">
-            <span aria-hidden="true">⭐</span>
-            <span class="tjapp-navtext">Rewards</span>
-          </button>
-
-          <button class="tjapp-navbtn" id="btn-list" type="button" data-tab="list" aria-controls="tab-list" aria-selected="false">
-            <span aria-hidden="true">🧾</span>
-            <span class="tjapp-navtext">List</span>
-          </button>
-
-          <button class="tjapp-navbtn" id="btn-more" type="button" data-tab="more" aria-controls="tab-more" aria-selected="false">
-            <span aria-hidden="true">⋯</span>
-            <span class="tjapp-navtext">More</span>
-          </button>
-        </nav>
-
-        <!-- Toast -->
-        <div class="tjapp-toast" id="tjToast" role="status" aria-live="polite" aria-atomic="true"></div>
-      </div>
+          </div> <!-- /.tj-screen -->
+        </div> <!-- /.tjapp-phone -->
+      </div> <!-- /.tj-phone-wrap -->
 
     </section>
   </main>
@@ -278,4 +291,3 @@
   <script src="tj-app.js"></script>
 </body>
 </html>
-
