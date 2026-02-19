@@ -1,1 +1,419 @@
 
+/* =========================================================
+   penguin-app.css (SCOPED)
+   Matches penguin-app.html markup (pengapp- classes)
+   Page hook: body.penguin-page
+   ========================================================= */
+
+/* ------------------------------
+   Scope everything to this page
+-------------------------------- */
+.penguin-page .pengapp-banner { padding: 1.25rem 0 1rem; text-align: center; }
+.penguin-page .pengapp-crumb { margin: 0 0 .35rem; }
+.penguin-page .pengapp-crumb a { text-decoration: none; }
+.penguin-page .pengapp-sub {
+  max-width: 72ch;
+  margin: .35rem auto 0;
+  opacity: .92;
+  line-height: 1.6;
+  text-align: center;
+}
+
+/* ------------------------------
+   Shell: center phone on desktop
+-------------------------------- */
+.penguin-page .pengapp-shell {
+  display: grid;
+  place-items: center;
+  padding: 1.25rem 0 2.25rem;
+}
+
+/* ------------------------------
+   Phone frame (outside)
+-------------------------------- */
+.penguin-page .pengapp-phone{
+  width: min(420px, 100%);
+  border-radius: 28px;
+  padding: 12px;
+  background: linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.05));
+  box-shadow:
+    0 26px 60px rgba(0,0,0,.55),
+    0 0 0 1px rgba(255,255,255,.10);
+  position: relative;
+  overflow: hidden;
+}
+
+/* ------------------------------
+   Status bar + header (dark/navy like your mock)
+-------------------------------- */
+.penguin-page .pengapp-statusbar{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px 8px;
+  font-size: .92rem;
+  letter-spacing: .02em;
+  color: rgba(255,255,255,.95);
+  background: linear-gradient(180deg, #1b1f3a, #171a33);
+}
+
+.penguin-page .pengapp-status-icons { opacity: .95; }
+
+/* App header bar */
+.penguin-page .pengapp-header{
+  padding: 12px 14px 10px;
+  background: linear-gradient(180deg, #212652, #191d3f);
+  border-bottom: 1px solid rgba(255,255,255,.14);
+}
+
+.penguin-page .pengapp-brand{
+  font-weight: 900;
+  letter-spacing: .06em;
+  font-size: .95rem;
+  color: #ffffff;
+  text-align: left;
+}
+
+/* ------------------------------
+   App content background (light like mock)
+-------------------------------- */
+.penguin-page .pengapp-content{
+  background: radial-gradient(circle at 30% 0%, #ffffff, #f3f4f6);
+  color: #16181d;
+  min-height: 640px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Panels padding + space for tab bar */
+.penguin-page .pengapp-content > .pengapp-tab,
+.penguin-page .pengapp-content .pengapp-tab{
+  padding: 14px 14px 96px;
+}
+
+/* ------------------------------
+   VISIBILITY: hide non-active tabs
+-------------------------------- */
+.penguin-page .pengapp-tab { display: none; }
+.penguin-page .pengapp-tab.is-active { display: block; }
+.penguin-page .pengapp-tab[hidden] { display: none !important; }
+
+/* ------------------------------
+   Typography
+-------------------------------- */
+.penguin-page .pengapp-h2{
+  font-size: 1.35rem;
+  margin: .35rem 0 .65rem;
+  color: #1b1e24;
+}
+
+.penguin-page .pengapp-h3{
+  margin: 1rem 0 .6rem;
+  font-size: 1.05rem;
+  color: #1b1e24;
+}
+
+.penguin-page .pengapp-muted{ opacity: .88; line-height: 1.5; color: #2c2f36; }
+.penguin-page .pengapp-note{ margin-top: .6rem; opacity: .92; color: #2c2f36; }
+
+/* Layout helpers */
+.penguin-page .pengapp-row{
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  flex-wrap: wrap;
+}
+
+.penguin-page .pengapp-row--top{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+}
+
+/* ------------------------------
+   Buttons & inputs
+-------------------------------- */
+.penguin-page .pengapp-btn,
+.penguin-page .pengapp-pill,
+.penguin-page .pengapp-tile{
+  border: 1px solid rgba(0,0,0,.10);
+  background: #ffffff;
+  color: #1b1e24;
+  border-radius: 999px;
+  padding: .5rem .9rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 10px 22px rgba(0,0,0,.10);
+  transition: transform .12s ease, filter .12s ease, background .12s ease;
+}
+
+.penguin-page .pengapp-btn:hover,
+.penguin-page .pengapp-pill:hover,
+.penguin-page .pengapp-tile:hover{
+  filter: brightness(1.02);
+  transform: translateY(-1px);
+}
+
+.penguin-page .pengapp-btn:active,
+.penguin-page .pengapp-pill:active,
+.penguin-page .pengapp-tile:active{
+  transform: translateY(0);
+}
+
+/* Primary button */
+.penguin-page .pengapp-btn{
+  background: #1f66d1;
+  color: #ffffff;
+  border-color: rgba(0,0,0,.08);
+}
+
+.penguin-page .pengapp-btn:hover{ filter: brightness(1.06); }
+
+/* Ghost variant */
+.penguin-page .pengapp-btn--ghost{
+  background: #ffffff;
+  color: #1f66d1;
+  border-color: rgba(31,102,209,.35);
+}
+
+/* Inputs */
+.penguin-page .pengapp-input{
+  flex: 1;
+  min-width: 180px;
+  padding: .55rem .75rem;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,.18);
+  background: #ffffff;
+  color: #1b1e24;
+}
+
+.penguin-page .pengapp-input::placeholder{ color: rgba(0,0,0,.45); }
+
+.penguin-page .pengapp-label{
+  display: inline-block;
+  font-weight: 800;
+  margin-bottom: .35rem;
+  color: #1b1e24;
+}
+
+/* ------------------------------
+   Accessible focus ring
+-------------------------------- */
+.penguin-page .pengapp-btn:focus-visible,
+.penguin-page .pengapp-pill:focus-visible,
+.penguin-page .pengapp-tile:focus-visible,
+.penguin-page .pengapp-input:focus-visible,
+.penguin-page .pengapp-navbtn:focus-visible,
+.penguin-page .pengapp-link:focus-visible{
+  outline: 3px solid rgba(31, 102, 209, .75);
+  outline-offset: 3px;
+}
+
+/* ------------------------------
+   Hero + cards
+-------------------------------- */
+.penguin-page .pengapp-hero{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: .85rem;
+  margin: .4rem 0 .85rem;
+}
+
+@media (min-width: 380px){
+  .penguin-page .pengapp-hero{ grid-template-columns: 1fr 1fr; }
+}
+
+.penguin-page .pengapp-info-card,
+.penguin-page .pengapp-summary-card,
+.penguin-page .pengapp-card{
+  border: 1px solid rgba(0,0,0,.10);
+  background: #ffffff;
+  border-radius: 16px;
+  padding: .9rem;
+  box-shadow: 0 18px 38px rgba(0,0,0,.10);
+}
+
+.penguin-page .pengapp-info-title{ font-weight: 900; color: #1b1e24; }
+.penguin-page .pengapp-info-sub{ margin-top: .15rem; color: rgba(0,0,0,.62); font-weight: 700; }
+
+.penguin-page .pengapp-kicker{
+  font-weight: 900;
+  letter-spacing: .02em;
+  color: rgba(0,0,0,.65);
+  margin-bottom: .35rem;
+}
+
+.penguin-page .pengapp-metric{
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: .6rem;
+}
+
+.penguin-page .pengapp-metric-value{
+  font-size: 1.35rem;
+  font-weight: 1000;
+  color: #1b1e24;
+}
+
+.penguin-page .pengapp-summary-card .pengapp-btn{
+  width: 100%;
+  margin-top: .7rem;
+}
+
+/* ------------------------------
+   Tiles (dashboard)
+-------------------------------- */
+.penguin-page .pengapp-actions{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: .6rem;
+  margin: .7rem 0 .9rem;
+}
+
+.penguin-page .pengapp-tile{
+  border-radius: 16px;
+  padding: .75rem .55rem;
+  display: grid;
+  gap: .25rem;
+  place-items: center;
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,.10);
+}
+
+.penguin-page .pengapp-tile-ico{ font-size: 1.15rem; }
+.penguin-page .pengapp-tile-text{ font-size: .9rem; font-weight: 900; }
+
+/* ------------------------------
+   Quick highlights mini cards
+-------------------------------- */
+.penguin-page .pengapp-cards{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: .6rem;
+}
+
+.penguin-page .pengapp-mini-card{
+  display: grid;
+  grid-template-columns: 38px 1fr;
+  gap: .65rem;
+  align-items: center;
+  border: 1px solid rgba(0,0,0,.10);
+  background: #ffffff;
+  border-radius: 14px;
+  padding: .65rem .75rem;
+  box-shadow: 0 12px 26px rgba(0,0,0,.08);
+}
+
+.penguin-page .pengapp-mini-ico{
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: rgba(31,102,209,.10);
+}
+
+.penguin-page .pengapp-mini-title{ font-weight: 900; color: #1b1e24; }
+.penguin-page .pengapp-mini-sub{ opacity: .92; color: rgba(0,0,0,.68); font-weight: 900; }
+
+/* ------------------------------
+   Lists
+-------------------------------- */
+.penguin-page .pengapp-list{
+  margin: .6rem 0 0;
+  padding-left: 1.1rem;
+}
+
+.penguin-page .pengapp-list li{ line-height: 1.55; }
+
+/* ------------------------------
+   Link style
+-------------------------------- */
+.penguin-page .pengapp-link{
+  display: inline-block;
+  margin-top: .35rem;
+  text-decoration: none;
+  font-weight: 900;
+  color: #1f66d1;
+}
+
+/* ------------------------------
+   Bottom tab bar
+-------------------------------- */
+.penguin-page .pengapp-nav{
+  position: sticky;
+  bottom: 0;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding: 10px 10px 12px;
+  background: rgba(255,255,255,.90);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(0,0,0,.12);
+}
+
+.penguin-page .pengapp-navbtn{
+  border: 1px solid rgba(0,0,0,.12);
+  background: #ffffff;
+  color: #1b1e24;
+  border-radius: 14px;
+  padding: .5rem .35rem;
+  display: grid;
+  gap: .15rem;
+  place-items: center;
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.penguin-page .pengapp-navbtn.is-active{
+  border-color: rgba(31,102,209,.35);
+  box-shadow: 0 10px 22px rgba(0,0,0,.12);
+}
+
+.penguin-page .pengapp-navtext{ font-size: .78rem; }
+
+/* ------------------------------
+   Toast (support both show + is-show)
+-------------------------------- */
+.penguin-page .pengapp-toast{
+  position: absolute;
+  left: 50%;
+  bottom: 86px; /* above tabs */
+  transform: translateX(-50%);
+  min-width: 240px;
+  max-width: calc(100% - 24px);
+  padding: .65rem .85rem;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,.10);
+  background: rgba(27, 30, 36, .92);
+  color: #ffffff;
+  box-shadow: 0 18px 40px rgba(0,0,0,.25);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .18s ease, transform .18s ease;
+}
+
+.penguin-page .pengapp-toast.show,
+.penguin-page .pengapp-toast.is-show{
+  opacity: 1;
+  transform: translateX(-50%) translateY(-4px);
+}
+
+/* ------------------------------
+   Mobile tweaks
+-------------------------------- */
+@media (max-width: 520px){
+  .penguin-page .pengapp-phone{
+    width: 100%;
+    padding: 10px;
+    border-radius: 22px;
+  }
+
+  .penguin-page .pengapp-content{
+    min-height: 620px;
+  }
+}
