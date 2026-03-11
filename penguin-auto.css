@@ -79,6 +79,24 @@ a {
   padding: 1rem 0;
 }
 
+.pa-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  min-width: 0;
+}
+
+.pa-logo {
+  width: 130px;
+  height: auto;
+  flex-shrink: 0;
+}
+
+.pa-brand-text {
+  display: flex;
+  flex-direction: column;
+}
+
 .pa-brand h1 {
   margin: 0;
   font-size: 1.35rem;
@@ -134,7 +152,7 @@ a {
 .pa-hero {
   background:
     linear-gradient(rgba(16, 38, 70, 0.76), rgba(16, 38, 70, 0.82)),
-    url("penguin-website-img/penguin-hero-auto.jpg") center/cover no-repeat;
+    url("./assets/penguin-hero-auto.jpg") center/cover no-repeat;
   color: var(--pa-white);
   padding: 6rem 0;
 }
@@ -144,6 +162,10 @@ a {
   grid-template-columns: 1.2fr 0.8fr;
   gap: 2rem;
   align-items: center;
+}
+
+.pa-hero-copy {
+  max-width: 680px;
 }
 
 .pa-eyebrow {
@@ -231,7 +253,7 @@ a {
   margin-top: 0.5rem;
 }
 
-/* Shared sections */
+/* Sections */
 .pa-section {
   padding: 4.5rem 0;
 }
@@ -248,7 +270,7 @@ a {
   max-width: 68ch;
 }
 
-/* Services */
+/* Cards */
 .pa-card-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -301,7 +323,7 @@ a {
   color: var(--pa-navy);
 }
 
-/* Contact CTA */
+/* CTA */
 .pa-cta {
   background: linear-gradient(135deg, var(--pa-navy), #1f467b);
   color: var(--pa-white);
@@ -339,15 +361,22 @@ a {
 
 /* Responsive */
 @media (max-width: 900px) {
+  .pa-header-inner,
   .pa-hero-grid,
   .pa-card-grid,
   .pa-about-grid {
     grid-template-columns: 1fr;
   }
 
+  .pa-header-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
   .pa-nav ul {
     flex-wrap: wrap;
-    justify-content: flex-end;
+    justify-content: flex-start;
   }
 
   .pa-hero {
@@ -360,13 +389,8 @@ a {
 }
 
 @media (max-width: 640px) {
-  .pa-header-inner {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .pa-nav ul {
-    justify-content: flex-start;
+  .pa-logo {
+    width: 110px;
   }
 
   .pa-hero {
