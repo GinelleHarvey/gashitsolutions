@@ -610,3 +610,231 @@ a {
     padding: 2.5rem 0 1.25rem;
   }
 }
+
+
+/* ===== Home page final polish ===== */
+
+/* 1) Red car section feels more like a background */
+.pa-feature-section-alt {
+  position: relative;
+  overflow: hidden;
+}
+
+.pa-feature-section-alt::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(235, 241, 248, 0.25) 0%,
+    rgba(235, 241, 248, 0.15) 32%,
+    rgba(235, 241, 248, 0.82) 58%,
+    rgba(235, 241, 248, 0.96) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.pa-feature-section-alt .pa-container {
+  position: relative;
+  z-index: 2;
+}
+
+.pa-feature-section-alt .pa-feature-grid {
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+.pa-feature-section-alt .pa-feature-media {
+  min-height: 100%;
+}
+
+.pa-feature-section-alt .pa-feature-image {
+  width: 100%;
+  min-height: 620px;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 42%;
+  border-radius: 34px;
+  opacity: 0.96;
+  filter: saturate(0.94) contrast(0.96) brightness(0.99);
+  box-shadow: none;
+  border: none;
+}
+
+.pa-feature-section-alt .pa-feature-media:hover .pa-feature-image {
+  transform: none;
+  box-shadow: none;
+}
+
+/* 2) White car CTA blends into the section */
+.pa-home-cta-band {
+  position: relative;
+  overflow: hidden;
+}
+
+.pa-home-cta-band::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(21, 50, 92, 0.98) 0%,
+    rgba(21, 50, 92, 0.95) 42%,
+    rgba(21, 50, 92, 0.76) 70%,
+    rgba(21, 50, 92, 0.58) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.pa-home-cta-band .pa-container {
+  position: relative;
+  z-index: 2;
+}
+
+.pa-home-cta-grid {
+  grid-template-columns: 1fr 1fr;
+  gap: 2.75rem;
+  align-items: center;
+}
+
+.pa-home-cta-copy {
+  position: relative;
+  z-index: 3;
+}
+
+.pa-home-cta-band .pa-feature-image {
+  width: 100%;
+  min-height: 470px;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 34px;
+  opacity: 0.58;
+  filter: saturate(0.82) brightness(0.88) contrast(0.9);
+  box-shadow: none;
+  border: none;
+}
+
+.pa-home-cta-band .pa-feature-media:hover .pa-feature-image {
+  transform: none;
+  box-shadow: none;
+}
+
+/* 3) More breathing room above CTA buttons */
+.pa-home-cta-copy .pa-hero-actions {
+  margin-top: 2.4rem;
+}
+
+/* 4) Footer oil-splash logo treatment */
+.pa-footer-logo-badge {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.2rem;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  isolation: isolate;
+}
+
+.pa-footer-logo {
+  position: relative;
+  z-index: 3;
+  width: 180px;
+  height: auto;
+  filter: none;
+}
+
+.pa-footer-splash {
+  position: absolute;
+  z-index: 1;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  filter: blur(0.5px);
+}
+
+.pa-footer-splash-one {
+  width: 170px;
+  height: 92px;
+  left: 8px;
+  top: 14px;
+  border-radius: 42% 58% 47% 53% / 52% 40% 60% 48%;
+  transform: rotate(-7deg);
+}
+
+.pa-footer-splash-two {
+  width: 54px;
+  height: 54px;
+  left: -6px;
+  top: 26px;
+  border-radius: 58% 42% 61% 39% / 43% 55% 45% 57%;
+}
+
+.pa-footer-splash-three {
+  width: 40px;
+  height: 40px;
+  right: -4px;
+  top: 18px;
+  border-radius: 44% 56% 41% 59% / 61% 37% 63% 39%;
+}
+
+/* Make footer links feel cleaner */
+.pa-footer-links ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.pa-footer-links li {
+  margin-bottom: 0.8rem;
+}
+
+.pa-footer-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-weight: 600;
+}
+
+.pa-footer-links a::before {
+  content: "•";
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.pa-footer-links a::after {
+  display: none;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .pa-feature-section-alt .pa-feature-grid,
+  .pa-home-cta-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pa-feature-section-alt .pa-feature-image,
+  .pa-home-cta-band .pa-feature-image {
+    min-height: 360px;
+  }
+
+  .pa-feature-section-alt::before,
+  .pa-home-cta-band::before {
+    background: rgba(22, 50, 91, 0.08);
+  }
+}
+
+@media (max-width: 640px) {
+  .pa-feature-section-alt .pa-feature-image,
+  .pa-home-cta-band .pa-feature-image {
+    min-height: 260px;
+  }
+
+  .pa-footer-logo {
+    width: 150px;
+  }
+}
