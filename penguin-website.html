@@ -26,11 +26,6 @@
   <link rel="stylesheet" href="./penguin-auto.css">
 
   <style>
-    /* =========================================================
-       Penguin Auto Home Page Overrides
-       Keeps penguin-auto.css as the base file
-       ========================================================= */
-
     body {
       overflow-x: hidden;
     }
@@ -88,19 +83,21 @@
       backdrop-filter: blur(3px);
     }
 
-    .pa-feature-section {
+    .pa-feature-section,
+    .pa-home-cta-band {
       position: relative;
+      overflow: hidden;
     }
 
     .pa-feature-section .pa-container,
     .pa-home-cta-band .pa-container {
       position: relative;
-      z-index: 1;
+      z-index: 2;
     }
 
     .pa-feature-grid {
       gap: 3rem;
-      align-items: stretch;
+      align-items: center;
     }
 
     .pa-feature-copy {
@@ -125,7 +122,6 @@
       box-shadow: 0 28px 58px rgba(24, 46, 84, 0.18);
     }
 
-    /* Welcome section */
     .pa-feature-section:first-of-type .pa-feature-copy {
       padding-right: 0.5rem;
     }
@@ -134,14 +130,24 @@
       object-position: center center;
     }
 
-    /* Services / red car section */
+    /* Red car section */
     .pa-feature-section-alt {
+      background: linear-gradient(180deg, #eef3f9 0%, #e8eef6 100%);
+    }
+
+    .pa-feature-section-alt::before {
+      content: "";
+      position: absolute;
+      inset: 0;
       background:
-        linear-gradient(180deg, #eef3f9 0%, #e8eef6 100%);
+        linear-gradient(to right, rgba(232, 238, 246, 0.92) 0%, rgba(232, 238, 246, 0.55) 34%, rgba(232, 238, 246, 0.18) 100%);
+      z-index: 1;
+      pointer-events: none;
     }
 
     .pa-feature-section-alt .pa-feature-grid {
       align-items: center;
+      grid-template-columns: 1.05fr 0.95fr;
     }
 
     .pa-feature-section-alt .pa-feature-media {
@@ -149,11 +155,20 @@
     }
 
     .pa-feature-section-alt .pa-feature-image {
-      min-height: 540px;
+      min-height: 620px;
       height: 100%;
       object-fit: cover;
       object-position: center 42%;
-      border-radius: 30px;
+      border-radius: 34px;
+      opacity: 0.92;
+      filter: saturate(0.94) contrast(0.95) brightness(0.98);
+      box-shadow: none;
+      border: none;
+    }
+
+    .pa-feature-section-alt .pa-feature-media:hover .pa-feature-image {
+      transform: none;
+      box-shadow: none;
     }
 
     .pa-home-service-list {
@@ -183,39 +198,64 @@
       line-height: 1.55;
     }
 
+    .pa-feature-actions,
+    .pa-feature-actions .pa-btn,
+    .pa-section .pa-hero-actions {
+      justify-content: center;
+      text-align: center;
+    }
+
     /* Trust section */
     .pa-feature-section:nth-of-type(3) .pa-feature-image {
       min-height: 500px;
       object-position: center center;
     }
 
-    /* CTA band */
+    /* White car CTA section */
     .pa-home-cta-band {
       background:
-        linear-gradient(135deg, rgba(22, 50, 91, 0.96), rgba(35, 74, 128, 0.95));
+        linear-gradient(135deg, rgba(22, 50, 91, 0.98), rgba(35, 74, 128, 0.96));
       padding: 5.25rem 0;
+    }
+
+    .pa-home-cta-band::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to right, rgba(22, 50, 91, 0.98) 0%, rgba(22, 50, 91, 0.94) 42%, rgba(22, 50, 91, 0.74) 100%);
+      z-index: 1;
+      pointer-events: none;
     }
 
     .pa-home-cta-grid {
       gap: 2.75rem;
       align-items: center;
+      grid-template-columns: 1fr 1fr;
     }
 
     .pa-home-cta-copy {
       max-width: 700px;
+      position: relative;
+      z-index: 2;
     }
 
     .pa-home-cta-band .pa-feature-image {
-      min-height: 390px;
+      min-height: 440px;
       height: 100%;
       aspect-ratio: auto;
       object-fit: cover;
       object-position: center;
-      border-radius: 30px;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.18);
-      filter: saturate(0.92) brightness(0.92);
-      opacity: 0.92;
+      border-radius: 34px;
+      border: none;
+      box-shadow: none;
+      filter: saturate(0.84) brightness(0.92) contrast(0.92);
+      opacity: 0.72;
+    }
+
+    .pa-home-cta-band .pa-feature-media:hover .pa-feature-image {
+      transform: none;
+      box-shadow: none;
     }
 
     /* Footer */
@@ -235,17 +275,18 @@
     }
 
     .pa-footer-logo-badge {
-      background: transparent;
-      padding: 0;
+      background: rgba(255, 255, 255, 0.96);
+      padding: 0.9rem 1.1rem;
       margin-bottom: 1rem;
-      box-shadow: none;
-      border-radius: 0;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16);
+      border-radius: 18px;
+      display: inline-flex;
     }
 
     .pa-footer-logo {
       width: 180px;
       height: auto;
-      filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
+      filter: none;
     }
 
     .pa-footer-brand h2 {
@@ -310,7 +351,6 @@
       padding-top: 1rem;
     }
 
-    /* Subtle motion */
     .pa-feature-copy,
     .pa-home-cta-copy,
     .pa-footer-brand,
@@ -322,7 +362,8 @@
     @media (max-width: 1024px) {
       .pa-feature-grid,
       .pa-home-cta-grid,
-      .pa-footer-grid {
+      .pa-footer-grid,
+      .pa-feature-section-alt .pa-feature-grid {
         grid-template-columns: 1fr;
       }
 
@@ -335,6 +376,11 @@
 
       .pa-footer-brand {
         max-width: none;
+      }
+
+      .pa-home-cta-band::before,
+      .pa-feature-section-alt::before {
+        background: rgba(22, 50, 91, 0.08);
       }
     }
 
@@ -473,7 +519,7 @@
             </div>
           </div>
 
-          <div class="pa-feature-actions">
+          <div class="pa-hero-actions">
             <a class="pa-btn pa-btn-primary" href="penguin-services.html">View Full Services Page</a>
           </div>
         </div>
