@@ -23,419 +23,640 @@
   <link rel="icon" type="image/png" sizes="192x192" href="./assets/pa-android-chrome-192x192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="./assets/pa-android-chrome-512x512.png">
 
-  <link rel="stylesheet" href="./penguin-auto.css">
-
   <style>
-    body {
-      overflow-x: hidden;
+    :root{
+      --navy:#16325b;
+      --navy-deep:#0f2747;
+      --blue:#2f5d95;
+      --blue-soft:#edf3fb;
+      --white:#ffffff;
+      --text:#1d2430;
+      --muted:#5f6875;
+      --border:#d9e1eb;
+      --shadow:0 14px 38px rgba(15,39,71,.10);
+      --shadow-soft:0 22px 44px rgba(15,39,71,.08);
+      --radius:22px;
+      --max:1200px;
     }
 
-    .pa-hero {
-      min-height: 92vh;
-      padding: 6rem 0 5.25rem;
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      background:#f5f8fc;
+      color:var(--text);
+      line-height:1.6;
+      overflow-x:hidden;
+    }
+
+    img{display:block;max-width:100%}
+    a{text-decoration:none;color:inherit}
+    .container{width:min(92%, var(--max));margin:0 auto}
+
+    .skip-link{
+      position:absolute;
+      left:-9999px;
+      top:auto;
+    }
+    .skip-link:focus{
+      left:1rem;
+      top:1rem;
+      z-index:2000;
+      background:#fff;
+      color:#000;
+      padding:.75rem 1rem;
+      border:2px solid #000;
+      border-radius:10px;
+    }
+
+    /* header */
+    .site-header{
+      position:sticky;
+      top:0;
+      z-index:1000;
+      background:rgba(255,255,255,.96);
+      border-bottom:1px solid var(--border);
+      backdrop-filter:blur(8px);
+    }
+
+    .site-header-inner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:1rem;
+      padding:1.05rem 0;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:1rem;
+      min-width:0;
+    }
+
+    .brand-logo{
+      width:132px;
+      height:auto;
+      flex-shrink:0;
+    }
+
+    .brand-text h1{
+      margin:0;
+      font-size:1.35rem;
+      color:var(--navy);
+      letter-spacing:.01em;
+    }
+
+    .brand-text p{
+      margin:.2rem 0 0;
+      color:var(--muted);
+      font-size:.96rem;
+    }
+
+    .nav-list{
+      list-style:none;
+      display:flex;
+      gap:1.35rem;
+      padding:0;
+      margin:0;
+    }
+
+    .nav-list a{
+      font-weight:700;
+      color:var(--navy);
+      padding:.3rem 0;
+      position:relative;
+    }
+
+    .nav-list a:hover,
+    .nav-list a[aria-current="page"]{
+      color:var(--blue);
+    }
+
+    .nav-list a::after{
+      content:"";
+      position:absolute;
+      left:0;
+      bottom:-.2rem;
+      width:100%;
+      height:2px;
+      background:var(--blue);
+      transform:scaleX(0);
+      transform-origin:left;
+      transition:transform .2s ease;
+    }
+
+    .nav-list a:hover::after,
+    .nav-list a[aria-current="page"]::after{
+      transform:scaleX(1);
+    }
+
+    /* hero */
+    .hero{
+      min-height:88vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      color:#fff;
       background:
-        linear-gradient(rgba(16, 38, 70, 0.58), rgba(16, 38, 70, 0.76)),
+        linear-gradient(rgba(12,34,62,.58), rgba(12,34,62,.78)),
         url("./assets/penguin-hero-auto.jpg") center center / cover no-repeat;
+      padding:5rem 0;
     }
 
-    .pa-hero-copy {
-      max-width: 980px;
-      text-align: center;
+    .hero-inner{
+      max-width:900px;
+      margin:0 auto;
     }
 
-    .pa-eyebrow {
-      margin: 0 0 1rem;
-      font-size: 0.95rem;
-      letter-spacing: 0.1em;
+    .eyebrow{
+      margin:0 0 1rem;
+      text-transform:uppercase;
+      letter-spacing:.1em;
+      font-size:.93rem;
+      font-weight:700;
     }
 
-    .pa-hero h2 {
-      margin: 0 auto 1.15rem;
-      font-size: clamp(3rem, 5.2vw, 5.4rem);
-      line-height: 1.06;
-      max-width: 13.5ch;
-      text-wrap: balance;
-      text-shadow: 0 8px 30px rgba(0, 0, 0, 0.22);
+    .hero h2{
+      margin:0 auto 1.2rem;
+      font-size:clamp(3rem, 5.4vw, 5.3rem);
+      line-height:1.06;
+      max-width:12.7ch;
+      text-wrap:balance;
+      text-shadow:0 10px 28px rgba(0,0,0,.22);
     }
 
-    .pa-hero p {
-      margin: 0 auto 1.85rem;
-      max-width: 760px;
-      font-size: 1.12rem;
-      text-shadow: 0 4px 18px rgba(0, 0, 0, 0.18);
+    .hero p{
+      margin:0 auto 2rem;
+      max-width:760px;
+      font-size:1.12rem;
+      text-shadow:0 4px 16px rgba(0,0,0,.18);
     }
 
-    .pa-hero-actions {
-      justify-content: center;
-      gap: 1rem;
+    .hero-actions{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:center;
+      gap:1rem;
     }
 
-    .pa-btn {
-      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.12);
+    .btn{
+      display:inline-block;
+      padding:1rem 1.45rem;
+      border-radius:999px;
+      font-weight:700;
+      transition:.22s ease;
     }
 
-    .pa-btn-primary {
-      background: #ffffff;
+    .btn-primary{
+      background:#fff;
+      color:var(--navy);
+      box-shadow:0 12px 30px rgba(0,0,0,.14);
     }
 
-    .pa-btn-secondary {
-      background: rgba(255, 255, 255, 0.06);
-      backdrop-filter: blur(3px);
+    .btn-primary:hover{
+      transform:translateY(-2px);
+      background:#eef4ff;
     }
 
-    .pa-feature-section,
-    .pa-home-cta-band {
-      position: relative;
-      overflow: hidden;
+    .btn-secondary{
+      border:2px solid rgba(255,255,255,.88);
+      color:#fff;
+      background:rgba(255,255,255,.04);
+      backdrop-filter:blur(2px);
     }
 
-    .pa-feature-section .pa-container,
-    .pa-home-cta-band .pa-container {
-      position: relative;
-      z-index: 2;
+    .btn-secondary:hover{
+      transform:translateY(-2px);
+      background:rgba(255,255,255,.12);
     }
 
-    .pa-feature-grid {
-      gap: 3rem;
-      align-items: center;
+    /* shared */
+    .section{
+      padding:5.25rem 0;
     }
 
-    .pa-feature-copy {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+    .section-title{
+      margin:.55rem 0 1rem;
+      font-size:clamp(2rem, 3.2vw, 3.15rem);
+      line-height:1.16;
+      color:var(--navy);
     }
 
-    .pa-feature-image {
-      width: 100%;
-      height: 100%;
-      min-height: 460px;
-      object-fit: cover;
-      border-radius: 28px;
-      box-shadow: 0 22px 50px rgba(24, 46, 84, 0.14);
-      border: 1px solid rgba(0, 0, 0, 0.04);
-      transition: transform 0.28s ease, box-shadow 0.28s ease;
+    .section-intro{
+      color:var(--muted);
+      max-width:62ch;
+      margin:0 0 1.25rem;
+      font-size:1.05rem;
     }
 
-    .pa-feature-media:hover .pa-feature-image {
-      transform: translateY(-4px);
-      box-shadow: 0 28px 58px rgba(24, 46, 84, 0.18);
+    .feature-label{
+      margin:0;
+      text-transform:uppercase;
+      letter-spacing:.09em;
+      font-size:.88rem;
+      font-weight:700;
+      color:var(--blue);
     }
 
-    .pa-feature-section:first-of-type .pa-feature-copy {
-      padding-right: 0.5rem;
+    /* welcome */
+    .welcome-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:3rem;
+      align-items:center;
     }
 
-    .pa-feature-section:first-of-type .pa-feature-image {
-      object-position: center center;
+    .welcome-copy p:last-child{margin-bottom:0}
+
+    .welcome-image-wrap{
+      min-height:100%;
     }
 
-    /* Red car section */
-    .pa-feature-section-alt {
-      background: linear-gradient(180deg, #eef3f9 0%, #e8eef6 100%);
+    .welcome-image{
+      width:100%;
+      min-height:470px;
+      height:100%;
+      object-fit:cover;
+      object-position:center;
+      border-radius:30px;
+      box-shadow:var(--shadow);
     }
 
-    .pa-feature-section-alt::before {
-      content: "";
-      position: absolute;
-      inset: 0;
+    /* services section */
+    .services-home{
+      position:relative;
+      overflow:hidden;
       background:
-        linear-gradient(to right, rgba(232, 238, 246, 0.92) 0%, rgba(232, 238, 246, 0.55) 34%, rgba(232, 238, 246, 0.18) 100%);
-      z-index: 1;
-      pointer-events: none;
+        linear-gradient(180deg, #eef3f9 0%, #e7edf6 100%);
     }
 
-    .pa-feature-section-alt .pa-feature-grid {
-      align-items: center;
-      grid-template-columns: 1.05fr 0.95fr;
-    }
-
-    .pa-feature-section-alt .pa-feature-media {
-      min-height: 100%;
-    }
-
-    .pa-feature-section-alt .pa-feature-image {
-      min-height: 620px;
-      height: 100%;
-      object-fit: cover;
-      object-position: center 42%;
-      border-radius: 34px;
-      opacity: 0.92;
-      filter: saturate(0.94) contrast(0.95) brightness(0.98);
-      box-shadow: none;
-      border: none;
-    }
-
-    .pa-feature-section-alt .pa-feature-media:hover .pa-feature-image {
-      transform: none;
-      box-shadow: none;
-    }
-
-    .pa-home-service-list {
-      gap: 1rem;
-      margin-top: 1.6rem;
-    }
-
-    .pa-home-service-item {
-      border-radius: 20px;
-      padding: 1.1rem 1.2rem 1.1rem 1.35rem;
-      box-shadow: 0 12px 26px rgba(18, 44, 86, 0.08);
-      background: rgba(255, 255, 255, 0.96);
-      backdrop-filter: blur(4px);
-    }
-
-    .pa-home-service-item:hover,
-    .pa-home-service-item:focus-within {
-      transform: translateY(-5px);
-      box-shadow: 0 20px 40px rgba(18, 44, 86, 0.14);
-    }
-
-    .pa-home-service-item h3 {
-      font-size: 1.08rem;
-    }
-
-    .pa-home-service-item p {
-      line-height: 1.55;
-    }
-
-    .pa-feature-actions,
-    .pa-feature-actions .pa-btn,
-    .pa-section .pa-hero-actions {
-      justify-content: center;
-      text-align: center;
-    }
-
-    /* Trust section */
-    .pa-feature-section:nth-of-type(3) .pa-feature-image {
-      min-height: 500px;
-      object-position: center center;
-    }
-
-    /* White car CTA section */
-    .pa-home-cta-band {
+    .services-home::before{
+      content:"";
+      position:absolute;
+      inset:0;
       background:
-        linear-gradient(135deg, rgba(22, 50, 91, 0.98), rgba(35, 74, 128, 0.96));
-      padding: 5.25rem 0;
+        linear-gradient(
+          90deg,
+          rgba(232,238,246,.18) 0%,
+          rgba(232,238,246,.10) 32%,
+          rgba(232,238,246,.80) 58%,
+          rgba(232,238,246,.96) 100%
+        );
+      pointer-events:none;
+      z-index:1;
     }
 
-    .pa-home-cta-band::before {
-      content: "";
-      position: absolute;
-      inset: 0;
+    .services-home .container{
+      position:relative;
+      z-index:2;
+    }
+
+    .services-grid{
+      display:grid;
+      grid-template-columns:1.18fr .82fr;
+      gap:2.25rem;
+      align-items:center;
+    }
+
+    .services-visual{
+      min-height:640px;
+      border-radius:34px;
       background:
-        linear-gradient(to right, rgba(22, 50, 91, 0.98) 0%, rgba(22, 50, 91, 0.94) 42%, rgba(22, 50, 91, 0.74) 100%);
-      z-index: 1;
-      pointer-events: none;
+        linear-gradient(rgba(255,255,255,.02), rgba(255,255,255,.02)),
+        url("./assets/pa-home-services.jpg") center 42% / cover no-repeat;
+      box-shadow:none;
     }
 
-    .pa-home-cta-grid {
-      gap: 2.75rem;
-      align-items: center;
-      grid-template-columns: 1fr 1fr;
+    .services-copy{
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
     }
 
-    .pa-home-cta-copy {
-      max-width: 700px;
-      position: relative;
-      z-index: 2;
+    .service-card-list{
+      display:grid;
+      gap:1rem;
+      margin-top:1.6rem;
     }
 
-    .pa-home-cta-band .pa-feature-image {
-      min-height: 440px;
-      height: 100%;
-      aspect-ratio: auto;
-      object-fit: cover;
-      object-position: center;
-      border-radius: 34px;
-      border: none;
-      box-shadow: none;
-      filter: saturate(0.84) brightness(0.92) contrast(0.92);
-      opacity: 0.72;
+    .service-card{
+      background:rgba(255,255,255,.96);
+      border:1px solid rgba(21,50,92,.08);
+      border-radius:22px;
+      padding:1.2rem 1.3rem;
+      box-shadow:0 14px 30px rgba(15,39,71,.08);
     }
 
-    .pa-home-cta-band .pa-feature-media:hover .pa-feature-image {
-      transform: none;
-      box-shadow: none;
+    .service-card h3{
+      margin:0 0 .45rem;
+      color:var(--navy);
+      font-size:1.08rem;
     }
 
-    /* Footer */
-    .pa-footer {
-      padding: 4rem 0 1.4rem;
+    .service-card p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.58;
+    }
+
+    .services-button{
+      margin-top:1.8rem;
+      display:flex;
+      justify-content:center;
+    }
+
+    /* trust section */
+    .trust-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:3rem;
+      align-items:center;
+    }
+
+    .trust-image{
+      width:100%;
+      min-height:500px;
+      height:100%;
+      object-fit:cover;
+      object-position:center;
+      border-radius:30px;
+      box-shadow:var(--shadow);
+    }
+
+    /* CTA section */
+    .cta-home{
+      position:relative;
+      overflow:hidden;
+      background:
+        linear-gradient(135deg, rgba(22,50,91,.98), rgba(35,74,128,.96));
+      color:#fff;
+    }
+
+    .cta-home::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(
+          90deg,
+          rgba(21,50,92,.98) 0%,
+          rgba(21,50,92,.95) 42%,
+          rgba(21,50,92,.76) 70%,
+          rgba(21,50,92,.56) 100%
+        );
+      z-index:1;
+      pointer-events:none;
+    }
+
+    .cta-home .container{
+      position:relative;
+      z-index:2;
+    }
+
+    .cta-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:2.75rem;
+      align-items:center;
+    }
+
+    .cta-copy{
+      position:relative;
+      z-index:3;
+      max-width:700px;
+    }
+
+    .cta-home .feature-label,
+    .cta-home .section-title{
+      color:#fff;
+    }
+
+    .cta-home .section-intro{
+      color:rgba(255,255,255,.9);
+    }
+
+    .cta-visual{
+      min-height:480px;
+      border-radius:34px;
+      background:
+        linear-gradient(rgba(21,50,92,.18), rgba(21,50,92,.18)),
+        url("./assets/pa-home-cta.jpg") center center / cover no-repeat;
+      opacity:.62;
+    }
+
+    .cta-actions{
+      margin-top:2.4rem;
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:flex-start;
+      gap:1rem;
+    }
+
+    /* footer */
+    .site-footer{
       background:
         linear-gradient(180deg, #102746 0%, #0b1d35 100%);
+      color:#fff;
+      padding:3.9rem 0 1.4rem;
     }
 
-    .pa-footer-grid {
-      gap: 2.5rem;
-      align-items: start;
+    .footer-grid{
+      display:grid;
+      grid-template-columns:1.1fr .8fr 1fr;
+      gap:2.5rem;
+      align-items:start;
     }
 
-    .pa-footer-brand {
-      max-width: 360px;
+    .footer-brand{
+      max-width:360px;
     }
 
-    .pa-footer-logo-badge {
-      background: rgba(255, 255, 255, 0.96);
-      padding: 0.9rem 1.1rem;
-      margin-bottom: 1rem;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16);
-      border-radius: 18px;
-      display: inline-flex;
+    .footer-logo-wrap{
+      position:relative;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:1.15rem 1.45rem;
+      margin-bottom:1.15rem;
+      isolation:isolate;
     }
 
-    .pa-footer-logo {
-      width: 180px;
-      height: auto;
-      filter: none;
+    .footer-splash{
+      position:absolute;
+      background:rgba(255,255,255,.94);
+      z-index:1;
+      filter:blur(.3px);
     }
 
-    .pa-footer-brand h2 {
-      font-size: 1.45rem;
-      margin-bottom: 0.75rem;
+    .footer-splash-one{
+      width:170px;
+      height:92px;
+      left:8px;
+      top:14px;
+      border-radius:42% 58% 47% 53% / 52% 40% 60% 48%;
+      transform:rotate(-7deg);
     }
 
-    .pa-footer-brand p {
-      line-height: 1.7;
+    .footer-splash-two{
+      width:54px;
+      height:54px;
+      left:-6px;
+      top:26px;
+      border-radius:58% 42% 61% 39% / 43% 55% 45% 57%;
     }
 
-    .pa-footer-links h3,
-    .pa-footer-contact h3 {
-      font-size: 1.05rem;
-      letter-spacing: 0.02em;
-      margin-bottom: 1rem;
+    .footer-splash-three{
+      width:40px;
+      height:40px;
+      right:-4px;
+      top:18px;
+      border-radius:44% 56% 41% 59% / 61% 37% 63% 39%;
     }
 
-    .pa-footer-links ul,
-    .pa-footer-contact ul {
-      display: grid;
-      gap: 0.7rem;
+    .footer-logo{
+      position:relative;
+      z-index:3;
+      width:180px;
+      height:auto;
     }
 
-    .pa-footer-links a {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-weight: 600;
-      color: rgba(255, 255, 255, 0.9);
-      transition: transform 0.2s ease, color 0.2s ease;
+    .footer-brand h2{
+      margin:0 0 .75rem;
+      font-size:1.45rem;
     }
 
-    .pa-footer-links a::before {
-      content: "•";
-      color: rgba(255, 255, 255, 0.45);
-      transition: color 0.2s ease, transform 0.2s ease;
+    .footer-brand p{
+      margin:0;
+      color:rgba(255,255,255,.9);
+      line-height:1.7;
     }
 
-    .pa-footer-links a::after {
-      display: none;
+    .footer-links h3,
+    .footer-contact h3{
+      margin:0 0 1rem;
+      font-size:1.05rem;
     }
 
-    .pa-footer-links a:hover,
-    .pa-footer-links a:focus {
-      color: #ffffff;
-      transform: translateX(3px);
+    .footer-links ul,
+    .footer-contact ul{
+      list-style:none;
+      padding:0;
+      margin:0;
+      display:grid;
+      gap:.75rem;
     }
 
-    .pa-footer-links a:hover::before,
-    .pa-footer-links a:focus::before {
-      color: #8ab5ff;
-      transform: scale(1.15);
+    .footer-links a{
+      display:inline-flex;
+      align-items:center;
+      gap:.45rem;
+      font-weight:600;
+      color:rgba(255,255,255,.92);
+      transition:transform .2s ease, color .2s ease;
     }
 
-    .pa-footer-contact li {
-      line-height: 1.6;
+    .footer-links a::before{
+      content:"•";
+      color:rgba(255,255,255,.5);
     }
 
-    .pa-footer-bottom {
-      margin-top: 2.35rem;
-      padding-top: 1rem;
+    .footer-links a:hover{
+      transform:translateX(3px);
+      color:#fff;
     }
 
-    .pa-feature-copy,
-    .pa-home-cta-copy,
-    .pa-footer-brand,
-    .pa-footer-links,
-    .pa-footer-contact {
-      animation: paFadeUp 0.65s ease both;
+    .footer-contact li{
+      color:rgba(255,255,255,.92);
+      line-height:1.6;
     }
 
-    @media (max-width: 1024px) {
-      .pa-feature-grid,
-      .pa-home-cta-grid,
-      .pa-footer-grid,
-      .pa-feature-section-alt .pa-feature-grid {
-        grid-template-columns: 1fr;
+    .footer-bottom{
+      border-top:1px solid rgba(255,255,255,.15);
+      margin-top:2.35rem;
+      padding-top:1rem;
+      text-align:center;
+      color:rgba(255,255,255,.86);
+    }
+
+    @media (max-width:1024px){
+      .welcome-grid,
+      .services-grid,
+      .trust-grid,
+      .cta-grid,
+      .footer-grid{
+        grid-template-columns:1fr;
       }
 
-      .pa-feature-image,
-      .pa-feature-section-alt .pa-feature-image,
-      .pa-feature-section:nth-of-type(3) .pa-feature-image,
-      .pa-home-cta-band .pa-feature-image {
-        min-height: 360px;
+      .services-visual,
+      .cta-visual,
+      .welcome-image,
+      .trust-image{
+        min-height:360px;
       }
 
-      .pa-footer-brand {
-        max-width: none;
-      }
-
-      .pa-home-cta-band::before,
-      .pa-feature-section-alt::before {
-        background: rgba(22, 50, 91, 0.08);
+      .services-home::before,
+      .cta-home::before{
+        background:rgba(22,50,91,.08);
       }
     }
 
-    @media (max-width: 900px) {
-      .pa-hero {
-        min-height: auto;
-        padding: 5rem 0 4.5rem;
+    @media (max-width:900px){
+      .site-header-inner{
+        flex-direction:column;
+        align-items:flex-start;
       }
 
-      .pa-hero h2 {
-        max-width: none;
+      .nav-list{
+        flex-wrap:wrap;
       }
 
-      .pa-feature-grid {
-        gap: 2rem;
+      .hero{
+        min-height:auto;
+        padding:4.9rem 0;
+      }
+
+      .hero h2{
+        max-width:none;
+      }
+
+      .section{
+        padding:4.2rem 0;
       }
     }
 
-    @media (max-width: 640px) {
-      .pa-hero h2 {
-        font-size: clamp(2.2rem, 9vw, 3.3rem);
+    @media (max-width:640px){
+      .brand-logo{width:112px}
+      .hero h2{font-size:clamp(2.2rem, 9vw, 3.3rem)}
+      .hero p{font-size:1rem}
+      .section{padding:3.5rem 0}
+      .services-visual,
+      .cta-visual,
+      .welcome-image,
+      .trust-image{
+        min-height:260px;
       }
-
-      .pa-hero p {
-        font-size: 1rem;
-      }
-
-      .pa-feature-image,
-      .pa-feature-section-alt .pa-feature-image,
-      .pa-feature-section:nth-of-type(3) .pa-feature-image,
-      .pa-home-cta-band .pa-feature-image {
-        min-height: 260px;
-      }
-
-      .pa-footer-logo {
-        width: 150px;
-      }
+      .footer-logo{width:150px}
     }
   </style>
 </head>
 <body>
-  <a class="pa-skip-link" href="#main-content">Skip to main content</a>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
 
-  <header class="pa-header">
-    <div class="pa-container pa-header-inner">
-      <a class="pa-brand" href="penguin-website.html" aria-label="Penguin Auto Specialists home">
-        <img src="./assets/Penguin-Auto-logo.png" alt="Penguin Auto Specialists logo" class="pa-logo">
-        <div class="pa-brand-text">
+  <header class="site-header">
+    <div class="container site-header-inner">
+      <a class="brand" href="penguin-website.html" aria-label="Penguin Auto Specialists home">
+        <img src="./assets/Penguin-Auto-logo.png" alt="Penguin Auto Specialists logo" class="brand-logo">
+        <div class="brand-text">
           <h1>Penguin Auto Specialists</h1>
           <p>Trusted automotive care and service</p>
         </div>
       </a>
 
-      <nav class="pa-nav" aria-label="Main navigation">
-        <ul>
+      <nav aria-label="Main navigation">
+        <ul class="nav-list">
           <li><a href="penguin-website.html" aria-current="page">Home</a></li>
           <li><a href="penguin-services.html">Services</a></li>
           <li><a href="penguin-about.html">About</a></li>
@@ -446,10 +667,10 @@
   </header>
 
   <main id="main-content">
-    <section class="pa-hero">
-      <div class="pa-container">
-        <div class="pa-hero-copy">
-          <p class="pa-eyebrow">Reliable Service • Honest Guidance • Professional Care</p>
+    <section class="hero">
+      <div class="container">
+        <div class="hero-inner">
+          <p class="eyebrow">Reliable Service • Honest Guidance • Professional Care</p>
           <h2>Auto service built on trust, quality, and confidence.</h2>
           <p>
             At Penguin Auto Specialists, we believe drivers deserve more than quick fixes. We focus on
@@ -457,20 +678,20 @@
             professional, supportive, and built to last.
           </p>
 
-          <div class="pa-hero-actions">
-            <a class="pa-btn pa-btn-primary" href="penguin-services.html">Explore Services</a>
-            <a class="pa-btn pa-btn-secondary" href="penguin-contact.html">Schedule Service</a>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="penguin-services.html">Explore Services</a>
+            <a class="btn btn-secondary" href="penguin-contact.html">Schedule Service</a>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="pa-section pa-feature-section">
-      <div class="pa-container pa-feature-grid">
-        <div class="pa-feature-copy">
-          <p class="pa-feature-label">Welcome to Penguin Auto Specialists</p>
-          <h2 class="pa-section-title">Automotive care that feels dependable from the very first visit.</h2>
-          <p class="pa-section-intro">
+    <section class="section">
+      <div class="container welcome-grid">
+        <div class="welcome-copy">
+          <p class="feature-label">Welcome to Penguin Auto Specialists</p>
+          <h2 class="section-title">Automotive care that feels dependable from the very first visit.</h2>
+          <p class="section-intro">
             We are building a service experience centered on trust, professionalism, and consistency.
             That means customers are treated with respect, communication is clear, and every service
             recommendation is focused on helping vehicles stay safe, reliable, and road-ready.
@@ -481,57 +702,55 @@
           </p>
         </div>
 
-        <div class="pa-feature-media">
-          <img src="./assets/pa-home-welcome.jpg" alt="Professional automotive service environment" class="pa-feature-image">
+        <div class="welcome-image-wrap">
+          <img src="./assets/pa-home-welcome.jpg" alt="Professional automotive service environment" class="welcome-image">
         </div>
       </div>
     </section>
 
-    <section class="pa-section pa-feature-section pa-feature-section-alt">
-      <div class="pa-container pa-feature-grid">
-        <div class="pa-feature-media">
-          <img src="./assets/pa-home-services.jpg" alt="Automotive diagnostics and service work" class="pa-feature-image">
-        </div>
+    <section class="section services-home">
+      <div class="container services-grid">
+        <div class="services-visual" aria-hidden="true"></div>
 
-        <div class="pa-feature-copy">
-          <p class="pa-feature-label">Service Preview</p>
-          <h2 class="pa-section-title">Practical services focused on performance, safety, and peace of mind.</h2>
-          <p class="pa-section-intro">
+        <div class="services-copy">
+          <p class="feature-label">Service Preview</p>
+          <h2 class="section-title">Practical services focused on performance, safety, and peace of mind.</h2>
+          <p class="section-intro">
             From routine maintenance to diagnostics and repair support, our work is centered on helping
             customers make informed decisions about their vehicles. We focus on service that is useful,
             organized, and built around long-term reliability.
           </p>
 
-          <div class="pa-home-service-list">
-            <div class="pa-home-service-item">
+          <div class="service-card-list">
+            <div class="service-card">
               <h3>Preventive Maintenance</h3>
               <p>Routine upkeep that helps protect vehicle performance and reduce avoidable issues.</p>
             </div>
 
-            <div class="pa-home-service-item">
+            <div class="service-card">
               <h3>Diagnostics</h3>
               <p>Clear, careful evaluations that help identify concerns and support smarter repair planning.</p>
             </div>
 
-            <div class="pa-home-service-item">
+            <div class="service-card">
               <h3>Repair Support</h3>
               <p>Dependable service focused on safety, drivability, and getting customers back on the road confidently.</p>
             </div>
           </div>
 
-          <div class="pa-hero-actions">
-            <a class="pa-btn pa-btn-primary" href="penguin-services.html">View Full Services Page</a>
+          <div class="services-button">
+            <a class="btn btn-primary" href="penguin-services.html">View Full Services Page</a>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="pa-section pa-feature-section">
-      <div class="pa-container pa-feature-grid">
-        <div class="pa-feature-copy">
-          <p class="pa-feature-label">Why Trust Matters</p>
-          <h2 class="pa-section-title">A better customer experience is just as important as the work itself.</h2>
-          <p class="pa-section-intro">
+    <section class="section">
+      <div class="container trust-grid">
+        <div>
+          <p class="feature-label">Why Trust Matters</p>
+          <h2 class="section-title">A better customer experience is just as important as the work itself.</h2>
+          <p class="section-intro">
             We want customers to feel informed, respected, and confident throughout the process. Strong
             automotive service should never feel confusing or impersonal. It should feel honest,
             organized, and focused on what truly helps the customer.
@@ -542,50 +761,49 @@
           </p>
         </div>
 
-        <div class="pa-feature-media">
-          <img src="./assets/pa-home-trust.jpg" alt="Customer trust and professional automotive service" class="pa-feature-image">
+        <div>
+          <img src="./assets/pa-home-trust.jpg" alt="Customer trust and professional automotive service" class="trust-image">
         </div>
       </div>
     </section>
 
-    <section class="pa-section pa-home-cta-band">
-      <div class="pa-container pa-home-cta-grid">
-        <div class="pa-home-cta-copy">
-          <p class="pa-feature-label">Ready When You Are</p>
-          <h2 class="pa-section-title">Give your vehicle the attention it deserves.</h2>
-          <p class="pa-section-intro">
+    <section class="section cta-home">
+      <div class="container cta-grid">
+        <div class="cta-copy">
+          <p class="feature-label">Ready When You Are</p>
+          <h2 class="section-title">Give your vehicle the attention it deserves.</h2>
+          <p class="section-intro">
             Whether you need dependable maintenance, honest diagnostic guidance, or quality repair
             support, Penguin Auto Specialists is here to help. Let’s make your next service experience
             feel more professional, more transparent, and more dependable.
           </p>
 
-          <div class="pa-hero-actions">
-            <a class="pa-btn pa-btn-primary" href="penguin-contact.html">Contact Us</a>
-            <a class="pa-btn pa-btn-secondary" href="penguin-about.html">Learn More About Us</a>
+          <div class="cta-actions">
+            <a class="btn btn-primary" href="penguin-contact.html">Contact Us</a>
+            <a class="btn btn-secondary" href="penguin-about.html">Learn More About Us</a>
           </div>
         </div>
 
-        <div class="pa-home-cta-media">
-          <img src="./assets/pa-home-cta.jpg" alt="Automotive service call to action" class="pa-feature-image">
-        </div>
+        <div class="cta-visual" aria-hidden="true"></div>
       </div>
     </section>
   </main>
 
-  <div class="pa-footer-brand">
-  <div class="pa-footer-logo-badge">
-    <span class="pa-footer-splash pa-footer-splash-one"></span>
-    <span class="pa-footer-splash pa-footer-splash-two"></span>
-    <span class="pa-footer-splash pa-footer-splash-three"></span>
-    <img src="./assets/Penguin-Auto-logo.png" alt="Penguin Auto Specialists logo" class="pa-footer-logo">
-  </div>
-  <h2>Penguin Auto Specialists</h2>
-  <p>
-    Professional automotive care built on trust, quality, and customer confidence.
-  </p>
-</div>
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo-wrap">
+            <span class="footer-splash footer-splash-one"></span>
+            <span class="footer-splash footer-splash-two"></span>
+            <span class="footer-splash footer-splash-three"></span>
+            <img src="./assets/Penguin-Auto-logo.png" alt="Penguin Auto Specialists logo" class="footer-logo">
+          </div>
+          <h2>Penguin Auto Specialists</h2>
+          <p>Professional automotive care built on trust, quality, and customer confidence.</p>
+        </div>
 
-        <div class="pa-footer-links">
+        <div class="footer-links">
           <h3>Quick Links</h3>
           <ul>
             <li><a href="penguin-website.html">Home</a></li>
@@ -595,7 +813,7 @@
           </ul>
         </div>
 
-        <div class="pa-footer-contact">
+        <div class="footer-contact">
           <h3>Contact</h3>
           <ul>
             <li><strong>Phone:</strong> (386) 555-0123</li>
@@ -606,7 +824,7 @@
         </div>
       </div>
 
-      <div class="pa-footer-bottom">
+      <div class="footer-bottom">
         <p>&copy; 2026 Penguin Auto Specialists. All rights reserved.</p>
       </div>
     </div>
