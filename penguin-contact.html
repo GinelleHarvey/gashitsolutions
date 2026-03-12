@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Contact | Penguin Auto Specialists</title>
+
+<link rel="stylesheet" href="penguin-auto.css">
+
+<style>
+
+.contact-section{
+padding:5rem 0;
+}
+
+.contact-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:3rem;
+align-items:start;
+}
+
+.contact-card{
+background:#ffffff;
+padding:2rem;
+border-radius:20px;
+box-shadow:0 12px 28px rgba(0,0,0,.08);
+}
+
+.contact-card h3{
+margin-top:0;
+color:var(--navy);
+}
+
+.contact-info p{
+margin:.5rem 0;
+}
+
+.form-group{
+margin-bottom:1.2rem;
+}
+
+.form-group label{
+display:block;
+font-weight:600;
+margin-bottom:.3rem;
+}
+
+.form-group input,
+.form-group textarea{
+width:100%;
+padding:.7rem;
+border-radius:10px;
+border:1px solid #ccd4e0;
+font-family:inherit;
+}
+
+.form-group textarea{
+min-height:120px;
+resize:vertical;
+}
+
+.submit-btn{
+background:var(--navy);
+color:white;
+border:none;
+padding:.8rem 1.3rem;
+border-radius:999px;
+font-weight:700;
+cursor:pointer;
+}
+
+.submit-btn:hover{
+background:#244a7b;
+}
+
+@media(max-width:900px){
+
+.contact-grid{
+grid-template-columns:1fr;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header class="site-header">
+<div class="container site-header-inner">
+
+<a class="brand" href="penguin-website.html">
+<img src="./assets/Penguin-Auto-logo.png" class="brand-logo">
+<div class="brand-text">
+<h1>Penguin Auto Specialists</h1>
+<p>Trusted automotive care and service</p>
+</div>
+</a>
+
+<nav>
+<ul class="nav-list">
+<li><a href="penguin-website.html">Home</a></li>
+<li><a href="penguin-services.html">Services</a></li>
+<li><a href="penguin-about.html">About</a></li>
+<li><a href="penguin-contact.html" aria-current="page">Contact</a></li>
+</ul>
+</nav>
+
+</div>
+</header>
+
+<main>
+
+<section class="page-hero">
+<div class="container page-hero-inner">
+
+<p class="eyebrow">Contact Penguin Auto Specialists</p>
+
+<h2>Schedule your service visit.</h2>
+
+<p>
+Have a question about your vehicle or need to schedule service?  
+Send us a message and our team will help you plan your next visit.
+</p>
+
+</div>
+</section>
+
+
+<section class="contact-section">
+<div class="container contact-grid">
+
+
+<div class="contact-card contact-info">
+
+<h3>Shop Information</h3>
+
+<p><strong>Phone:</strong> (386) 555-0123</p>
+
+<p><strong>Email:</strong> info@penguinautospecialists.com</p>
+
+<p><strong>Location:</strong> Holly Hill, Florida</p>
+
+<p><strong>Hours:</strong><br>
+Monday – Friday<br>
+8:00 AM – 5:30 PM</p>
+
+</div>
+
+
+<div class="contact-card">
+
+<h3>Request Service</h3>
+
+<form action="mailto:info@penguinautospecialists.com" method="post" enctype="text/plain">
+
+<div class="form-group">
+<label>Name</label>
+<input type="text" name="name" required>
+</div>
+
+<div class="form-group">
+<label>Email</label>
+<input type="email" name="email" required>
+</div>
+
+<div class="form-group">
+<label>Phone</label>
+<input type="tel" name="phone">
+</div>
+
+<div class="form-group">
+<label>Vehicle / Service Needed</label>
+<textarea name="message"></textarea>
+</div>
+
+<button class="submit-btn" type="submit">Request Appointment</button>
+
+</form>
+
+</div>
+
+
+</div>
+</section>
+
+</main>
+
+
+<footer class="site-footer">
+
+<div class="container footer-grid">
+
+<div class="footer-brand">
+
+<div class="footer-logo-wrap">
+<span class="footer-splash footer-splash-one"></span>
+<span class="footer-splash footer-splash-two"></span>
+<span class="footer-splash footer-splash-three"></span>
+<img src="./assets/Penguin-Auto-logo.png" class="footer-logo">
+</div>
+
+<h2>Penguin Auto Specialists</h2>
+
+<p>
+Professional automotive care built on trust, quality,
+and customer confidence.
+</p>
+
+</div>
+
+<div class="footer-links">
+
+<h3>Quick Links</h3>
+
+<ul>
+<li><a href="penguin-website.html">Home</a></li>
+<li><a href="penguin-services.html">Services</a></li>
+<li><a href="penguin-about.html">About</a></li>
+<li><a href="penguin-contact.html">Contact</a></li>
+</ul>
+
+</div>
+
+<div class="footer-contact">
+
+<h3>Contact</h3>
+
+<ul>
+<li>Phone: (386) 555-0123</li>
+<li>Email: info@penguinautospecialists.com</li>
+<li>Location: Holly Hill, Florida</li>
+<li>Hours: Mon – Fri 8:00 AM – 5:30 PM</li>
+</ul>
+
+</div>
+
+</div>
+
+<div class="footer-bottom">
+<p>© 2026 Penguin Auto Specialists. All rights reserved.</p>
+</div>
+
+</footer>
+
+</body>
+</html>
