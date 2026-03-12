@@ -1,23 +1,16 @@
 /* =========================================================
    penguin-app.css
    Penguin Auto Specialists Mobile App Prototype
+   Tablet / iPad Style Display
    ========================================================= */
 
 /* ------------------------------
-   Page banner
+   Banner / Intro
 -------------------------------- */
 
 .penguin-page .pengapp-banner{
   padding:1.25rem 0 1rem;
   text-align:center;
-}
-
-.penguin-page .pengapp-crumb{
-  margin:0 0 .35rem;
-}
-
-.penguin-page .pengapp-crumb a{
-  text-decoration:none;
 }
 
 .penguin-page .pengapp-sub{
@@ -29,7 +22,7 @@
 }
 
 /* ------------------------------
-   CENTER THE APP ON PAGE
+   CENTER THE DEVICE
 -------------------------------- */
 
 .penguin-page .pengapp-shell{
@@ -37,33 +30,31 @@
   display:flex;
   justify-content:center;
   align-items:center;
-  padding:1.5rem 0 2.5rem;
-}
-
-.penguin-page .pengapp-phone-wrap{
-  width:100%;
-  display:flex;
-  justify-content:center;
+  padding:2.5rem 0 3rem;
 }
 
 /* ------------------------------
-   iPhone style device shell
+   iPad Device Frame
 -------------------------------- */
 
 .penguin-page .pengapp-phone{
-  width:min(430px,100%);
-  border-radius:42px;
-  padding:14px;
-  background:linear-gradient(180deg,#2a3148,#151a2f);
+
+  width:min(880px,100%);
+  padding:22px;
+  border-radius:40px;
+
+  background:
+  linear-gradient(145deg,#1c2138,#0f1326);
+
   box-shadow:
-    0 26px 60px rgba(0,0,0,.45),
-    0 0 0 1px rgba(255,255,255,.08),
-    inset 0 0 0 1px rgba(255,255,255,.05);
+  0 40px 80px rgba(0,0,0,.55),
+  0 0 0 2px rgba(255,255,255,.05),
+  inset 0 0 0 1px rgba(255,255,255,.04);
+
   position:relative;
-  overflow:hidden;
 }
 
-/* Dynamic island / camera area */
+/* Camera dot */
 
 .penguin-page .pengapp-phone::before{
   content:"";
@@ -71,98 +62,122 @@
   top:10px;
   left:50%;
   transform:translateX(-50%);
-  width:110px;
-  height:22px;
-  border-radius:999px;
+  width:10px;
+  height:10px;
+  border-radius:50%;
   background:#0c1020;
-  z-index:5;
 }
 
 /* ------------------------------
-   Screen
+   Tablet Screen
 -------------------------------- */
 
 .penguin-page .pengapp-screen{
-  border-radius:32px;
+
+  border-radius:26px;
   overflow:hidden;
   background:#f5f7fb;
-  min-height:760px;
+  min-height:720px;
+
 }
 
 /* ------------------------------
-   Status bar
+   Status Bar
 -------------------------------- */
 
 .penguin-page .pengapp-statusbar{
+
   display:flex;
   justify-content:space-between;
   align-items:center;
-  padding:14px 16px 10px;
-  font-size:.92rem;
-  letter-spacing:.02em;
-  color:rgba(255,255,255,.95);
-  background:linear-gradient(180deg,#162849,#10203d);
-}
 
-.penguin-page .pengapp-status-icons{
-  opacity:.95;
+  padding:14px 18px 10px;
+
+  font-size:.92rem;
+
+  color:rgba(255,255,255,.95);
+
+  background:
+  linear-gradient(180deg,#162849,#10203d);
+
 }
 
 /* ------------------------------
-   App header
+   App Header
 -------------------------------- */
 
 .penguin-page .pengapp-header{
-  padding:14px 16px 12px;
-  background:linear-gradient(180deg,#17315a,#112442);
+
+  padding:16px 18px 14px;
+
+  background:
+  linear-gradient(180deg,#17315a,#112442);
+
   border-bottom:1px solid rgba(255,255,255,.10);
+
 }
 
 .penguin-page .pengapp-brand-row{
+
   display:flex;
   align-items:center;
-  gap:.85rem;
+  gap:.9rem;
+
 }
 
 .penguin-page .pengapp-logo{
-  width:54px;
-  height:54px;
+
+  width:56px;
+  height:56px;
+
   object-fit:contain;
+
   border-radius:12px;
   background:#fff;
+
   padding:.35rem;
+
 }
 
 .penguin-page .pengapp-brand{
+
   font-weight:900;
-  font-size:.98rem;
+  font-size:1rem;
   color:#fff;
+
 }
 
 .penguin-page .pengapp-brand-sub{
-  font-size:.82rem;
+
+  font-size:.85rem;
   color:rgba(255,255,255,.75);
+
 }
 
 /* ------------------------------
-   Content area
+   App Content Area
 -------------------------------- */
 
 .penguin-page .pengapp-content{
-  background:radial-gradient(circle at 30% 0%, #ffffff, #f4f7fb);
+
+  background:
+  radial-gradient(circle at 30% 0%, #ffffff, #f4f7fb);
+
   color:#16181d;
   min-height:650px;
-  position:relative;
+
 }
 
-/* Panels padding */
+/* Padding for panels */
 
 .penguin-page .pengapp-content > .pengapp-tab{
-  padding:16px 16px 110px;
+
+  padding:22px 22px 110px;
+
 }
 
 /* ------------------------------
-   Tab visibility
+   Tabs Visibility
 -------------------------------- */
 
 .penguin-page .pengapp-tab{
@@ -178,26 +193,37 @@
 -------------------------------- */
 
 .penguin-page .pengapp-h2{
-  font-size:1.35rem;
+
+  font-size:1.45rem;
   margin:.35rem 0 .7rem;
+
   color:#16325b;
+
 }
 
 .penguin-page .pengapp-h2--hero{
-  font-size:1.9rem;
-  line-height:1.2;
+
+  font-size:2.1rem;
+  line-height:1.25;
+
 }
 
 .penguin-page .pengapp-h3{
+
   margin:1rem 0 .65rem;
-  font-size:1.05rem;
+
+  font-size:1.1rem;
   color:#16325b;
+
 }
 
 .penguin-page .pengapp-muted{
+
   opacity:.92;
   line-height:1.6;
+
   color:#364152;
+
 }
 
 /* ------------------------------
@@ -206,11 +232,18 @@
 
 .penguin-page .pengapp-home-hero,
 .penguin-page .pengapp-card{
+
   border:1px solid rgba(22,50,91,.09);
+
   background:#fff;
+
   border-radius:20px;
-  padding:1rem;
-  box-shadow:0 14px 30px rgba(15,39,71,.07);
+
+  padding:1.1rem;
+
+  box-shadow:
+  0 14px 30px rgba(15,39,71,.07);
+
 }
 
 /* ------------------------------
@@ -218,113 +251,180 @@
 -------------------------------- */
 
 .penguin-page .pengapp-btn{
+
   border:1px solid rgba(22,50,91,.10);
+
   background:#2f5d95;
+
   color:#fff;
+
   border-radius:999px;
-  padding:.6rem 1rem;
+
+  padding:.65rem 1.1rem;
+
   font-weight:800;
+
   cursor:pointer;
+
 }
 
 .penguin-page .pengapp-btn--ghost{
+
   background:#fff;
   color:#16325b;
+
 }
 
 /* ------------------------------
-   Tiles
+   Action Tiles
 -------------------------------- */
 
 .penguin-page .pengapp-actions{
+
   display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:.7rem;
+
+  grid-template-columns:repeat(4,1fr);
+
+  gap:1rem;
+
 }
 
 .penguin-page .pengapp-tile{
+
   border-radius:18px;
-  padding:.85rem;
+
+  padding:1rem;
+
   display:grid;
+
   place-items:center;
+
   background:#fff;
+
   border:1px solid rgba(22,50,91,.10);
+
 }
 
 .penguin-page .pengapp-tile-ico{
-  font-size:1.2rem;
+
+  font-size:1.35rem;
+
 }
 
 .penguin-page .pengapp-tile-text{
-  font-size:.92rem;
+
+  font-size:.95rem;
+
   font-weight:900;
+
 }
 
 /* ------------------------------
-   Bottom navigation
+   Bottom Navigation
 -------------------------------- */
 
 .penguin-page .pengapp-nav{
+
   position:sticky;
+
   bottom:0;
+
   width:100%;
+
   display:grid;
+
   grid-template-columns:repeat(5,1fr);
+
   gap:8px;
-  padding:10px;
+
+  padding:12px;
+
   background:#fff;
+
   border-top:1px solid rgba(22,50,91,.10);
+
 }
 
 .penguin-page .pengapp-navbtn{
+
   border:1px solid rgba(22,50,91,.10);
+
   background:#fff;
+
   color:#16325b;
+
   border-radius:14px;
-  padding:.5rem;
+
+  padding:.55rem;
+
   display:grid;
+
   place-items:center;
+
   font-weight:900;
+
 }
 
 .penguin-page .pengapp-navbtn.is-active{
+
   background:#eef4fb;
+
 }
 
 /* ------------------------------
-   Toast
+   Toast Notification
 -------------------------------- */
 
 .penguin-page .pengapp-toast{
+
   position:absolute;
+
   left:50%;
+
   bottom:96px;
+
   transform:translateX(-50%);
+
   min-width:240px;
+
   padding:.7rem .9rem;
+
   border-radius:14px;
+
   background:#112442;
+
   color:#fff;
+
   opacity:0;
+
   transition:opacity .2s ease;
+
 }
 
 .penguin-page .pengapp-toast.show{
+
   opacity:1;
+
 }
 
 /* ------------------------------
-   Mobile tweak
+   Mobile Fallback
 -------------------------------- */
 
 @media (max-width:520px){
 
   .penguin-page .pengapp-phone{
+
     width:100%;
+
+    border-radius:28px;
+
   }
 
-  .penguin-page .pengapp-screen{
-    min-height:620px;
+  .penguin-page .pengapp-actions{
+
+    grid-template-columns:repeat(2,1fr);
+
   }
 
 }
