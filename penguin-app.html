@@ -3,53 +3,72 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>CIS4510 PA1 — Penguin Auto Specialists Mobile App (Prototype)</title>
-  <meta name="description" content="CIS4510 Project Assignment 1: Penguin Auto Specialists customer mobile app prototype for service scheduling, services, appointment tracking, and contact support.">
+  <title>CIS4510 PA2 — Penguin Auto Specialists Mobile App Prototype</title>
+  <meta name="description" content="CIS4510 Project Assignment 2: Penguin Auto Specialists mobile app prototype designed to complement the company website with service scheduling, service previews, appointment details, and quick customer contact support.">
 
-  <link rel="stylesheet" href="style.css">
+  <!-- Penguin site CSS -->
+  <link rel="stylesheet" href="penguin-auto.css">
+  <!-- App-specific CSS -->
   <link rel="stylesheet" href="penguin-app.css">
 
+  <!-- Favicons -->
   <link rel="icon" type="image/png" sizes="16x16" href="assets/pa-favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="24x24" href="assets/pa-favicon-24x24.png">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/pa-favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="48x48" href="assets/pa-favicon-48x48.png">
   <link rel="icon" type="image/png" sizes="64x64" href="assets/pa-favicon-64x64.png">
+  <link rel="icon" type="image/png" sizes="72x72" href="assets/pa-favicon-72x72.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="assets/penguin-favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="120x120" href="assets/pa-favicon-120x120.png">
   <link rel="icon" type="image/png" sizes="128x128" href="assets/pa-favicon-128x128.png">
+  <link rel="icon" type="image/png" sizes="144x144" href="assets/penguin-icon-144x144.png">
+  <link rel="icon" type="image/png" sizes="256x256" href="assets/pa-favicon-256x256.png">
   <link rel="icon" type="image/png" sizes="512x512" href="assets/pa-favicon-512.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/pa-apple-touch-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/pa-android-chrome-192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/pa-android-chrome-512x512.png">
 </head>
 
 <body class="penguin-page">
-  <a class="skip" href="#main">Skip to content</a>
+  <a class="pa-skip-link" href="#main">Skip to content</a>
 
+  <!-- Penguin website header -->
   <header class="site-header">
-    <div class="wrap">
-      <a class="brand" href="index.html" aria-label="GASH IT Solutions home">
-        <img src="assets/logo.svg" alt="GASH IT Solutions logo" width="56" height="56">
+    <div class="container site-header-inner">
+      <a class="brand" href="penguin-website.html" aria-label="Penguin Auto Specialists home">
+        <img src="assets/Penguin-Auto-logo.png" alt="Penguin Auto Specialists logo" class="brand-logo">
+        <div class="brand-text">
+          <h1>Penguin Auto Specialists</h1>
+          <p>Trusted automotive care and service</p>
+        </div>
       </a>
-      <nav aria-label="Primary">
-        <button id="navToggle" class="nav__toggle" aria-expanded="false" aria-controls="navMenu">Menu</button>
-        <ul id="navMenu" class="nav__menu">
-          <li><a href="index.html">Home</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="purpose.html">Purpose &amp; Assignments</a></li>
-          <li><a href="services.html">Services</a></li>
-          <li><a href="contact.html">Contact</a></li>
+
+      <nav aria-label="Primary navigation">
+        <ul class="nav-list">
+          <li><a href="penguin-website.html">Home</a></li>
+          <li><a href="penguin-about.html">About</a></li>
+          <li><a href="penguin-services.html">Services</a></li>
+          <li><a href="penguin-contact.html">Contact</a></li>
         </ul>
       </nav>
     </div>
   </header>
 
+  <!-- Page intro -->
   <section class="pengapp-banner">
-    <div class="wrap">
+    <div class="container">
       <p class="pengapp-crumb"><a href="purpose.html">← Back to Purpose &amp; Assignments</a></p>
-      <h1 class="gradient-text">CIS4510 PA1 — Penguin Auto Specialists Mobile App (Prototype)</h1>
+      <h1 class="pa-section-title">CIS4510 PA2 — Penguin Auto Specialists Mobile App Prototype</h1>
       <p class="pengapp-sub">
-        Customer-facing mobile app prototype designed to match the Penguin Auto Specialists website. This concept supports
-        service scheduling, viewing services, checking appointment details, and quickly contacting the shop.
+        A customer-focused mobile app concept created to complement the Penguin Auto Specialists website.
+        This prototype highlights convenient service scheduling, quick access to core services, appointment
+        details, and direct customer support in a polished mobile experience.
       </p>
     </div>
   </section>
 
-  <main id="main" class="wrap">
+  <!-- Main -->
+  <main id="main" class="container">
     <section class="pengapp-shell" aria-label="Penguin Auto Specialists Mobile App Prototype">
 
       <div class="pengapp-phone-wrap">
@@ -80,8 +99,8 @@
                   <p class="pengapp-kicker pengapp-kicker--blue">Welcome Back</p>
                   <h2 class="pengapp-h2 pengapp-h2--hero">Service made simple and convenient.</h2>
                   <p class="pengapp-muted">
-                    Schedule service, review appointment details, explore services, and connect with Penguin Auto Specialists
-                    from one mobile-friendly place.
+                    Schedule service, review appointment details, explore available services, and connect with
+                    Penguin Auto Specialists from one mobile-friendly place.
                   </p>
 
                   <div class="pengapp-home-actions">
@@ -284,7 +303,6 @@
             </nav>
 
             <div class="pengapp-toast" id="appToast" role="status" aria-live="polite" aria-atomic="true"></div>
-
           </div>
         </div>
       </div>
@@ -292,21 +310,48 @@
     </section>
   </main>
 
+  <!-- Penguin website footer -->
   <footer class="site-footer">
-    <div class="wrap footer__grid">
-      <small>
-        <strong>Created by Ginelle Harvey</strong> • <span class="js-year"></span><br>
-        Got a project or question? Say hello at:
-        <a href="mailto:info@gashitsolutions.com">info@gashitsolutions.com</a>
-      </small>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo-wrap">
+            <span class="footer-splash footer-splash-one"></span>
+            <span class="footer-splash footer-splash-two"></span>
+            <span class="footer-splash footer-splash-three"></span>
+            <img src="assets/Penguin-Auto-logo.png" alt="Penguin Auto Specialists logo" class="footer-logo">
+          </div>
+          <h2>Penguin Auto Specialists</h2>
+          <p>Professional automotive care built on trust, quality, and customer confidence.</p>
+        </div>
 
-      <nav class="footer-nav" aria-label="Footer">
-        <a href="purpose.html">← Back to Purpose &amp; Assignments</a>
-      </nav>
+        <div class="footer-links">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="penguin-website.html">Home</a></li>
+            <li><a href="penguin-services.html">Services</a></li>
+            <li><a href="penguin-about.html">About</a></li>
+            <li><a href="penguin-contact.html">Contact</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-contact">
+          <h3>Contact</h3>
+          <ul>
+            <li><strong>Phone:</strong> (386) 555-0123</li>
+            <li><strong>Email:</strong> info@penguinautospecialists.com</li>
+            <li><strong>Location:</strong> Holly Hill, Florida</li>
+            <li><strong>Hours:</strong> Monday – Friday, 8:00 AM – 5:30 PM</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p><a href="purpose.html">← Back to Purpose &amp; Assignments</a></p>
+      </div>
     </div>
   </footer>
 
-  <script src="script.js"></script>
   <script src="penguin-app.js"></script>
 </body>
 </html>
