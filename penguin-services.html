@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Penguin Auto Specialists | Services</title>
+  <meta name="description" content="Explore the professional automotive services offered by Penguin Auto Specialists, including preventive maintenance, diagnostics, inspections, and repair support.">
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="16x16" href="./assets/pa-favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="24x24" href="./assets/pa-favicon-24x24.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/pa-favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="./assets/pa-favicon-48x48.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="./assets/pa-favicon-64x64.png">
+  <link rel="icon" type="image/png" sizes="72x72" href="./assets/pa-favicon-72x72.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="./assets/penguin-favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="120x120" href="./assets/pa-favicon-120x120.png">
+  <link rel="icon" type="image/png" sizes="128x128" href="./assets/pa-favicon-128x128.png">
+  <link rel="icon" type="image/png" sizes="144x144" href="./assets/penguin-icon-144x144.png">
+  <link rel="icon" type="image/png" sizes="256x256" href="./assets/pa-favicon-256x256.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="./assets/pa-favicon-512.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="./assets/pa-apple-touch-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="./assets/pa-android-chrome-192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="./assets/pa-android-chrome-512x512.png">
+
+  <link rel="stylesheet" href="./penguin-auto.css">
+
+  <style>
+    .services-hero-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:2.5rem;
+      align-items:center;
+    }
+
+    .services-hero-copy{
+      max-width:680px;
+    }
+
+    .services-hero-image{
+      width:100%;
+      min-height:420px;
+      height:100%;
+      object-fit:cover;
+      border-radius:30px;
+      box-shadow:var(--shadow);
+    }
+
+    .services-highlight{
+      background:linear-gradient(180deg, #eef3f9 0%, #e8eef6 100%);
+    }
+
+    .services-checklist{
+      list-style:none;
+      padding:0;
+      margin:1.25rem 0 0;
+      display:grid;
+      gap:.8rem;
+    }
+
+    .services-checklist li{
+      background:#fff;
+      border:1px solid rgba(21,50,92,.08);
+      border-radius:18px;
+      padding:.95rem 1rem;
+      box-shadow:0 10px 24px rgba(15,39,71,.06);
+      color:var(--text);
+    }
+
+    .services-checklist strong{
+      color:var(--navy);
+    }
+
+    .services-cta{
+      background:linear-gradient(135deg, rgba(22,50,91,.98), rgba(35,74,128,.95));
+      color:#fff;
+    }
+
+    .services-cta .section-title,
+    .services-cta .feature-label{
+      color:#fff;
+    }
+
+    .services-cta .section-intro{
+      color:rgba(255,255,255,.9);
+      max-width:58ch;
+    }
+
+    @media (max-width:1024px){
+      .services-hero-grid{
+        grid-template-columns:1fr;
+      }
+
+      .services-hero-image{
+        min-height:320px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="container site-header-inner">
+      <a class="brand" href="penguin-website.html" aria-label="Penguin Auto Specialists home">
+        <img src="./assets/Penguin-Auto-logo.png" alt="Penguin Auto Specialists logo" class="brand-logo">
+        <div class="brand-text">
+          <h1>Penguin Auto Specialists</h1>
+          <p>Trusted automotive care and service</p>
+        </div>
+      </a>
+
+      <nav aria-label="Main navigation">
+        <ul class="nav-list">
+          <li><a href="penguin-website.html">Home</a></li>
+          <li><a href="penguin-services.html" aria-current="page">Services</a></li>
+          <li><a href="penguin-about.html">About</a></li>
+          <li><a href="penguin-contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="page-hero">
+      <div class="container services-hero-grid">
+        <div class="services-hero-copy">
+          <p class="eyebrow">Professional Support • Practical Solutions • Reliable Service</p>
+          <h2>Services built around vehicle performance, safety, and confidence.</h2>
+          <p>
+            At Penguin Auto Specialists, our services are centered on helping customers make informed
+            decisions about their vehicles. We focus on dependable care, organized recommendations,
+            and support that helps drivers stay safe and road-ready.
+          </p>
+
+          <div class="actions">
+            <a class="btn btn-primary" href="penguin-contact.html">Request Service</a>
+            <a class="btn btn-secondary" href="penguin-about.html">Learn About Us</a>
+          </div>
+        </div>
+
+        <div class="image-frame">
+          <img src="./assets/pa-services-hero.jpg" alt="Automotive service bay and technician working" class="services-hero-image">
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <p class="feature-label">Core Services</p>
+        <h2 class="section-title">Automotive services designed to keep you moving.</h2>
+        <p class="section-intro">
+          We provide practical automotive support with a focus on reliability, safety, and long-term
+          performance. Our goal is to make every service experience feel clear, professional, and
+          worthwhile.
+        </p>
+
+        <div class="card-grid">
+          <article class="card">
+            <h3>Preventive Maintenance</h3>
+            <p>
+              Routine maintenance helps reduce avoidable issues and supports long-term vehicle
+              reliability. This includes service planning, inspections, and care that helps vehicles
+              stay in strong working condition.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Diagnostics</h3>
+            <p>
+              Clear evaluations and careful system checks help identify concerns accurately. Diagnostics
+              support better decision-making and allow repair needs to be addressed more efficiently.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Repair Support</h3>
+            <p>
+              We focus on dependable service guidance and repair support that helps customers feel
+              informed, respected, and confident in the care their vehicles receive.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section services-highlight">
+      <div class="container two-col">
+        <div class="image-frame">
+          <img src="./assets/pa-services-diagnostics.jpg" alt="Technician performing vehicle diagnostics and inspection" class="feature-image">
+        </div>
+
+        <div>
+          <p class="feature-label">Diagnostics and Evaluation</p>
+          <h2 class="section-title">Careful inspections lead to smarter service decisions.</h2>
+          <p class="section-intro">
+            Vehicle concerns can be frustrating when the cause is unclear. That is why diagnostics and
+            inspections play such an important role in the service process. Clear evaluation helps
+            identify problems more accurately and supports more effective repair planning.
+          </p>
+
+          <ul class="services-checklist">
+            <li><strong>System Checks:</strong> evaluating vehicle performance and identifying problem areas</li>
+            <li><strong>Inspection Support:</strong> helping customers understand the condition of key vehicle systems</li>
+            <li><strong>Service Guidance:</strong> offering practical recommendations based on what the vehicle truly needs</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container two-col">
+        <div>
+          <p class="feature-label">Maintenance and Repair Support</p>
+          <h2 class="section-title">Strong vehicle care starts with consistency and attention to detail.</h2>
+          <p class="section-intro">
+            Routine maintenance and repair support are essential for drivability, safety, and overall
+            vehicle performance. Our approach focuses on useful service, organized communication, and
+            support that helps customers stay ahead of larger issues.
+          </p>
+
+          <ul class="services-checklist">
+            <li><strong>Maintenance Planning:</strong> helping customers stay on top of routine service needs</li>
+            <li><strong>Performance Support:</strong> focusing on the systems that affect safety and reliability</li>
+            <li><strong>Customer Confidence:</strong> making service feel more transparent and less overwhelming</li>
+          </ul>
+        </div>
+
+        <div class="image-frame">
+          <img src="./assets/pa-services-maintenance.jpg" alt="Routine maintenance and repair support in an automotive shop" class="feature-image">
+        </div>
+      </div>
+    </section>
+
+    <section class="section services-cta">
+      <div class="container">
+        <p class="feature-label">Need Service Guidance?</p>
+        <h2 class="section-title">Let Penguin Auto Specialists help you plan your next service visit.</h2>
+        <p class="section-intro">
+          Whether you need routine maintenance, diagnostic support, or general repair guidance, our
+          goal is to provide dependable service that feels organized, clear, and customer-focused.
+        </p>
+
+        <div class="actions">
+          <a class="btn btn-primary" href="penguin-contact.html">Contact Us</a>
+          <a class="btn btn-secondary" href="penguin-website.html">Back to Home</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo-wrap">
+            <span class="footer-splash footer-splash-one"></span>
+            <span class="footer-splash footer-splash-two"></span>
+            <span class="footer-splash footer-splash-three"></span>
+            <img src="./assets/Penguin-Auto-logo.png" alt="Penguin Auto Specialists logo" class="footer-logo">
+          </div>
+          <h2>Penguin Auto Specialists</h2>
+          <p>Professional automotive care built on trust, quality, and customer confidence.</p>
+        </div>
+
+        <div class="footer-links">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="penguin-website.html">Home</a></li>
+            <li><a href="penguin-services.html">Services</a></li>
+            <li><a href="penguin-about.html">About</a></li>
+            <li><a href="penguin-contact.html">Contact</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-contact">
+          <h3>Contact</h3>
+          <ul>
+            <li><strong>Phone:</strong> (386) 555-0123</li>
+            <li><strong>Email:</strong> info@penguinautospecialists.com</li>
+            <li><strong>Location:</strong> Holly Hill, Florida</li>
+            <li><strong>Hours:</strong> Monday – Friday, 8:00 AM – 5:30 PM</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 Penguin Auto Specialists. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
