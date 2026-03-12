@@ -1,30 +1,25 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>CIS4510 PA1 — Penguin Auto Specialists Mobile App (Prototype)</title>
-  <meta name="description" content="CIS4510 Project Assignment 1: Penguin Auto Specialists mobile app prototype with multi-tab navigation for service operations, customers, parts inventory, and transaction tracking.">
+  <meta name="description" content="CIS4510 Project Assignment 1: Penguin Auto Specialists customer mobile app prototype for service scheduling, services, appointment tracking, and contact support.">
 
-  <!-- Main site CSS -->
   <link rel="stylesheet" href="style.css">
-  <!-- App-specific CSS (UPDATED FILE NAME) -->
   <link rel="stylesheet" href="penguin-app.css">
 
-  <!-- Favicons -->
-  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48x48.png">
-  <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64x64.png">
-  <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon-128x128.png">
-  <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon-512.png">
-  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/pa-favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/pa-favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="assets/pa-favicon-48x48.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/pa-favicon-64x64.png">
+  <link rel="icon" type="image/png" sizes="128x128" href="assets/pa-favicon-128x128.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/pa-favicon-512.png">
 </head>
 
 <body class="penguin-page">
   <a class="skip" href="#main">Skip to content</a>
 
-  <!-- Header (same as site) -->
   <header class="site-header">
     <div class="wrap">
       <a class="brand" href="index.html" aria-label="GASH IT Solutions home">
@@ -43,19 +38,17 @@
     </div>
   </header>
 
-  <!-- Page banner -->
   <section class="pengapp-banner">
     <div class="wrap">
       <p class="pengapp-crumb"><a href="purpose.html">← Back to Purpose &amp; Assignments</a></p>
       <h1 class="gradient-text">CIS4510 PA1 — Penguin Auto Specialists Mobile App (Prototype)</h1>
       <p class="pengapp-sub">
-        Multi-tab mobile UI prototype for shop operations: service scheduling, technician assignment, vehicle and customer records,
-        parts inventory tracking, and transaction logging — designed for fast daily use in the shop.
+        Customer-facing mobile app prototype designed to match the Penguin Auto Specialists website. This concept supports
+        service scheduling, viewing services, checking appointment details, and quickly contacting the shop.
       </p>
     </div>
   </section>
 
-  <!-- Main -->
   <main id="main" class="wrap">
     <section class="pengapp-shell" aria-label="Penguin Auto Specialists Mobile App Prototype">
 
@@ -64,232 +57,241 @@
 
           <div class="pengapp-screen">
 
-            <!-- Status bar -->
             <div class="pengapp-statusbar" aria-hidden="true">
               <span>9:41</span>
-              <span class="pengapp-status-icons">◉ ︎︎︎︎▮▮▮ 🔋</span>
+              <span class="pengapp-status-icons">◉ ▮▮▮ 🔋</span>
             </div>
 
-            <!-- App header -->
             <header class="pengapp-header">
-              <div class="pengapp-brand" aria-label="Penguin Auto Specialists app brand">PENGUIN AUTO HELPER</div>
+              <div class="pengapp-brand-row">
+                <img src="assets/Penguin-Auto-logo.png" alt="Penguin Auto Specialists logo" class="pengapp-logo">
+                <div class="pengapp-brand-block">
+                  <div class="pengapp-brand">Penguin Auto Specialists</div>
+                  <div class="pengapp-brand-sub">Mobile Service App</div>
+                </div>
+              </div>
             </header>
 
-            <!-- App content -->
             <div class="pengapp-content">
 
-              <!-- DASHBOARD TAB -->
-              <section class="pengapp-tab is-active" id="tab-dashboard" role="tabpanel" aria-labelledby="btn-dashboard">
-                <div class="pengapp-row pengapp-row--top">
-                  <h2 class="pengapp-h2">Welcome, Team!</h2>
-                  <button class="pengapp-pill" type="button" data-toast="Profile view is part of the PA1 prototype concept.">
-                    View Profile
-                  </button>
-                </div>
+              <!-- HOME TAB -->
+              <section class="pengapp-tab is-active" id="tab-home" role="tabpanel" aria-labelledby="btn-home">
+                <div class="pengapp-home-hero">
+                  <p class="pengapp-kicker pengapp-kicker--blue">Welcome Back</p>
+                  <h2 class="pengapp-h2 pengapp-h2--hero">Service made simple and convenient.</h2>
+                  <p class="pengapp-muted">
+                    Schedule service, review appointment details, explore services, and connect with Penguin Auto Specialists
+                    from one mobile-friendly place.
+                  </p>
 
-                <div class="pengapp-hero">
-                  <div class="pengapp-hero-left" aria-hidden="true">
-                    <div class="pengapp-info-card">
-                      <div class="pengapp-info-title">Today’s Focus</div>
-                      <div class="pengapp-info-sub">Repairs • Parts • Invoices</div>
-                    </div>
+                  <div class="pengapp-home-actions">
+                    <button class="pengapp-btn" type="button" data-go="schedule">Schedule Service</button>
+                    <button class="pengapp-btn pengapp-btn--ghost" type="button" data-go="services">View Services</button>
                   </div>
+                </div>
 
-                  <article class="pengapp-summary-card" aria-label="Daily snapshot summary">
-                    <div>
-                      <div class="pengapp-kicker">Daily Snapshot</div>
-                      <div class="pengapp-metric">
-                        <span class="pengapp-metric-label">Open Tickets:</span>
-                        <span class="pengapp-metric-value" id="openTickets">12</span>
-                      </div>
-                    </div>
-                    <button class="pengapp-btn" type="button" data-go="customers">
-                      View Records
+                <section class="pengapp-section" aria-label="Quick actions">
+                  <h3 class="pengapp-h3">Quick Actions</h3>
+
+                  <div class="pengapp-actions" role="list" aria-label="Quick actions">
+                    <button class="pengapp-tile" type="button" data-go="schedule">
+                      <span class="pengapp-tile-ico" aria-hidden="true">📅</span>
+                      <span class="pengapp-tile-text">Schedule</span>
                     </button>
-                  </article>
-                </div>
 
-                <!-- Tiles (matches your mockup) -->
-                <div class="pengapp-actions" role="list" aria-label="Dashboards">
-                  <button class="pengapp-tile" type="button" data-toast="Service Dashboard (PA1 prototype): schedule repairs, assign techs, update status.">
-                    <span class="pengapp-tile-ico" aria-hidden="true">🛠️</span>
-                    <span class="pengapp-tile-text">Service Dashboard</span>
-                  </button>
+                    <button class="pengapp-tile" type="button" data-go="services">
+                      <span class="pengapp-tile-ico" aria-hidden="true">🛠️</span>
+                      <span class="pengapp-tile-text">Services</span>
+                    </button>
 
-                  <button class="pengapp-tile" type="button" data-toast="HR Dashboard (PA1 prototype): employee records, wages, positions, hiring dates, tasks.">
-                    <span class="pengapp-tile-ico" aria-hidden="true">🪪</span>
-                    <span class="pengapp-tile-text">HR Dashboard</span>
-                  </button>
+                    <button class="pengapp-tile" type="button" data-go="appointments">
+                      <span class="pengapp-tile-ico" aria-hidden="true">🚗</span>
+                      <span class="pengapp-tile-text">Appointments</span>
+                    </button>
 
-                  <button class="pengapp-tile" type="button" data-toast="Vehicle Dashboard (PA1 prototype): search by VIN, view make/model/year/plate, link to customer.">
-                    <span class="pengapp-tile-ico" aria-hidden="true">🚗</span>
-                    <span class="pengapp-tile-text">Vehicle Dashboard</span>
-                  </button>
-
-                  <button class="pengapp-tile" type="button" data-go="customers">
-                    <span class="pengapp-tile-ico" aria-hidden="true">👤</span>
-                    <span class="pengapp-tile-text">Customer Records</span>
-                  </button>
-
-                  <button class="pengapp-tile" type="button" data-go="parts">
-                    <span class="pengapp-tile-ico" aria-hidden="true">📦</span>
-                    <span class="pengapp-tile-text">Parts Inventory</span>
-                  </button>
-
-                  <button class="pengapp-tile" type="button" data-go="transactions">
-                    <span class="pengapp-tile-ico" aria-hidden="true">💳</span>
-                    <span class="pengapp-tile-text">Transaction Log</span>
-                  </button>
-                </div>
+                    <button class="pengapp-tile" type="button" data-go="contact">
+                      <span class="pengapp-tile-ico" aria-hidden="true">📞</span>
+                      <span class="pengapp-tile-text">Contact</span>
+                    </button>
+                  </div>
+                </section>
 
                 <section class="pengapp-section" aria-label="Quick highlights">
                   <h3 class="pengapp-h3">Quick Highlights</h3>
 
                   <div class="pengapp-cards" role="list">
                     <article class="pengapp-mini-card" role="listitem">
-                      <div class="pengapp-mini-ico" aria-hidden="true">📅</div>
-                      <div class="pengapp-mini-title">Next Appointment</div>
-                      <div class="pengapp-mini-sub">10:00 AM</div>
+                      <div class="pengapp-mini-ico" aria-hidden="true">📍</div>
+                      <div>
+                        <div class="pengapp-mini-title">Shop Location</div>
+                        <div class="pengapp-mini-sub">Holly Hill, Florida</div>
+                      </div>
                     </article>
 
                     <article class="pengapp-mini-card" role="listitem">
-                      <div class="pengapp-mini-ico" aria-hidden="true">🧾</div>
-                      <div class="pengapp-mini-title">Invoices Due</div>
-                      <div class="pengapp-mini-sub">3</div>
+                      <div class="pengapp-mini-ico" aria-hidden="true">⏰</div>
+                      <div>
+                        <div class="pengapp-mini-title">Hours</div>
+                        <div class="pengapp-mini-sub">Mon–Fri, 8:00 AM–5:30 PM</div>
+                      </div>
                     </article>
 
                     <article class="pengapp-mini-card" role="listitem">
-                      <div class="pengapp-mini-ico" aria-hidden="true">⚠️</div>
-                      <div class="pengapp-mini-title">Low Stock Parts</div>
-                      <div class="pengapp-mini-sub">2 items</div>
+                      <div class="pengapp-mini-ico" aria-hidden="true">⭐</div>
+                      <div>
+                        <div class="pengapp-mini-title">Customer Focus</div>
+                        <div class="pengapp-mini-sub">Clear service and support</div>
+                      </div>
                     </article>
                   </div>
                 </section>
               </section>
 
-              <!-- CUSTOMERS TAB -->
-              <section class="pengapp-tab" id="tab-customers" role="tabpanel" aria-labelledby="btn-customers">
-                <h2 class="pengapp-h2">Customer Records</h2>
+              <!-- SERVICES TAB -->
+              <section class="pengapp-tab" id="tab-services" role="tabpanel" aria-labelledby="btn-services">
+                <h2 class="pengapp-h2">Our Services</h2>
 
                 <div class="pengapp-card">
-                  <div class="pengapp-kicker">Customer Lookup</div>
+                  <div class="pengapp-kicker">Preventive Maintenance</div>
                   <p class="pengapp-muted">
-                    Search customer records to view contact info, linked vehicles (VIN), repair history, and invoices.
-                    (PA1 prototype)
+                    Routine maintenance helps keep vehicles dependable, safe, and road-ready over time.
                   </p>
-
-                  <div class="pengapp-panel" role="img" aria-label="Mock customer lookup panel">
-                    <div class="pengapp-panel-grid" aria-hidden="true"></div>
-                  </div>
-
-                  <div class="pengapp-row">
-                    <button class="pengapp-btn pengapp-btn--ghost" type="button" id="btnNewTicket">
-                      New Ticket (+1)
-                    </button>
-                    <button class="pengapp-btn" type="button" id="btnCloseTicket">
-                      Close Ticket
-                    </button>
-                  </div>
-
-                  <p class="pengapp-note" id="customerNote" aria-live="polite"></p>
                 </div>
 
                 <div class="pengapp-card">
-                  <div class="pengapp-kicker">Recent Activity</div>
-                  <ul class="pengapp-list" id="recentActivity" aria-label="Recent customer activity list">
-                    <li class="pengapp-muted">No recent activity yet — use the prototype buttons above to simulate updates.</li>
-                  </ul>
+                  <div class="pengapp-kicker">Diagnostics</div>
+                  <p class="pengapp-muted">
+                    Careful inspections and system checks help identify concerns and support better repair planning.
+                  </p>
+                </div>
+
+                <div class="pengapp-card">
+                  <div class="pengapp-kicker">Repair Support</div>
+                  <p class="pengapp-muted">
+                    Professional repair support focuses on drivability, safety, and customer confidence.
+                  </p>
+                </div>
+
+                <div class="pengapp-card">
+                  <div class="pengapp-kicker">Need Help Choosing a Service?</div>
+                  <p class="pengapp-muted">
+                    Use the schedule tab to request service and describe what your vehicle needs.
+                  </p>
+                  <button class="pengapp-btn" type="button" data-go="schedule">Go to Scheduling</button>
                 </div>
               </section>
 
-              <!-- PARTS TAB -->
-              <section class="pengapp-tab" id="tab-parts" role="tabpanel" aria-labelledby="btn-parts">
-                <h2 class="pengapp-h2">Parts Inventory</h2>
+              <!-- SCHEDULE TAB -->
+              <section class="pengapp-tab" id="tab-schedule" role="tabpanel" aria-labelledby="btn-schedule">
+                <h2 class="pengapp-h2">Schedule Service</h2>
 
                 <div class="pengapp-card">
-                  <label class="pengapp-label" for="partItem">Add / Request a Part</label>
-                  <div class="pengapp-row">
-                    <input class="pengapp-input" id="partItem" type="text" placeholder="e.g., Brake pads, Oil filter, Spark plug" autocomplete="off">
-                    <button class="pengapp-btn" type="button" id="btnAddPart">Add</button>
+                  <label class="pengapp-label" for="apptName">Full Name</label>
+                  <input class="pengapp-input" id="apptName" type="text" placeholder="Enter your name">
+
+                  <label class="pengapp-label" for="apptVehicle">Vehicle</label>
+                  <input class="pengapp-input" id="apptVehicle" type="text" placeholder="Year, make, and model">
+
+                  <label class="pengapp-label" for="apptNeed">Service Needed</label>
+                  <input class="pengapp-input" id="apptNeed" type="text" placeholder="Oil change, diagnostics, brakes, etc.">
+
+                  <label class="pengapp-label" for="apptDate">Preferred Date</label>
+                  <input class="pengapp-input" id="apptDate" type="text" placeholder="MM/DD/YYYY">
+
+                  <div class="pengapp-row pengapp-row--spaced">
+                    <button class="pengapp-btn" type="button" id="btnRequestAppt">Request Appointment</button>
+                    <button class="pengapp-btn pengapp-btn--ghost" type="button" id="btnClearAppt">Clear</button>
                   </div>
 
-                  <ul class="pengapp-list" id="partsList" aria-label="Parts request list">
-                    <li class="pengapp-muted">No parts listed — add the first part needed for a repair.</li>
-                  </ul>
+                  <p class="pengapp-note" id="scheduleNote" aria-live="polite"></p>
+                </div>
+              </section>
 
-                  <p class="pengapp-note pengapp-muted" aria-live="polite">
-                    PA1 prototype note: In the final system, parts will include vendor, cost, and quantity and will link to a repair/service ticket.
+              <!-- APPOINTMENTS TAB -->
+              <section class="pengapp-tab" id="tab-appointments" role="tabpanel" aria-labelledby="btn-appointments">
+                <h2 class="pengapp-h2">Appointment Details</h2>
+
+                <div class="pengapp-card">
+                  <div class="pengapp-kicker">Next Appointment</div>
+                  <div class="pengapp-summary-line"><strong>Status:</strong> Confirmed</div>
+                  <div class="pengapp-summary-line"><strong>Date:</strong> Thursday, 10:00 AM</div>
+                  <div class="pengapp-summary-line"><strong>Service:</strong> Preventive Maintenance</div>
+                  <div class="pengapp-summary-line"><strong>Vehicle:</strong> 2021 Toyota Camry</div>
+                </div>
+
+                <div class="pengapp-card">
+                  <div class="pengapp-kicker">Appointment Notes</div>
+                  <p class="pengapp-muted">
+                    Please arrive a few minutes early and bring any questions you may have about your vehicle.
                   </p>
                 </div>
               </section>
 
-              <!-- TRANSACTIONS TAB -->
-              <section class="pengapp-tab" id="tab-transactions" role="tabpanel" aria-labelledby="btn-transactions">
-                <h2 class="pengapp-h2">Transaction Log</h2>
+              <!-- CONTACT TAB -->
+              <section class="pengapp-tab" id="tab-contact" role="tabpanel" aria-labelledby="btn-contact">
+                <h2 class="pengapp-h2">Contact Us</h2>
 
                 <div class="pengapp-card">
-                  <div class="pengapp-kicker">Quick Lookup</div>
-                  <p class="pengapp-muted">
-                    Search by VIN, repair number, or invoice number to confirm status and payment details.
-                    (PA1 prototype)
-                  </p>
+                  <div class="pengapp-kicker">Penguin Auto Specialists</div>
+                  <ul class="pengapp-list pengapp-list--plain">
+                    <li><strong>Phone:</strong> (386) 555-0123</li>
+                    <li><strong>Email:</strong> info@penguinautospecialists.com</li>
+                    <li><strong>Location:</strong> Holly Hill, Florida</li>
+                    <li><strong>Hours:</strong> Monday – Friday, 8:00 AM – 5:30 PM</li>
+                  </ul>
 
-                  <label class="pengapp-label" for="txnLookup">VIN / Repair # / Invoice #</label>
                   <div class="pengapp-row">
-                    <input class="pengapp-input" id="txnLookup" type="text" placeholder="e.g., VIN3456 or R-1024 or INV-2201">
-                    <button class="pengapp-btn pengapp-btn--ghost" type="button" id="btnSearchTxn">Search</button>
+                    <a class="pengapp-link" href="penguin-contact.html">Open Full Contact Page →</a>
                   </div>
-
-                  <p class="pengapp-note" id="txnResult" aria-live="polite"></p>
                 </div>
 
                 <div class="pengapp-card">
-                  <div class="pengapp-kicker">Companion Website (PA1)</div>
+                  <div class="pengapp-kicker">Companion Website</div>
                   <p class="pengapp-muted">
-                    The companion website prototype supports customer appointment requests and basic status visibility.
+                    The app works alongside the Penguin Auto Specialists website for service requests and customer support.
                   </p>
-                  <a class="pengapp-link" href="penguin-website.html">
-                    Open Companion Website Prototype →
-                  </a>
+                  <a class="pengapp-link" href="penguin-website.html">Open Companion Website →</a>
                 </div>
               </section>
 
             </div>
 
-            <!-- Bottom nav (tab bar) -->
             <nav class="pengapp-nav" aria-label="App tabs">
-              <button class="pengapp-navbtn is-active" id="btn-dashboard" type="button" data-tab="dashboard" aria-controls="tab-dashboard" aria-selected="true">
+              <button class="pengapp-navbtn is-active" id="btn-home" type="button" data-tab="home" aria-controls="tab-home" aria-selected="true">
                 <span aria-hidden="true">🏠</span>
-                <span class="pengapp-navtext">Dashboard</span>
+                <span class="pengapp-navtext">Home</span>
               </button>
 
-              <button class="pengapp-navbtn" id="btn-customers" type="button" data-tab="customers" aria-controls="tab-customers" aria-selected="false">
-                <span aria-hidden="true">👤</span>
-                <span class="pengapp-navtext">Customers</span>
+              <button class="pengapp-navbtn" id="btn-services" type="button" data-tab="services" aria-controls="tab-services" aria-selected="false">
+                <span aria-hidden="true">🛠️</span>
+                <span class="pengapp-navtext">Services</span>
               </button>
 
-              <button class="pengapp-navbtn" id="btn-parts" type="button" data-tab="parts" aria-controls="tab-parts" aria-selected="false">
-                <span aria-hidden="true">📦</span>
-                <span class="pengapp-navtext">Parts</span>
+              <button class="pengapp-navbtn" id="btn-schedule" type="button" data-tab="schedule" aria-controls="tab-schedule" aria-selected="false">
+                <span aria-hidden="true">📅</span>
+                <span class="pengapp-navtext">Schedule</span>
               </button>
 
-              <button class="pengapp-navbtn" id="btn-transactions" type="button" data-tab="transactions" aria-controls="tab-transactions" aria-selected="false">
-                <span aria-hidden="true">💳</span>
-                <span class="pengapp-navtext">Transactions</span>
+              <button class="pengapp-navbtn" id="btn-appointments" type="button" data-tab="appointments" aria-controls="tab-appointments" aria-selected="false">
+                <span aria-hidden="true">🚗</span>
+                <span class="pengapp-navtext">Status</span>
+              </button>
+
+              <button class="pengapp-navbtn" id="btn-contact" type="button" data-tab="contact" aria-controls="tab-contact" aria-selected="false">
+                <span aria-hidden="true">📞</span>
+                <span class="pengapp-navtext">Contact</span>
               </button>
             </nav>
 
-            <!-- Toast -->
             <div class="pengapp-toast" id="appToast" role="status" aria-live="polite" aria-atomic="true"></div>
 
-          </div> <!-- /.pengapp-screen -->
-        </div> <!-- /.pengapp-phone -->
-      </div> <!-- /.pengapp-phone-wrap -->
+          </div>
+        </div>
+      </div>
 
     </section>
   </main>
 
-  <!-- Footer -->
   <footer class="site-footer">
     <div class="wrap footer__grid">
       <small>
@@ -304,10 +306,7 @@
     </div>
   </footer>
 
-  <!-- Site script (nav, year, etc.) -->
   <script src="script.js"></script>
-  <!-- App logic (UPDATED FILE NAME) -->
   <script src="penguin-app.js"></script>
 </body>
 </html>
-
