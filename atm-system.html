@@ -5,7 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>DSC Bank ATM System</title>
   <meta name="description" content="ATM banking simulation for DSC Bank using HTML and JavaScript.">
+
   <link rel="stylesheet" href="style.css">
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48x48.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64x64.png">
+  <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon-128x128.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon-512.png">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 
   <style>
     .page-banner .wrap {
@@ -114,8 +124,8 @@
         <ul id="navMenu" class="nav__menu">
           <li><a href="index.html">Home</a></li>
           <li><a href="about.html">About</a></li>
-          <li><a href="purpose.html" aria-current="page">Purpose &amp; Assignments</a></li>
           <li><a href="services.html">Services</a></li>
+          <li><a href="purpose.html" aria-current="page">Purpose &amp; Assignments</a></li>
           <li><a href="contact.html">Contact</a></li>
         </ul>
       </nav>
@@ -139,7 +149,8 @@
           <ul>
             <li>Withdrawals are limited to $500.</li>
             <li>Only 10 transactions are allowed per day.</li>
-            <li>Transfers cannot use the same source and destination account.</li>
+            <li>Credit card cash advances depend on available credit.</li>
+            <li>Mortgage, car loan, boat loan, and credit card balances can be paid through Deposit / Payment.</li>
           </ul>
         </div>
 
@@ -154,8 +165,10 @@
             <select id="account">
               <option value="checking">Checking</option>
               <option value="savings">Savings</option>
-              <option value="loan">Loan</option>
-              <option value="credit">Credit Card</option>
+              <option value="mortgage">Mortgage</option>
+              <option value="carLoan">Car Loan</option>
+              <option value="boatLoan">Boat Loan</option>
+              <option value="creditCard">Credit Card</option>
             </select>
           </div>
 
@@ -166,6 +179,7 @@
               <option value="withdraw">Withdraw</option>
               <option value="deposit">Deposit / Payment</option>
               <option value="transfer">Transfer</option>
+              <option value="cashAdvance">Credit Card Cash Advance</option>
             </select>
           </div>
 
@@ -174,8 +188,10 @@
             <select id="transferTo">
               <option value="checking">Checking</option>
               <option value="savings">Savings</option>
-              <option value="loan">Loan</option>
-              <option value="credit">Credit Card</option>
+              <option value="mortgage">Mortgage</option>
+              <option value="carLoan">Car Loan</option>
+              <option value="boatLoan">Boat Loan</option>
+              <option value="creditCard">Credit Card</option>
             </select>
           </div>
 
@@ -202,6 +218,7 @@
         Got a project or question? Say hello at:
         <a href="mailto:info@gashitsolutions.com">info@gashitsolutions.com</a>
       </small>
+
       <nav class="footer-nav" aria-label="Footer">
         <a href="purpose.html">← Back to Purpose &amp; Assignments</a>
       </nav>
