@@ -4,9 +4,12 @@ const customer = {
   accounts: {
     checking: 1000,
     savings: 1500,
-    loan: 5000,
-    credit: 300
-  }
+    mortgage: 120000,
+    carLoan: 18000,
+    boatLoan: 9000,
+    creditCard: 500
+  },
+  creditLimit: 3000
 };
 
 function formatMoney(value) {
@@ -57,7 +60,7 @@ function processTransaction() {
 
   if (transaction === "withdraw") {
     if (account !== "checking" && account !== "savings") {
-      showReceipt("Rejected: Invalid Account", "Withdrawals are only allowed from checking or savings accounts.");
+      showReceipt("Rejected: Invalid Withdrawal Account", "Withdrawals are only allowed from checking or savings accounts.");
       return;
     }
 
@@ -82,12 +85,28 @@ function processTransaction() {
   }
 
   if (transaction === "deposit") {
+    if (account === "mortgage" || account === "carLoan" || account === "boatLoan" || account === "creditCard") {
+      customer.accounts[account] -= amount;
+
+      if (customer.accounts[account] < 0) {
+        customer.accounts[account] = 0;
+      }
+
+      customer.transactionCount++;
+
+      showReceipt(
+        "Accepted: Payment Complete",
+        `Account: ${account}<br>Payment Amount: ${formatMoney(amount)}<br>New Balance Owed: ${formatMoney(customer.accounts[account])}<br>Date: ${now}`
+      );
+      return;
+    }
+
     customer.accounts[account] += amount;
     customer.transactionCount++;
 
     showReceipt(
-      "Accepted: Deposit / Payment Complete",
-      `Account: ${account}<br>Amount: ${formatMoney(amount)}<br>New Balance: ${formatMoney(customer.accounts[account])}<br>Date: ${now}`
+      "Accepted: Deposit Complete",
+      `Account: ${account}<br>Deposit Amount: ${formatMoney(amount)}<br>New Balance: ${formatMoney(customer.accounts[account])}<br>Date: ${now}`
     );
     return;
   }
@@ -110,6 +129,32 @@ function processTransaction() {
     showReceipt(
       "Accepted: Transfer Complete",
       `From: ${account}<br>To: ${transferTo}<br>Amount: ${formatMoney(amount)}<br>${account} Balance: ${formatMoney(customer.accounts[account])}<br>${transferTo} Balance: ${formatMoney(customer.accounts[transferTo])}<br>Date: ${now}`
+    );
+    return;
+  }
+
+  if (transaction === "cashAdvance") {
+    if (account !== "creditCard") {
+      showReceipt("Rejected: Invalid Account", "Cash advances are only available from the credit card account.");
+      return;
+    }
+
+    const availableCredit = customer.creditLimit - customer.accounts.creditCard;
+
+    if (amount > availableCredit) {
+      showReceipt(
+        "Rejected: Insufficient Credit",
+        `Available credit: ${formatMoney(availableCredit)}`
+      );
+      return;
+    }
+
+    customer.accounts.creditCard += amount;
+    customer.transactionCount++;
+
+    showReceipt(
+      "Accepted: Credit Card Cash Advance Complete",
+      `Cash Advance Amount: ${formatMoney(amount)}<br>New Credit Card Balance: ${formatMoney(customer.accounts.creditCard)}<br>Available Credit Remaining: ${formatMoney(customer.creditLimit - customer.accounts.creditCard)}<br>Date: ${now}`
     );
   }
 }
