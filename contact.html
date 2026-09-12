@@ -1,158 +1,1049 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Contact — GASH IT Solutions</title>
-  <meta name="description" content="Contact GASH IT Solutions — reach out for support, services, or project inquiries." />
 
-  <!-- Site-wide CSS -->
-  <link rel="stylesheet" href="style.css">
+<head>
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1">
+
+  <title>
+    Contact | GRAINSMultimedia LLC
+  </title>
+
+  <meta
+    name="description"
+    content="Contact GRAINSMultimedia LLC for IT support, business technology, web development, custom software, digital design, technical writing, smart-space services, contracting, and project support.">
+
+  <meta
+    name="theme-color"
+    content="#7c3aed">
+
+  <link
+    rel="canonical"
+    href="https://gashitsolutions.com/contact.html">
+
 
   <!-- Favicons -->
-  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48x48.png">
-  <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64x64.png">
-  <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon-128x128.png">
-  <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon-512.png">
-  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-</head>
 
-  <body class="page-contact">
-    <!-- Header -->
-  <header class="site-header">
-    <div class="wrap">
-      <a class="brand" href="index.html" aria-label="GASH IT Solutions home">
-        <img src="assets/logo.svg" alt="GASH IT Solutions logo" width="56" height="56">
-        <span class="powered-by">Powered by GRAINSMultimedia</span>
-      </a>
-      <nav aria-label="Primary">
-        <button id="navToggle" class="nav__toggle" aria-expanded="false" aria-controls="navMenu">Menu</button>
-        <ul id="navMenu" class="nav__menu">
-          <li><a href="index.html">Home</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="purpose.html">Purpose &amp; Assignments</a></li>
-          <li><a href="services.html">Services</a></li>
-          <li><a aria-current="page" href="contact.html">Contact</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+  <link
+    rel="icon"
+    type="image/svg+xml"
+    href="site-assets/brand/favicons/favicon-512x512.svg">
 
-  <main id="main" class="wrap">
-    <section class="card">
-      <h1>Contact</h1>
-      <p>
-    Contact us at <a href="mailto:info@gashitsolutions.com">info@gashitsolutions.com</a><br>
-    Please fill in all fields below. On the next page, you’ll confirm your details before sending.</p>
-     
-      <div id="errorSummary" class="error" style="display:none"></div>
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="16x16"
+    href="site-assets/brand/favicons/favicon-16x16.png">
 
-      <form id="contactForm" class="form-grid" novalidate>
-        <!-- Name -->
-        <div class="row cols-2">
-          <div class="field">
-            <label for="firstName">First name</label>
-            <input id="firstName" name="firstName" type="text" required>
-          </div>
-          <div class="field">
-            <label for="lastName">Last name</label>
-            <input id="lastName" name="lastName" type="text" required>
-          </div>
-        </div>
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="32x32"
+    href="site-assets/brand/favicons/favicon-32x32.png">
 
-        <!-- Address -->
-        <div class="field">
-          <label for="street">Street Address</label>
-          <input id="street" name="street" type="text" required>
-        </div>
-        <div class="row cols-3">
-          <div class="field">
-            <label for="city">City</label>
-            <input id="city" name="city" type="text" required>
-          </div>
-          <div class="field">
-            <label for="state">State</label>
-            <select id="state" name="state" required>
-              <option value="">Select…</option>
-              <!-- State list unchanged -->
-              <option>AL</option><option>AK</option><option>AZ</option><option>AR</option><option>CA</option>
-              <option>CO</option><option>CT</option><option>DE</option><option>FL</option><option>GA</option>
-              <option>HI</option><option>ID</option><option>IL</option><option>IN</option><option>IA</option>
-              <option>KS</option><option>KY</option><option>LA</option><option>ME</option><option>MD</option>
-              <option>MA</option><option>MI</option><option>MN</option><option>MS</option><option>MO</option>
-              <option>MT</option><option>NE</option><option>NV</option><option>NH</option><option>NJ</option>
-              <option>NM</option><option>NY</option><option>NC</option><option>ND</option><option>OH</option>
-              <option>OK</option><option>OR</option><option>PA</option><option>RI</option><option>SC</option>
-              <option>SD</option><option>TN</option><option>TX</option><option>UT</option><option>VT</option>
-              <option>VA</option><option>WA</option><option>WV</option><option>WI</option><option>WY</option>
-              <option>DC</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="zip">ZIP</label>
-            <input id="zip" name="zip" type="text" required pattern="^\d{5}(-\d{4})?$">
-          </div>
-        </div>
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="48x48"
+    href="site-assets/brand/favicons/favicon-48x48.png">
 
-        <!-- Phone -->
-        <div class="field">
-          <label for="phone">Phone</label>
-          <input id="phone" name="phone" type="tel" placeholder="(000)000-0000" required>
-        </div>
+  <link
+    rel="apple-touch-icon"
+    sizes="192x192"
+    href="site-assets/brand/favicons/favicon-apple-touch-icon192x192.png">
 
-        <!-- Email -->
-        <div class="field">
-          <label for="email">Email</label>
-          <input id="email" name="email" type="email" required>
-        </div>
 
-        <!-- Birthdate -->
-        <div class="field">
-          <label for="birthdate">Birthdate</label>
-          <input id="birthdate" name="birthdate" type="date" required>
-        </div>
+  <!-- Main stylesheet -->
 
-        <!-- Message -->
-        <div class="field">
-          <label for="message">Message</label>
-          <textarea id="message" name="message" rows="5" required></textarea>
-        </div>
+  <link
+    rel="stylesheet"
+    href="site-assets/css/site.css">
 
-        <!-- Captcha -->
-        <div class="field">
-          <label id="captchaLabel">What is 1+2?</label>
-          <input id="captcha" name="captcha" type="text" required>
-          <input id="captchaExpected" type="hidden" value="3">
-        </div>
 
-        <button class="btn" type="submit">Review Your Info</button>
-      </form>
-    </section>
-  </main>
+  <!-- Main JavaScript -->
 
-  <!-- Footer -->
-  <footer class="site-footer">
-    <div class="wrap footer__grid">
-<small>
-  <strong>Created by Ginelle Harvey</strong> • <span class="js-year"></span><br>
-  Got a project or question? Say hello at:
-  <a href="mailto:info@gashitsolutions.com">info@gashitsolutions.com</a>
-</small>
-
-      <nav class="footer-nav">
-        <a href="index.html">Home ←</a>
-      </nav>
-    </div>
-  </footer>
-
-  <!-- Script for year -->
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
+  <script
+    src="site-assets/js/site.js"
+    defer>
   </script>
 
-  <!-- External JS -->
-  <script src="script.js"></script>
+  <script
+  src="site-assets/js/contact.js"
+  defer>
+</script>
+
+</head>
+
+
+<body>
+
+  <a
+    class="skip-link"
+    href="#main">
+    Skip to main content
+  </a>
+
+
+  <!-- ==================================================
+       HEADER
+  ================================================== -->
+
+  <header class="site-header">
+
+    <div class="wrap header-inner">
+
+      <a
+        class="brand-link"
+        href="index.html"
+        aria-label="GRAINSMultimedia LLC home">
+
+        <img
+          class="header-logo"
+          src="site-assets/brand/website-header.png"
+          alt=""
+          width="220"
+          height="140">
+
+      </a>
+
+
+      <nav
+        class="site-nav"
+        aria-label="Primary navigation">
+
+        <button
+          class="nav-toggle"
+          id="navToggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="navMenu">
+          Menu
+        </button>
+
+
+        <ul
+          class="nav-list"
+          id="navMenu">
+
+          <li>
+            <a href="index.html">
+              Home
+            </a>
+          </li>
+
+          <li>
+            <a href="about.html">
+              About
+            </a>
+          </li>
+
+          <li>
+            <a href="services.html">
+              Services
+            </a>
+          </li>
+
+          <li>
+            <a href="capability-statement.html">
+              Capability Statement
+            </a>
+          </li>
+
+          <li>
+            <a
+              href="contact.html"
+              aria-current="page">
+              Contact
+            </a>
+          </li>
+
+        </ul>
+
+      </nav>
+
+    </div>
+
+  </header>
+
+
+  <!-- ==================================================
+       MAIN CONTENT
+  ================================================== -->
+
+  <main id="main">
+
+
+    <!-- ==================================================
+         HERO
+    ================================================== -->
+
+    <section
+      class="hero"
+      aria-labelledby="contact-title">
+
+      <div class="wrap hero-grid">
+
+
+        <div class="hero-copy">
+
+          <p class="eyebrow">
+            Contact GRAINSMultimedia LLC
+          </p>
+
+
+          <h1 id="contact-title">
+            Let’s Talk About
+
+            <span class="gradient-text">
+              What You Need
+            </span>
+          </h1>
+
+
+          <p class="hero-lead">
+            Whether you need technical support, a new website,
+            custom software, business technology assistance,
+            digital design, technical documentation, smart-space
+            planning, or project support, start by telling us
+            what you are trying to accomplish.
+          </p>
+
+
+          <div class="button-row">
+
+            <a
+              class="button button-primary"
+              href="#contact-form">
+              Send an Inquiry
+            </a>
+
+            <a
+              class="button button-secondary"
+              href="services.html">
+              Explore Services
+            </a>
+
+          </div>
+
+
+          <ul class="trust-list">
+
+            <li>
+              Florida-based
+            </li>
+
+            <li>
+              Remote support available
+            </li>
+
+            <li>
+              On-site service based on scope
+            </li>
+
+            <li>
+              Contracting &amp; subcontracting
+            </li>
+
+          </ul>
+
+        </div>
+
+
+        <div class="hero-brand-panel">
+
+          <img
+            src="site-assets/brand/website-display-logo.png"
+            alt="GRAINSMultimedia LLC logo"
+            width="400"
+            height="470">
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ==================================================
+         CONTACT INFORMATION + FORM
+    ================================================== -->
+
+    <section
+      class="section section-dark"
+      id="contact-form"
+      aria-labelledby="inquiry-title">
+
+      <div class="wrap contact-grid">
+
+
+        <!-- Direct contact information -->
+
+        <div>
+
+          <p class="eyebrow">
+            Get in Touch
+          </p>
+
+
+          <h2 id="inquiry-title">
+            Start the conversation
+          </h2>
+
+
+          <p>
+            Use the form to tell us about your project, support
+            need, contracting opportunity, or technology question.
+            You can also contact GRAINSMultimedia LLC directly.
+          </p>
+
+
+          <ul class="contact-details">
+
+            <li>
+              <strong>
+                Email
+              </strong>
+              <br>
+
+              <a href="mailto:gharvey@gashitsolutions.com">
+                gharvey@gashitsolutions.com
+              </a>
+            </li>
+
+
+            <li>
+              <strong>
+                Phone
+              </strong>
+              <br>
+
+              <a href="tel:+13215789099">
+                (321) 578-9099
+              </a>
+            </li>
+
+
+            <li>
+              <strong>
+                Location
+              </strong>
+              <br>
+
+              Daytona Beach, Florida
+            </li>
+
+
+            <li>
+              <strong>
+                Service Delivery
+              </strong>
+              <br>
+
+              Remote services and on-site support based on
+              project scope and location.
+            </li>
+
+          </ul>
+
+        </div>
+
+
+        <!-- Contact form -->
+
+        <form
+          class="request-form"
+          id="contactRequestForm"
+          action="https://formsubmit.co/gharvey@gashitsolutions.com"
+          method="post">
+
+
+          <div class="form-field">
+
+            <label for="contactName">
+              Name *
+            </label>
+
+            <input
+              id="contactName"
+              name="name"
+              type="text"
+              autocomplete="name"
+              required>
+
+          </div>
+
+
+          <div class="form-field">
+
+            <label for="contactCompany">
+              Company / Organization
+            </label>
+
+            <input
+              id="contactCompany"
+              name="company"
+              type="text"
+              autocomplete="organization">
+
+          </div>
+
+
+          <div class="form-field">
+
+            <label for="contactEmail">
+              Email *
+            </label>
+
+            <input
+              id="contactEmail"
+              name="email"
+              type="email"
+              autocomplete="email"
+              required>
+
+          </div>
+
+
+          <div class="form-field">
+
+            <label for="contactPhone">
+              Phone
+            </label>
+
+            <input
+              id="contactPhone"
+              name="phone"
+              type="tel"
+              autocomplete="tel">
+
+          </div>
+
+
+          <div class="form-field form-field-full">
+
+            <label for="contactService">
+              Type of Inquiry *
+            </label>
+
+            <select
+              id="contactService"
+              name="service"
+              required>
+
+              <option
+                value=""
+                selected
+                disabled>
+                Select an inquiry type
+              </option>
+
+              <option>
+                IT Support &amp; Troubleshooting
+              </option>
+
+              <option>
+                Business Technology Setup
+              </option>
+
+              <option>
+                Web Design &amp; Development
+              </option>
+
+              <option>
+                Custom Software / Workflow Solutions
+              </option>
+
+              <option>
+                Digital Design &amp; Branding
+              </option>
+
+              <option>
+                Technical Writing &amp; Documentation
+              </option>
+
+              <option>
+                Smart Home / Smart Spaces
+              </option>
+
+              <option>
+                Contracting / Subcontracting / Project Support
+              </option>
+
+              <option>
+                Other
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-field form-field-full">
+
+            <label for="contactMessage">
+              Tell us what you need *
+            </label>
+
+            <textarea
+              id="contactMessage"
+              name="message"
+              rows="7"
+              required
+              placeholder="Briefly describe the project, technology need, problem, or opportunity."></textarea>
+
+          </div>
+
+
+          <p
+            class="form-note"
+            id="contactPrivacyNote">
+            Your information is used only to review and respond
+            to your inquiry. Please do not submit passwords,
+            account credentials, or other sensitive access information.
+          </p>
+
+
+          <p
+            class="form-status"
+            id="contactFormStatus"
+            aria-live="polite">
+          </p>
+
+
+          <div class="form-field form-field-full">
+
+            <button
+              class="button button-primary"
+              id="contactSubmitButton"
+              type="submit">
+              Submit Inquiry
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+
+    </section>
+
+
+    <!-- ==================================================
+         INQUIRY TYPES
+    ================================================== -->
+
+    <section
+      class="section section-light"
+      aria-labelledby="contact-needs-title">
+
+      <div class="wrap">
+
+
+        <div class="section-heading">
+
+          <p class="eyebrow">
+            How We Can Help
+          </p>
+
+
+          <h2 id="contact-needs-title">
+            Not sure which service your need falls under?
+          </h2>
+
+
+          <p>
+            You do not need to know the technical solution before
+            contacting us. Tell us what is happening, what you need
+            improved, or what you are trying to build.
+          </p>
+
+        </div>
+
+
+        <div class="services-grid">
+
+
+          <article class="service-card">
+
+            <h3>
+              Technology Support
+            </h3>
+
+            <p>
+              Computer problems, business technology setup,
+              software support, connectivity, devices,
+              workstations, and general technical assistance.
+            </p>
+
+          </article>
+
+
+          <article class="service-card">
+
+            <h3>
+              Web &amp; Software Projects
+            </h3>
+
+            <p>
+              Websites, web applications, custom software,
+              workflow tools, business systems, maintenance,
+              and technology improvements.
+            </p>
+
+          </article>
+
+
+          <article class="service-card">
+
+            <h3>
+              Design &amp; Documentation
+            </h3>
+
+            <p>
+              Business graphics, branding materials,
+              technical writing, process documentation,
+              procedures, and user guidance.
+            </p>
+
+          </article>
+
+
+          <article class="service-card">
+
+            <h3>
+              Smart Spaces
+            </h3>
+
+            <p>
+              Connected-device discovery, compatibility review,
+              smart-space planning, device setup, testing,
+              and user assistance.
+            </p>
+
+          </article>
+
+
+          <article class="service-card">
+
+            <h3>
+              Contracting &amp; Subcontracting
+            </h3>
+
+            <p>
+              Defined project support, subcontracting,
+              overflow work, vendor opportunities, and focused
+              technology capability for larger scopes of work.
+            </p>
+
+          </article>
+
+
+          <article class="service-card">
+
+            <h3>
+              Something Else?
+            </h3>
+
+            <p>
+              If your need does not fit neatly into one category,
+              describe it in the form. We can determine whether
+              it fits our capabilities after reviewing the requirement.
+            </p>
+
+          </article>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ==================================================
+         WHAT HAPPENS NEXT
+    ================================================== -->
+
+    <section
+      class="section section-light"
+      aria-labelledby="next-steps-title">
+
+      <div class="wrap">
+
+
+        <div class="section-heading">
+
+          <p class="eyebrow">
+            What Happens Next
+          </p>
+
+
+          <h2 id="next-steps-title">
+            A clear starting point for every inquiry
+          </h2>
+
+
+          <p>
+            Every project is different. The first step is understanding
+            the need before determining the appropriate solution,
+            scope, or support arrangement.
+          </p>
+
+        </div>
+
+
+        <ol class="process-grid">
+
+
+          <li>
+
+            <span class="step-number">
+              01
+            </span>
+
+            <h3>
+              We Review
+            </h3>
+
+            <p>
+              We review the information you provide and identify
+              what additional details may be needed.
+            </p>
+
+          </li>
+
+
+          <li>
+
+            <span class="step-number">
+              02
+            </span>
+
+            <h3>
+              We Clarify
+            </h3>
+
+            <p>
+              We discuss the requirement, current environment,
+              goals, limitations, timeline, and expected result.
+            </p>
+
+          </li>
+
+
+          <li>
+
+            <span class="step-number">
+              03
+            </span>
+
+            <h3>
+              We Determine Next Steps
+            </h3>
+
+            <p>
+              If the requirement is a fit, we determine the
+              appropriate scope, approach, and next step for
+              moving forward.
+            </p>
+
+          </li>
+
+        </ol>
+
+      </div>
+
+    </section>
+
+
+    <!-- ==================================================
+         CONTRACTING
+    ================================================== -->
+
+    <section
+      class="section section-purple"
+      aria-labelledby="contact-contracting-title">
+
+      <div class="wrap contracting-panel">
+
+
+        <p class="eyebrow eyebrow-light">
+          Contracting &amp; Project Support
+        </p>
+
+
+        <h2 id="contact-contracting-title">
+          Looking for subcontracting or project support?
+        </h2>
+
+
+        <p>
+          GRAINSMultimedia LLC is available for direct contracting,
+          subcontracting, overflow work, and defined technology
+          project support. Review our company capabilities,
+          NAICS codes, contracting information, selected experience,
+          and technologies before reaching out.
+        </p>
+
+
+        <div class="button-row">
+
+          <a
+            class="button button-light"
+            href="capability-statement.html">
+            View Capability Statement
+          </a>
+
+          <a
+            class="button button-secondary"
+            href="mailto:gharvey@gashitsolutions.com?subject=Contracting%20Opportunity">
+            Discuss Contracting Opportunities
+          </a>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ==================================================
+         DIRECT CONTACT
+    ================================================== -->
+
+    <section
+      class="section section-dark"
+      aria-labelledby="direct-contact-title">
+
+      <div class="wrap approach-grid">
+
+
+        <div>
+
+          <p class="eyebrow">
+            Prefer Direct Contact?
+          </p>
+
+
+          <h2 id="direct-contact-title">
+            You can reach us without using the form
+          </h2>
+
+
+          <p>
+            The inquiry form is provided for convenience.
+            Email and phone contact are also available for
+            business, project, support, and contracting inquiries.
+          </p>
+
+        </div>
+
+
+        <ul class="check-list">
+
+          <li>
+
+            <strong>
+              Email
+            </strong>
+
+            <br>
+
+            <a href="mailto:gharvey@gashitsolutions.com">
+              gharvey@gashitsolutions.com
+            </a>
+          </li>
+
+
+          <li>
+
+            <strong>
+              Phone
+            </strong>
+
+            <br>
+
+            <a href="tel:+13215789099">
+              (321) 578-9099
+            </a>
+          </li>
+
+
+          <li>
+
+            <strong>
+              Location
+            </strong>
+
+            <br>
+
+            Daytona Beach, Florida
+          </li>
+
+        </ul>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- ==================================================
+       FOOTER
+  ================================================== -->
+
+  <footer class="site-footer">
+
+    <div class="wrap footer-grid">
+
+
+      <div class="footer-brand">
+
+        <div class="footer-logo-tile">
+
+          <img
+            src="site-assets/brand/website-header.png"
+            alt="GRAINSMultimedia LLC, GASH IT Solutions Division"
+            width="220"
+            height="140"
+            loading="lazy">
+
+        </div>
+
+
+        <p>
+          Professional technology and multimedia solutions for businesses,
+          organizations, contractors, and public-sector partners.
+        </p>
+
+      </div>
+
+
+      <div>
+
+        <h2 class="footer-heading">
+          Company
+        </h2>
+
+
+        <ul class="footer-links">
+
+          <li>
+            <a href="about.html">
+              About
+            </a>
+          </li>
+
+          <li>
+            <a href="services.html">
+              Services
+            </a>
+          </li>
+
+          <li>
+            <a href="capability-statement.html">
+              Capability Statement
+            </a>
+          </li>
+
+          <li>
+            <a
+              href="contact.html"
+              aria-current="page">
+              Contact
+            </a>
+          </li>
+
+        </ul>
+
+      </div>
+
+
+      <div>
+
+        <h2 class="footer-heading">
+          Work With Us
+        </h2>
+
+
+        <ul class="footer-links">
+
+          <li>
+            <a href="contact.html">
+              Request a Consultation
+            </a>
+          </li>
+
+          <li>
+            <a href="capability-statement.html">
+              Contracting &amp; Project Support
+            </a>
+          </li>
+
+          <li>
+            <a href="index.html#request">
+              Submit a Project Inquiry
+            </a>
+          </li>
+
+        </ul>
+
+      </div>
+
+
+      <div>
+
+        <h2 class="footer-heading">
+          Contact
+        </h2>
+
+
+        <ul class="footer-links">
+
+          <li>
+            <a href="mailto:gharvey@gashitsolutions.com">
+              gharvey@gashitsolutions.com
+            </a>
+          </li>
+
+          <li>
+            <a href="tel:+13215789099">
+              (321) 578-9099
+            </a>
+          </li>
+
+          <li>
+            Daytona Beach, Florida
+          </li>
+
+        </ul>
+
+      </div>
+
+    </div>
+
+
+    <div class="wrap footer-bottom">
+
+      <p>
+        &copy;
+        <span id="year"></span>
+        GRAINSMultimedia LLC. All rights reserved.
+      </p>
+
+
+      <p>
+        GASH IT Solutions is the technology services division of
+        GRAINSMultimedia LLC.
+      </p>
+
+    </div>
+
+  </footer>
+
 </body>
+
 </html>
